@@ -1,101 +1,393 @@
 <!doctype html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>One Plus Fashion ERP</title>
-<style>
-body{margin:0;font:14px Arial,sans-serif;background:#eef2f6;color:#1e293b}
-*{box-sizing:border-box}.top{height:64px;background:#17233a;color:#fff;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;position:sticky;top:0;z-index:10}
-.logo{height:46px;background:#fff;border-radius:5px;padding:2px;max-width:210px}.top .right{display:flex;align-items:center;gap:8px}
-.shell{display:flex;min-height:calc(100vh - 64px)}.side{width:215px;background:#fff;border-right:1px solid #d9e0e8;padding:10px;position:fixed;top:64px;bottom:0;overflow:auto}.side button{width:100%;padding:9px;border:0;border-radius:6px;background:#fff;text-align:left;margin:2px 0;color:#25344b;cursor:pointer}.side button:hover,.side button.on{background:#e9eff6;font-weight:bold}
-.main{margin-left:215px;width:calc(100% - 215px);padding:18px;max-width:1500px}h1{margin:0 0 14px;font-size:24px}h2{font-size:17px}.cards{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.card{background:#fff;border:1px solid #dbe2ea;border-radius:8px;padding:13px}.card .big{font-size:21px;font-weight:bold;margin-top:5px}.muted{color:#64748b;font-size:12px}
-.box{background:#fff;border:1px solid #dbe2ea;border-radius:8px;padding:14px;margin:14px 0}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.field label{display:block;font-size:12px;color:#5b6878;margin-bottom:3px}.field input,.field select,.field textarea{width:100%;padding:8px;border:1px solid #cbd5e1;border-radius:5px;background:#fff}.field textarea{min-height:70px}
-button,.btn{border:0;border-radius:5px;padding:8px 12px;background:#17233a;color:#fff;cursor:pointer}.light{background:#e9eef5;color:#17233a}.good{background:#28734a}.warn{background:#9a6900}.bad{background:#a23a3a}.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
-.table{overflow:auto;background:#fff;border:1px solid #dbe2ea;border-radius:7px}.table table{border-collapse:collapse;width:100%;min-width:850px}.table th,.table td{padding:7px;border-bottom:1px solid #e5eaf0;text-align:left;font-size:12px}.table th{background:#edf1f5}.pill{padding:3px 7px;border-radius:10px;background:#e7edf3}
-.alert{padding:10px;border-radius:6px;background:#fff6dc;border:1px solid #e6cf84;margin:10px 0}.search{display:flex;gap:8px;margin:10px 0}.search input{flex:1;padding:9px;border:1px solid #cbd5e1;border-radius:5px}
-@media(max-width:1050px){.cards{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.side{position:static;width:100%;display:flex;flex-wrap:wrap}.side button{width:auto;flex:1 1 45%}.shell{display:block}.main{margin-left:0;width:100%}.cards{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.top{position:static}}
-@media print{.side,.top{display:none}.main{margin:0;width:100%;padding:0}.no-print{display:none}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One Plus Fashion ERP</title>
+  <style>
+    body {
+      margin: 0;
+      font: 14px Arial, sans-serif;
+      background: #eef2f6;
+      color: #1e293b
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    .top {
+      height: 64px;
+      background: #17233a;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10
+    }
+
+    .logo {
+      height: 46px;
+      background: #fff;
+      border-radius: 5px;
+      padding: 2px;
+      max-width: 210px
+    }
+
+    .top .right {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .shell {
+      display: flex;
+      min-height: calc(100vh - 64px)
+    }
+
+    .side {
+      width: 215px;
+      background: #fff;
+      border-right: 1px solid #d9e0e8;
+      padding: 10px;
+      position: fixed;
+      top: 64px;
+      bottom: 0;
+      overflow: auto
+    }
+
+    .side button {
+      width: 100%;
+      padding: 9px;
+      border: 0;
+      border-radius: 6px;
+      background: #fff;
+      text-align: left;
+      margin: 2px 0;
+      color: #25344b;
+      cursor: pointer
+    }
+
+    .side button:hover,
+    .side button.on {
+      background: #e9eff6;
+      font-weight: bold
+    }
+
+    .main {
+      margin-left: 215px;
+      width: calc(100% - 215px);
+      padding: 18px;
+      max-width: 1500px
+    }
+
+    h1 {
+      margin: 0 0 14px;
+      font-size: 24px
+    }
+
+    h2 {
+      font-size: 17px
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #dbe2ea;
+      border-radius: 8px;
+      padding: 13px
+    }
+
+    .card .big {
+      font-size: 21px;
+      font-weight: bold;
+      margin-top: 5px
+    }
+
+    .muted {
+      color: #64748b;
+      font-size: 12px
+    }
+
+    .box {
+      background: #fff;
+      border: 1px solid #dbe2ea;
+      border-radius: 8px;
+      padding: 14px;
+      margin: 14px 0
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px
+    }
+
+    .field label {
+      display: block;
+      font-size: 12px;
+      color: #5b6878;
+      margin-bottom: 3px
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      background: #fff
+    }
+
+    .field textarea {
+      min-height: 70px
+    }
+
+    button,
+    .btn {
+      border: 0;
+      border-radius: 5px;
+      padding: 8px 12px;
+      background: #17233a;
+      color: #fff;
+      cursor: pointer
+    }
+
+    .light {
+      background: #e9eef5;
+      color: #17233a
+    }
+
+    .good {
+      background: #28734a
+    }
+
+    .warn {
+      background: #9a6900
+    }
+
+    .bad {
+      background: #a23a3a
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-top: 11px
+    }
+
+    .table {
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #dbe2ea;
+      border-radius: 7px
+    }
+
+    .table table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 850px
+    }
+
+    .table th,
+    .table td {
+      padding: 7px;
+      border-bottom: 1px solid #e5eaf0;
+      text-align: left;
+      font-size: 12px
+    }
+
+    .table th {
+      background: #edf1f5
+    }
+
+    .pill {
+      padding: 3px 7px;
+      border-radius: 10px;
+      background: #e7edf3
+    }
+
+    .alert {
+      padding: 10px;
+      border-radius: 6px;
+      background: #fff6dc;
+      border: 1px solid #e6cf84;
+      margin: 10px 0
+    }
+
+    .search {
+      display: flex;
+      gap: 8px;
+      margin: 10px 0
+    }
+
+    .search input {
+      flex: 1;
+      padding: 9px;
+      border: 1px solid #cbd5e1;
+      border-radius: 5px
+    }
+
+    @media(max-width:1050px) {
+      .cards {
+        grid-template-columns: repeat(3, 1fr)
+      }
+
+      .grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:700px) {
+      .side {
+        position: static;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap
+      }
+
+      .side button {
+        width: auto;
+        flex: 1 1 45%
+      }
+
+      .shell {
+        display: block
+      }
+
+      .main {
+        margin-left: 0;
+        width: 100%
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .grid {
+        grid-template-columns: 1fr
+      }
+
+      .top {
+        position: static
+      }
+    }
+
+    @media print {
+
+      .side,
+      .top {
+        display: none
+      }
+
+      .main {
+        margin: 0;
+        width: 100%;
+        padding: 0
+      }
+
+      .no-print {
+        display: none
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header class="top">
-  <img class="logo" src="data:image/png;base64,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">
-  <div class="right"><span id="clock"></span><button class="light" onclick="backup()">Backup</button></div>
-</header>
-<div class="shell"><nav class="side" id="nav"></nav><main class="main" id="app"></main></div>
-<script>
-var KEY="opf_erp_smart_v3";
-var db=load();
-function load(){try{return JSON.parse(localStorage.getItem(KEY)||"null")||fresh()}catch(e){return fresh()}}
-function fresh(){return {company:{name:"One Plus Fashion",phone:"01814109285",address:""},suppliers:[],materials:[],purchases:[],issues:[],products:[],productionOrders:[],production:[],factories:[],transfers:[],customers:[],sales:[],returns:[],payments:[],expenses:[],courier:[],showrooms:[{id:"main",name:"Owner Permanent Shop"}],logs:[],users:[{id:"u1",name:"Administrator",username:"admin",role:"Admin"}]}}
-function save(){localStorage.setItem(KEY,JSON.stringify(db))}
-function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
-function num(v){return parseFloat(v)||0}
-function esc(v){return String(v==null?"":v).replace(/[&<>"']/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
-function money(v){return num(v).toLocaleString("en-BD",{minimumFractionDigits:2,maximumFractionDigits:2})}
-function today(){return new Date().toISOString().slice(0,10)}
-function log(action,ref){db.logs.push({date:new Date().toISOString(),action:action,ref:ref||""});save()}
-var menus=[["dashboard","Dashboard"],["suppliers","Suppliers"],["purchase","Fabric / Raw Purchase"],["materials","Raw Material Stock"],["productionOrder","Production Order"],["issue","Material Issue"],["production","Production / Finished"],["factories","Factory / Worker"],["products","Style / Product"],["transfer","Factory → Shop"],["showroom","Showroom Stock"],["customers","Customers"],["sales","Sales / Invoice"],["returns","Sales Return"],["payments","Payment / Collection"],["expenses","Expenses"],["courier","Courier / Delivery"],["costing","Product Costing"],["reports","Reports"],["ledger","Ledgers / Due"],["users","Users / Activity"],["settings","Settings / Backup"]];
-function nav(active){document.getElementById("nav").innerHTML=menus.map(function(m){return '<button class="'+(active==m[0]?"on":"")+'" onclick="go(\''+m[0]+'\')">'+m[1]+'</button>'}).join("")}
-function go(p){nav(p);window.scrollTo(0,0);var f=window[p];if(typeof f=="function")f();else dashboard()}
-function field(n,l,t,v,req){return '<div class="field"><label>'+l+'</label><input name="'+n+'" type="'+(t||"text")+'" value="'+esc(v||"")+'" '+(req?"required":"")+'></div>'}
-function select(n,l,opts,req){return '<div class="field"><label>'+l+'</label><select name="'+n+'" '+(req?"required":"")+'>'+opts+'</select></div>'}
-function options(arr,valField,textField){return arr.map(function(x){return '<option value="'+esc(x[valField])+'">'+esc(x[textField])+'</option>'}).join("")}
-function form(title,action,fields){document.getElementById("app").innerHTML='<h1>'+title+'</h1><form class="box" onsubmit="'+action+'(this);return false"><div class="grid">'+fields.join("")+'</div><div class="actions"><button>Save</button><button type="button" class="light" onclick="this.form.reset()">Clear</button></div></form>'}
-function table(head,rows){return '<div class="table"><table><thead><tr>'+head.map(function(h){return "<th>"+h+"</th>"}).join("")+'</tr></thead><tbody>'+(rows.length?rows.join(""):'<tr><td colspan="'+head.length+'" class="muted">No records found</td></tr>')+'</tbody></table></div>'}
-function sum(a,fn){return a.reduce(function(t,x){return t+fn(x)},0)}
-function purchaseTotal(r){return num(r.qty)*num(r.rate)+num(r.transport)+num(r.loading)+num(r.other)}
-function saleTotal(r){return num(r.qty)*num(r.rate)-num(r.discount)}
-function dashboard(){
-var sales=sum(db.sales,saleTotal),coll=sum(db.payments,function(x){return x.type=="Customer"?num(x.amount):0})+sum(db.sales,function(x){return num(x.paid)}),pur=sum(db.purchases,purchaseTotal),exp=sum(db.expenses,function(x){return num(x.amount)}),prod=sum(db.production,function(x){return num(x.accepted)}),due=sales-coll;
-document.getElementById("app").innerHTML='<h1>Dashboard</h1><div class="cards"><div class="card">Today Sales<div class="big">'+money(sum(db.sales.filter(function(x){return x.date==today()}),saleTotal))+'</div></div><div class="card">Today Collection<div class="big">'+money(sum(db.payments.filter(function(x){return x.date==today()}),function(x){return num(x.amount)}))+'</div></div><div class="card">Customer Due<div class="big">'+money(due)+'</div></div><div class="card">Purchases<div class="big">'+money(pur)+'</div></div><div class="card">Finished PCS<div class="big">'+prod.toLocaleString()+'</div></div><div class="card">Expense<div class="big">'+money(exp)+'</div></div></div><div class="box"><h2>End-to-End Workflow</h2><div class="muted">Supplier → Purchase → Raw Stock → Material Issue → Production → Finished Goods → Factory/Shop Transfer → Showroom → Sales → Customer Ledger → Payment → Courier → Invoice → P/L</div><div class="actions"><button onclick="go(\'purchase\')">+ Purchase</button><button onclick="go(\'issue\')">+ Material Issue</button><button onclick="go(\'production\')">+ Production</button><button onclick="go(\'sales\')">+ Sale</button><button onclick="go(\'payments\')">+ Collection</button><button onclick="go(\'courier\')">+ Courier</button></div></div><div class="alert">This edition is optimized for your Windows 7 / 4 GB RAM laptop. It is offline and requires no Python, MySQL, Node.js or VPS for single-computer use.</div>'
-}
-function suppliers(){form("Supplier / Fabric Party","addSupplier",[field("name","Party Name","text","","1"),field("company","Company"),field("mobile","Mobile"),field("address","Address / District"),field("credit","Credit Limit","number","0"),field("terms","Payment Terms"),field("previousDue","Previous Due","number","0")]);var rows=db.suppliers.map(function(r){return '<tr><td>'+esc(r.name)+'</td><td>'+esc(r.company)+'</td><td>'+esc(r.mobile)+'</td><td>'+esc(r.address)+'</td><td>'+money(r.previousDue)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",'<h2>Supplier Register</h2>'+table(["Party","Company","Mobile","Address","Previous Due"],rows))}
-function addSupplier(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.previousDue=num(d.previousDue);db.suppliers.push(d);log("Supplier Created",d.name);suppliers()}
-function purchase(){var opts='<option value="">Select</option>'+options(db.suppliers,"id","name");form("Fabric / Raw Material Purchase","addPurchase",[select("supplier","Supplier",opts,1),field("date","Date","date",today(),1),field("invoice","Challan / Invoice No."),field("material","Material / Fabric","text","",1),field("type","Material Type"),field("color","Color"),field("gsm","GSM"),field("width","Width"),field("qty","Quantity","number","0",1),field("unit","Unit (yard/kg/meter/pcs)"),field("rate","Purchase Rate","number","0",1),field("transport","Transport","number","0"),field("loading","Loading / Unloading","number","0"),field("other","Other Cost","number","0"),field("paid","Paid","number","0"),field("method","Payment Method"),field("remarks","Remarks")]);var rows=db.purchases.slice().reverse().map(function(r){var s=db.suppliers.find(function(x){return x.id==r.supplier});var t=purchaseTotal(r);return '<tr><td>'+r.date+'</td><td>'+esc(s?s.name:"")+'</td><td>'+esc(r.material)+'</td><td>'+r.qty+' '+esc(r.unit)+'</td><td>'+money(t)+'</td><td>'+money(r.paid)+'</td><td>'+money(t-num(r.paid))+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",'<h2>Purchase Register</h2>'+table(["Date","Supplier","Material","Qty","Total","Paid","Due"],rows))}
-function addPurchase(f){var d=Object.fromEntries(new FormData(f));d.id=uid();["qty","rate","transport","loading","other","paid"].forEach(function(k){d[k]=num(d[k])});db.purchases.push(d);log("Purchase Created",d.invoice);purchase()}
-function materials(){var m={};db.purchases.forEach(function(r){var k=r.material+"|"+(r.color||"");m[k]=(m[k]||0)+num(r.qty)});db.issues.forEach(function(r){var k=r.material+"|"+(r.color||"");m[k]=(m[k]||0)-num(r.qty)});var rows=Object.keys(m).map(function(k){var p=k.split("|");return '<tr><td>'+esc(p[0])+'</td><td>'+esc(p[1])+'</td><td>'+m[k].toFixed(2)+'</td></tr>'});document.getElementById("app").innerHTML='<h1>Raw Material / Fabric Stock</h1><div class="alert">Formula: Opening + Purchase + Return − Issue − Adjustment = Current Stock. Opening/adjustment fields can be added through Settings in a future data migration.</div>'+table(["Material","Color","Current Qty"],rows)}
-function productionOrder(){var opts='<option value="">Select Factory</option>'+options(db.factories,"id","name");form("Production Order","addProductionOrder",[field("date","Order Date","date",today(),1),field("style","Style Code","text","",1),field("color","Color"),field("size","Size"),field("planned","Planned Quantity","number","0",1),select("factory","Factory / Worker",opts),field("status","Status")]);var rows=db.productionOrders.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.style)+'</td><td>'+r.planned+'</td><td>'+esc(r.factory)+'</td><td><span class="pill">'+esc(r.status)+'</span></td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Style","Planned","Factory","Status"],rows))}
-function addProductionOrder(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.planned=num(d.planned);db.productionOrders.push(d);log("Production Order",d.style);productionOrder()}
-function issue(){form("Raw Material / Fabric Issue to Production","addIssue",[field("date","Issue Date","date",today(),1),field("order","Production Order ID"),field("style","Style","text","",1),field("material","Material","text","",1),field("color","Color"),field("qty","Issued Quantity","number","0",1),field("unit","Unit"),field("slip","Issue Slip No."),field("remarks","Remarks")]);var rows=db.issues.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.slip)+'</td><td>'+esc(r.style)+'</td><td>'+esc(r.material)+'</td><td>'+r.qty+' '+esc(r.unit)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Slip","Style","Material","Issued"],rows))}
-function addIssue(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.qty=num(d.qty);db.issues.push(d);log("Material Issue",d.slip);issue()}
-function production(){form("Simplified Production Entry","addProduction",[field("date","Date","date",today(),1),field("style","Style","text","",1),field("color","Color"),field("size","Size"),field("issued","Material Issued","number","0"),field("accepted","Produced / Accepted PCS","number","0",1),field("rejected","Rejected / Damaged PCS","number","0"),field("wastage","Wastage / Adjustment","number","0"),field("returned","Remaining Material Returned","number","0"),field("factory","Factory / Worker"),field("rate","Factory Rate / PCS","number","0"),field("remarks","Remarks")]);var rows=db.production.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.style)+'</td><td>'+r.issued+'</td><td>'+r.accepted+'</td><td>'+r.rejected+'</td><td>'+r.wastage+'</td><td>'+r.returned+'</td><td>'+money(num(r.accepted)*num(r.rate))+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",'<div class="alert">Production is intentionally simplified: Material Issue → Single Production Entry → Finished Goods. Accepted quantity is added to finished stock automatically.</div>'+table(["Date","Style","Issued","Accepted PCS","Rejected","Wastage","Returned","Factory Bill"],rows))}
-function addProduction(f){var d=Object.fromEntries(new FormData(f));d.id=uid();["issued","accepted","rejected","wastage","returned","rate"].forEach(function(k){d[k]=num(d[k])});db.production.push(d);log("Production Entry",d.style);production()}
-function factories(){form("Factory / Worker","addFactory",[field("name","Factory / Worker Name","text","",1),field("mobile","Mobile"),field("address","Address"),field("rate","Default Rate / PCS","number","0")]);var rows=db.factories.map(function(r){return '<tr><td>'+esc(r.name)+'</td><td>'+esc(r.mobile)+'</td><td>'+esc(r.address)+'</td><td>'+money(r.rate)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Factory/Worker","Mobile","Address","Rate/PCS"],rows))}
-function addFactory(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.rate=num(d.rate);db.factories.push(d);log("Factory Created",d.name);factories()}
-function products(){form("Style / Product Master","addProduct",[field("style","Unique Style Code","text","",1),field("name","Product Name","text","",1),field("image","Image File Name"),field("fabric","Main Fabric"),field("color","Color"),field("size","Size"),field("barcode","Barcode"),field("cost","Cost / Piece","number","0"),field("price","Wholesale Price","number","0"),field("retail","Retail Price","number","0")]);var rows=db.products.slice().reverse().map(function(r){return '<tr><td>'+esc(r.style)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.color)+'</td><td>'+esc(r.size)+'</td><td>'+esc(r.barcode)+'</td><td>'+money(r.cost)+'</td><td>'+money(r.price)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Style","Product","Color","Size","Barcode","Cost/PC","Wholesale"],rows))}
-function addProduct(f){var d=Object.fromEntries(new FormData(f));d.id=uid();["cost","price","retail"].forEach(function(k){d[k]=num(d[k])});db.products.push(d);log("Product Created",d.style);products()}
-function transfer(){form("Factory → Showroom / Shop Transfer","addTransfer",[field("date","Date","date",today(),1),field("from","From Factory","text","",1),field("to","To Showroom / Shop","text","Owner Permanent Shop",1),field("style","Style","text","",1),field("color","Color"),field("size","Size"),field("qty","Quantity","number","0",1),field("reference","Transfer No."),field("remarks","Remarks")]);var rows=db.transfers.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.from)+'</td><td>'+esc(r.to)+'</td><td>'+esc(r.style)+'</td><td>'+r.qty+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","From","To","Style","Qty"],rows))}
-function addTransfer(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.qty=num(d.qty);db.transfers.push(d);log("Stock Transfer",d.reference);transfer()}
-function showroom(){var m={};db.transfers.forEach(function(r){var k=r.to+"|"+r.style+"|"+(r.color||"")+"|"+(r.size||"");m[k]=(m[k]||0)+num(r.qty)});db.sales.forEach(function(r){var k="Owner Permanent Shop|"+r.style+"|"+(r.color||"")+"|"+(r.size||"");m[k]=(m[k]||0)-num(r.qty)});db.returns.forEach(function(r){var k="Owner Permanent Shop|"+r.style+"|"+(r.color||"")+"|"+(r.size||"");m[k]=(m[k]||0)+num(r.qty)});var rows=Object.keys(m).map(function(k){var p=k.split("|");return '<tr><td>'+esc(p[1])+'</td><td>'+esc(p[2])+'</td><td>'+esc(p[3])+'</td><td>'+esc(p[0])+'</td><td>'+m[k]+'</td></tr>'});document.getElementById("app").innerHTML='<h1>Showroom / Shop Stock</h1>'+table(["Style","Color","Size","Location","Closing Qty"],rows)}
-function customers(){form("Customer / Wholesale Party","addCustomer",[field("name","Shop / Customer Name","text","",1),field("mobile","Mobile"),field("address","Address"),field("district","District"),field("credit","Credit Limit","number","0"),field("previousDue","Previous Due","number","0")]);var rows=db.customers.map(function(r){return '<tr><td>'+esc(r.name)+'</td><td>'+esc(r.mobile)+'</td><td>'+esc(r.address)+'</td><td>'+esc(r.district)+'</td><td>'+money(r.previousDue)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Customer","Mobile","Address","District","Previous Due"],rows))}
-function addCustomer(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.previousDue=num(d.previousDue);db.customers.push(d);log("Customer Created",d.name);customers()}
-function sales(){var opts='<option value="">Select Customer</option>'+options(db.customers,"id","name");form("Wholesale Sales / Invoice","addSale",[field("date","Date","date",today(),1),field("invoice","Invoice No."),select("customer","Customer",opts,1),field("style","Style Code","text","",1),field("color","Color"),field("size","Size"),field("qty","Quantity","number","0",1),field("rate","Rate / PCS","number","0",1),field("discount","Discount","number","0"),field("paid","Paid","number","0"),field("method","Payment Method"),field("location","Stock Location","text","Owner Permanent Shop"),field("remarks","Remarks")]);var rows=db.sales.slice().reverse().map(function(r){var c=db.customers.find(function(x){return x.id==r.customer}),t=saleTotal(r);return '<tr><td>'+r.date+'</td><td>'+esc(r.invoice)+'</td><td>'+esc(c?c.name:"")+'</td><td>'+esc(r.style)+'</td><td>'+r.qty+'</td><td>'+money(t)+'</td><td>'+money(r.paid)+'</td><td>'+money(t-num(r.paid))+'</td><td><button onclick="printInvoice(\''+r.id+'\')">Invoice</button></td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Invoice","Customer","Style","Qty","Total","Paid","Due","Print"],rows))}
-function addSale(f){var d=Object.fromEntries(new FormData(f));d.id=uid();["qty","rate","discount","paid"].forEach(function(k){d[k]=num(d[k])});db.sales.push(d);log("Sale / Invoice",d.invoice);sales()}
-function returns(){form("Sales Return","addReturn",[field("date","Date","date",today(),1),field("invoice","Original Invoice"),field("customer","Customer"),field("style","Style","text","",1),field("color","Color"),field("size","Size"),field("qty","Return Quantity","number","0",1),field("amount","Return Amount","number","0"),field("reason","Reason")]);var rows=db.returns.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.invoice)+'</td><td>'+esc(r.customer)+'</td><td>'+esc(r.style)+'</td><td>'+r.qty+'</td><td>'+money(r.amount)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Invoice","Customer","Style","Qty","Amount"],rows))}
-function addReturn(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.qty=num(d.qty);d.amount=num(d.amount);db.returns.push(d);log("Sales Return",d.invoice);returns()}
-function payments(){form("Payment / Collection","addPayment",[field("date","Date","date",today(),1),field("type","Party Type (Supplier/Customer/Factory)","text","Customer",1),field("party","Party Name / ID","text","",1),field("amount","Amount","number","0",1),field("method","Cash / Bank / bKash / Nagad"),field("reference","Reference / Transaction No."),field("remarks","Remarks")]);var rows=db.payments.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.type)+'</td><td>'+esc(r.party)+'</td><td>'+money(r.amount)+'</td><td>'+esc(r.method)+'</td><td>'+esc(r.reference)+'</td><td><button onclick="printReceipt(\''+r.id+'\')">Receipt</button></td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Type","Party","Amount","Method","Reference","Print"],rows))}
-function addPayment(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.amount=num(d.amount);db.payments.push(d);log("Payment",d.reference);payments()}
-function expenses(){form("Expense Management","addExpense",[field("date","Date","date",today(),1),field("category","Salary / Rent / Electricity / Transport / Other","text","",1),field("amount","Amount","number","0",1),field("method","Payment Method"),field("location","Factory / Office / Shop"),field("remarks","Remarks")]);var rows=db.expenses.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.category)+'</td><td>'+money(r.amount)+'</td><td>'+esc(r.location)+'</td><td>'+esc(r.remarks)+'</td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Category","Amount","Location","Remarks"],rows))}
-function addExpense(f){var d=Object.fromEntries(new FormData(f));d.id=uid();d.amount=num(d.amount);db.expenses.push(d);log("Expense",d.category);expenses()}
-function courier(){var opts='<option value="">Select Customer</option>'+options(db.customers,"id","name");form("Courier / Delivery / COD","addCourier",[field("date","Date","date",today(),1),field("invoice","Invoice No."),select("customer","Customer",opts),field("destination","Destination / Address"),field("courier","Courier Company"),field("tracking","Tracking No."),field("cod","COD","number","0"),field("advance","Advance","number","0"),field("payable","Courier Payable","number","0"),select("status","Status",'<option>Pending</option><option>Sent</option><option>In Transit</option><option>Delivered</option><option>Returned</option><option>Cancelled</option>'),field("remarks","Remarks")]);var rows=db.courier.slice().reverse().map(function(r){return '<tr><td>'+r.date+'</td><td>'+esc(r.invoice)+'</td><td>'+esc(r.destination)+'</td><td>'+esc(r.courier)+'</td><td>'+esc(r.tracking)+'</td><td>'+money(r.cod)+'</td><td><span class="pill">'+esc(r.status)+'</span></td></tr>'});document.getElementById("app").insertAdjacentHTML("beforeend",table(["Date","Invoice","Destination","Courier","Tracking","COD","Status"],rows))}
-function addCourier(f){var d=Object.fromEntries(new FormData(f));d.id=uid();["cod","advance","payable"].forEach(function(k){d[k]=num(d[k])});db.courier.push(d);log("Courier",d.tracking);courier()}
-function costing(){document.getElementById("app").innerHTML='<h1>Product Costing</h1><div class="box"><div class="grid">'+field("fabric","Fabric Cost / PC","number","0")+field("accessories","Accessories / PC","number","0")+field("factory","Factory Bill / PC","number","0")+field("packaging","Packaging / PC","number","0")+field("transport","Transport / PC","number","0")+field("other","Other Cost / PC","number","0")+field("price","Wholesale Price / PC","number","0")+field("qty","Planned PCS","number","0")+'</div><div class="actions"><button onclick="calcCost()">Calculate</button></div><div id="costout" style="margin-top:12px"></div></div><div class="alert">Cost build-up follows the proposal: fabric + accessories + production/factory bill + packaging + transport + other cost → total cost, cost/pc, wholesale price, profit/pc and total profit.</div>'}
-function calcCost(){var ids=["fabric","accessories","factory","packaging","transport","other"],c=0;ids.forEach(function(x){c+=num(document.querySelector('[name="'+x+'"]').value)});var p=num(document.querySelector('[name="price"]').value),q=num(document.querySelector('[name="qty"]').value);document.getElementById("costout").innerHTML='<b>Total Cost / PC:</b> '+money(c)+' &nbsp; <b>Profit / PC:</b> '+money(p-c)+' &nbsp; <b>Total Planned Profit:</b> '+money((p-c)*q)}
-function ledger(){var rows=db.customers.map(function(c){var sales=sum(db.sales.filter(function(s){return s.customer==c.id}),saleTotal),ret=sum(db.returns.filter(function(r){return r.customer==c.name}),function(r){return num(r.amount)}),pay=sum(db.payments.filter(function(p){return p.type=="Customer"&&(p.party==c.id||p.party==c.name)}),function(p){return num(p.amount)}),salePaid=sum(db.sales.filter(function(s){return s.customer==c.id}),function(s){return num(s.paid)});return '<tr><td>Customer</td><td>'+esc(c.name)+'</td><td>'+money(num(c.previousDue)+sales-ret-pay-salePaid)+'</td></tr>'});document.getElementById("app").innerHTML='<h1>Ledgers / Due</h1><p class="muted">Customer formula: Previous Due + New Sales − Return − Payment = Current Due. Supplier/factory detailed statements are kept through transaction registers.</p>'+table(["Type","Party","Current Due"],rows)}
-function reports(){var sales=sum(db.sales,saleTotal),pur=sum(db.purchases,purchaseTotal),exp=sum(db.expenses,function(x){return num(x.amount)}),factory=sum(db.production,function(x){return num(x.accepted)*num(x.rate)}),simple=sales-pur-exp-factory;document.getElementById("app").innerHTML='<h1>Reports</h1><div class="cards"><div class="card">Sales<div class="big">'+money(sales)+'</div></div><div class="card">Purchase<div class="big">'+money(pur)+'</div></div><div class="card">Factory Bill<div class="big">'+money(factory)+'</div></div><div class="card">Expense<div class="big">'+money(exp)+'</div></div><div class="card">P/L View<div class="big">'+money(simple)+'</div></div><div class="card">Invoices<div class="big">'+db.sales.length+'</div></div></div><div class="box"><button onclick="csv(&quot;sales&quot;)">Export Sales CSV</button> <button onclick="csv(&quot;purchases&quot;)">Export Purchase CSV</button> <button onclick="csv(&quot;production&quot;)">Export Production CSV</button> <button onclick="csv(&quot;expenses&quot;)">Export Expense CSV</button> <button onclick="window.print()">Print / Save PDF</button></div>'}
-function csv(type){var a=db[type]||[];if(!a.length){alert("No data available");return}var keys=Object.keys(a[0]),lines=[keys.join(",")];a.forEach(function(r){lines.push(keys.map(function(k){return '"'+String(r[k]==null?"":r[k]).replace(/"/g,'""')+'"'}).join(","))});var blob=new Blob([lines.join("\r\n")],{type:"text/csv"}),a1=document.createElement("a");a1.href=URL.createObjectURL(blob);a1.download="OnePlusFashion_"+type+"_"+today()+".csv";a1.click()}
-function users(){var rows=db.users.map(function(u){return '<tr><td>'+esc(u.name)+'</td><td>'+esc(u.username)+'</td><td>'+esc(u.role)+'</td></tr>'});document.getElementById("app").innerHTML='<h1>Users / Activity</h1><div class="box"><div class="muted">Roles from proposal: Admin, Manager, Accountant, Salesman, Factory Manager. This offline edition records activity locally; password authentication is intentionally not exposed in a browser-only file.</div></div>'+table(["Name","Username","Role"],rows)+'<h2>Recent Activity</h2>'+table(["Timestamp","Action","Reference"],db.logs.slice(-100).reverse().map(function(x){return '<tr><td>'+esc(x.date)+'</td><td>'+esc(x.action)+'</td><td>'+esc(x.ref)+'</td></tr>'}))}
-function settings(){document.getElementById("app").innerHTML='<h1>Settings / Backup</h1><div class="box"><h2>Company Branding</h2><div class="grid">'+field("company","Company Name","text",db.company.name)+field("phone","Phone","text",db.company.phone)+field("address","Address","text",db.company.address)+'</div><div class="actions"><button onclick="saveCompany()">Save</button></div></div><div class="box"><h2>Data Safety</h2><button onclick="backup()">Download Full Backup</button> <label class="btn light">Restore Backup<input id="restore" type="file" accept=".json" style="display:none" onchange="restore(this)"></label> <button class="bad" onclick="clearData()">Clear All Data</button><p class="muted">Backup the JSON file to a pen drive/external drive regularly. Data is stored locally in this browser.</p></div>'}
-function saveCompany(){db.company.name=document.querySelector('[name="company"]').value;db.company.phone=document.querySelector('[name="phone"]').value;db.company.address=document.querySelector('[name="address"]').value;save();alert("Company settings saved.")}
-function backup(){var blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="OnePlusFashion_ERP_Backup_"+today()+".json";a.click()}
-function restore(inp){var f=inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{db=JSON.parse(r.result);save();alert("Backup restored.");go("dashboard")}catch(e){alert("Invalid backup file")}};r.readAsText(f)}
-function clearData(){if(confirm("Delete ALL ERP data? Make a backup first.")){db=fresh();save();go("dashboard")}}
-function printInvoice(sid){var s=db.sales.find(function(x){return x.id==sid}),c=db.customers.find(function(x){return x.id==s.customer}),t=saleTotal(s);var w=window.open("","_blank");w.document.write('<html><head><title>Invoice</title><style>body{font:14px Arial;padding:35px}h1{margin:0}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #999;padding:8px} .r{text-align:right}</style></head><body><h1>ONE PLUS FASHION</h1><div>Wholesale Garment Manufacturing & Distribution<br>Phone: 01814109285</div><hr><h2>SALES INVOICE / MEMO</h2><p>Invoice: '+esc(s.invoice||s.id)+'<br>Date: '+esc(s.date)+'<br>Customer: '+esc(c?c.name:"")+'<br>Mobile: '+esc(c?c.mobile:"")+'<br>Address: '+esc(c?c.address:"")+'</p><table><tr><th>Style</th><th>Color</th><th>Size</th><th>Qty</th><th>Rate</th><th>Amount</th></tr><tr><td>'+esc(s.style)+'</td><td>'+esc(s.color)+'</td><td>'+esc(s.size)+'</td><td>'+s.qty+'</td><td>'+money(s.rate)+'</td><td>'+money(num(s.qty)*num(s.rate))+'</td></tr></table><p class="r">Discount: '+money(s.discount)+'<br><b>Total: '+money(t)+'</b><br>Paid: '+money(s.paid)+'<br>Due: '+money(t-num(s.paid))+'</p><p>Thank you for your business.</p><script>window.print()<\/script></body></html>');w.document.close()}
-function printReceipt(pid){var p=db.payments.find(function(x){return x.id==pid});var w=window.open("","_blank");w.document.write('<html><head><title>Money Receipt</title><style>body{font:14px Arial;padding:35px}table{width:100%;border-collapse:collapse}td{padding:8px;border-bottom:1px solid #ccc}.r{text-align:right}</style></head><body><h1>ONE PLUS FASHION</h1><div>Money Receipt</div><hr><table><tr><td>Receipt No.</td><td>'+esc(p.id)+'</td></tr><tr><td>Date</td><td>'+esc(p.date)+'</td></tr><tr><td>Received From / Party</td><td>'+esc(p.party)+'</td></tr><tr><td>Amount</td><td><b>'+money(p.amount)+'</b></td></tr><tr><td>Payment Method</td><td>'+esc(p.method)+'</td></tr><tr><td>Reference</td><td>'+esc(p.reference)+'</td></tr></table><br><p>Received By: ____________________</p><script>window.print()<\/script></body></html>');w.document.close()}
-window.onerror=function(msg,src,line){var x=document.getElementById("app");x.insertAdjacentHTML("afterbegin",'<div class="alert"><b>ERP error:</b> '+esc(msg)+' (line '+line+')</div>')};
-setInterval(function(){var x=document.getElementById("clock");if(x)x.innerHTML=new Date().toLocaleString()},1000);
-save();go("dashboard");
-</script>
-</body></html>
+  <header class="top">
+    <img class="logo"
+      src="data:image/png;base64,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">
+    <div class="right"><span id="clock"></span><button class="light" onclick="backup()">Backup</button></div>
+  </header>
+  <div class="shell">
+    <nav class="side" id="nav"></nav>
+    <main class="main" id="app"></main>
+  </div>
+  <script>
+    var KEY = "opf_erp_smart_v3";
+    var db = load();
+    function load() { try { return JSON.parse(localStorage.getItem(KEY) || "null") || fresh() } catch (e) { return fresh() } }
+    function fresh() { return { company: { name: "One Plus Fashion", phone: "01814109285", address: "" }, suppliers: [], materials: [], purchases: [], issues: [], products: [], productionOrders: [], production: [], factories: [], transfers: [], customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [], showrooms: [{ id: "main", name: "Owner Permanent Shop" }], logs: [], users: [{ id: "u1", name: "Administrator", username: "admin", role: "Admin" }] } }
+    function save() { localStorage.setItem(KEY, JSON.stringify(db)) }
+    function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7) }
+    function num(v) { return parseFloat(v) || 0 }
+    function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (m) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m] }) }
+    function money(v) { return num(v).toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) }
+    function today() { return new Date().toISOString().slice(0, 10) }
+    function log(action, ref) { db.logs.push({ date: new Date().toISOString(), action: action, ref: ref || "" }); save() }
+    var menus = [["dashboard", "Dashboard"], ["suppliers", "Suppliers"], ["purchase", "Fabric / Raw Purchase"], ["materials", "Raw Material Stock"], ["productionOrder", "Production Order"], ["issue", "Material Issue"], ["production", "Production / Finished"], ["factories", "Factory / Worker"], ["products", "Style / Product"], ["transfer", "Factory → Shop"], ["showroom", "Showroom Stock"], ["customers", "Customers"], ["sales", "Sales / Invoice"], ["returns", "Sales Return"], ["payments", "Payment / Collection"], ["expenses", "Expenses"], ["courier", "Courier / Delivery"], ["costing", "Product Costing"], ["reports", "Reports"], ["ledger", "Ledgers / Due"], ["users", "Users / Activity"], ["settings", "Settings / Backup"]];
+    function nav(active) { document.getElementById("nav").innerHTML = menus.map(function (m) { return '<button class="' + (active == m[0] ? "on" : "") + '" onclick="go(\'' + m[0] + '\')">' + m[1] + '</button>' }).join("") }
+    function go(p) { nav(p); window.scrollTo(0, 0); var f = window[p]; if (typeof f == "function") f(); else dashboard() }
+    function field(n, l, t, v, req) { return '<div class="field"><label>' + l + '</label><input name="' + n + '" type="' + (t || "text") + '" value="' + esc(v || "") + '" ' + (req ? "required" : "") + '></div>' }
+    function select(n, l, opts, req) { return '<div class="field"><label>' + l + '</label><select name="' + n + '" ' + (req ? "required" : "") + '>' + opts + '</select></div>' }
+    function options(arr, valField, textField) { return arr.map(function (x) { return '<option value="' + esc(x[valField]) + '">' + esc(x[textField]) + '</option>' }).join("") }
+    function form(title, action, fields) { document.getElementById("app").innerHTML = '<h1>' + title + '</h1><form class="box" onsubmit="' + action + '(this);return false"><div class="grid">' + fields.join("") + '</div><div class="actions"><button>Save</button><button type="button" class="light" onclick="this.form.reset()">Clear</button></div></form>' }
+    function table(head, rows) { return '<div class="table"><table><thead><tr>' + head.map(function (h) { return "<th>" + h + "</th>" }).join("") + '</tr></thead><tbody>' + (rows.length ? rows.join("") : '<tr><td colspan="' + head.length + '" class="muted">No records found</td></tr>') + '</tbody></table></div>' }
+    function sum(a, fn) { return a.reduce(function (t, x) { return t + fn(x) }, 0) }
+    function purchaseTotal(r) { return num(r.qty) * num(r.rate) + num(r.transport) + num(r.loading) + num(r.other) }
+    function saleTotal(r) { return num(r.qty) * num(r.rate) - num(r.discount) }
+    function dashboard() {
+      var sales = sum(db.sales, saleTotal), coll = sum(db.payments, function (x) { return x.type == "Customer" ? num(x.amount) : 0 }) + sum(db.sales, function (x) { return num(x.paid) }), pur = sum(db.purchases, purchaseTotal), exp = sum(db.expenses, function (x) { return num(x.amount) }), prod = sum(db.production, function (x) { return num(x.accepted) }), due = sales - coll;
+      document.getElementById("app").innerHTML = '<h1>Dashboard</h1><div class="cards"><div class="card">Today Sales<div class="big">' + money(sum(db.sales.filter(function (x) { return x.date == today() }), saleTotal)) + '</div></div><div class="card">Today Collection<div class="big">' + money(sum(db.payments.filter(function (x) { return x.date == today() }), function (x) { return num(x.amount) })) + '</div></div><div class="card">Customer Due<div class="big">' + money(due) + '</div></div><div class="card">Purchases<div class="big">' + money(pur) + '</div></div><div class="card">Finished PCS<div class="big">' + prod.toLocaleString() + '</div></div><div class="card">Expense<div class="big">' + money(exp) + '</div></div></div><div class="box"><h2>End-to-End Workflow</h2><div class="muted">Supplier → Purchase → Raw Stock → Material Issue → Production → Finished Goods → Factory/Shop Transfer → Showroom → Sales → Customer Ledger → Payment → Courier → Invoice → P/L</div><div class="actions"><button onclick="go(\'purchase\')">+ Purchase</button><button onclick="go(\'issue\')">+ Material Issue</button><button onclick="go(\'production\')">+ Production</button><button onclick="go(\'sales\')">+ Sale</button><button onclick="go(\'payments\')">+ Collection</button><button onclick="go(\'courier\')">+ Courier</button></div></div><div class="alert">This edition is optimized for your Windows 7 / 4 GB RAM laptop. It is offline and requires no Python, MySQL, Node.js or VPS for single-computer use.</div>'
+    }
+    function suppliers() { form("Supplier / Fabric Party", "addSupplier", [field("name", "Party Name", "text", "", "1"), field("company", "Company"), field("mobile", "Mobile"), field("address", "Address / District"), field("credit", "Credit Limit", "number", "0"), field("terms", "Payment Terms"), field("previousDue", "Previous Due", "number", "0")]); var rows = db.suppliers.map(function (r) { return '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.company) + '</td><td>' + esc(r.mobile) + '</td><td>' + esc(r.address) + '</td><td>' + money(r.previousDue) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", '<h2>Supplier Register</h2>' + table(["Party", "Company", "Mobile", "Address", "Previous Due"], rows)) }
+    function addSupplier(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.previousDue = num(d.previousDue); db.suppliers.push(d); log("Supplier Created", d.name); suppliers() }
+    function purchase() { var opts = '<option value="">Select</option>' + options(db.suppliers, "id", "name"); form("Fabric / Raw Material Purchase", "addPurchase", [select("supplier", "Supplier", opts, 1), field("date", "Date", "date", today(), 1), field("invoice", "Challan / Invoice No."), field("material", "Material / Fabric", "text", "", 1), field("type", "Material Type"), field("color", "Color"), field("gsm", "GSM"), field("width", "Width"), field("qty", "Quantity", "number", "0", 1), field("unit", "Unit (yard/kg/meter/pcs)"), field("rate", "Purchase Rate", "number", "0", 1), field("transport", "Transport", "number", "0"), field("loading", "Loading / Unloading", "number", "0"), field("other", "Other Cost", "number", "0"), field("paid", "Paid", "number", "0"), field("method", "Payment Method"), field("remarks", "Remarks")]); var rows = db.purchases.slice().reverse().map(function (r) { var s = db.suppliers.find(function (x) { return x.id == r.supplier }); var t = purchaseTotal(r); return '<tr><td>' + r.date + '</td><td>' + esc(s ? s.name : "") + '</td><td>' + esc(r.material) + '</td><td>' + r.qty + ' ' + esc(r.unit) + '</td><td>' + money(t) + '</td><td>' + money(r.paid) + '</td><td>' + money(t - num(r.paid)) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", '<h2>Purchase Register</h2>' + table(["Date", "Supplier", "Material", "Qty", "Total", "Paid", "Due"], rows)) }
+    function addPurchase(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid();["qty", "rate", "transport", "loading", "other", "paid"].forEach(function (k) { d[k] = num(d[k]) }); db.purchases.push(d); log("Purchase Created", d.invoice); purchase() }
+    function materials() { var m = {}; db.purchases.forEach(function (r) { var k = r.material + "|" + (r.color || ""); m[k] = (m[k] || 0) + num(r.qty) }); db.issues.forEach(function (r) { var k = r.material + "|" + (r.color || ""); m[k] = (m[k] || 0) - num(r.qty) }); var rows = Object.keys(m).map(function (k) { var p = k.split("|"); return '<tr><td>' + esc(p[0]) + '</td><td>' + esc(p[1]) + '</td><td>' + m[k].toFixed(2) + '</td></tr>' }); document.getElementById("app").innerHTML = '<h1>Raw Material / Fabric Stock</h1><div class="alert">Formula: Opening + Purchase + Return − Issue − Adjustment = Current Stock. Opening/adjustment fields can be added through Settings in a future data migration.</div>' + table(["Material", "Color", "Current Qty"], rows) }
+    function productionOrder() { var opts = '<option value="">Select Factory</option>' + options(db.factories, "id", "name"); form("Production Order", "addProductionOrder", [field("date", "Order Date", "date", today(), 1), field("style", "Style Code", "text", "", 1), field("color", "Color"), field("size", "Size"), field("planned", "Planned Quantity", "number", "0", 1), select("factory", "Factory / Worker", opts), field("status", "Status")]); var rows = db.productionOrders.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.style) + '</td><td>' + r.planned + '</td><td>' + esc(r.factory) + '</td><td><span class="pill">' + esc(r.status) + '</span></td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Style", "Planned", "Factory", "Status"], rows)) }
+    function addProductionOrder(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.planned = num(d.planned); db.productionOrders.push(d); log("Production Order", d.style); productionOrder() }
+    function issue() { form("Raw Material / Fabric Issue to Production", "addIssue", [field("date", "Issue Date", "date", today(), 1), field("order", "Production Order ID"), field("style", "Style", "text", "", 1), field("material", "Material", "text", "", 1), field("color", "Color"), field("qty", "Issued Quantity", "number", "0", 1), field("unit", "Unit"), field("slip", "Issue Slip No."), field("remarks", "Remarks")]); var rows = db.issues.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.slip) + '</td><td>' + esc(r.style) + '</td><td>' + esc(r.material) + '</td><td>' + r.qty + ' ' + esc(r.unit) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Slip", "Style", "Material", "Issued"], rows)) }
+    function addIssue(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.qty = num(d.qty); db.issues.push(d); log("Material Issue", d.slip); issue() }
+    function production() { form("Simplified Production Entry", "addProduction", [field("date", "Date", "date", today(), 1), field("style", "Style", "text", "", 1), field("color", "Color"), field("size", "Size"), field("issued", "Material Issued", "number", "0"), field("accepted", "Produced / Accepted PCS", "number", "0", 1), field("rejected", "Rejected / Damaged PCS", "number", "0"), field("wastage", "Wastage / Adjustment", "number", "0"), field("returned", "Remaining Material Returned", "number", "0"), field("factory", "Factory / Worker"), field("rate", "Factory Rate / PCS", "number", "0"), field("remarks", "Remarks")]); var rows = db.production.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.style) + '</td><td>' + r.issued + '</td><td>' + r.accepted + '</td><td>' + r.rejected + '</td><td>' + r.wastage + '</td><td>' + r.returned + '</td><td>' + money(num(r.accepted) * num(r.rate)) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", '<div class="alert">Production is intentionally simplified: Material Issue → Single Production Entry → Finished Goods. Accepted quantity is added to finished stock automatically.</div>' + table(["Date", "Style", "Issued", "Accepted PCS", "Rejected", "Wastage", "Returned", "Factory Bill"], rows)) }
+    function addProduction(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid();["issued", "accepted", "rejected", "wastage", "returned", "rate"].forEach(function (k) { d[k] = num(d[k]) }); db.production.push(d); log("Production Entry", d.style); production() }
+    function factories() { form("Factory / Worker", "addFactory", [field("name", "Factory / Worker Name", "text", "", 1), field("mobile", "Mobile"), field("address", "Address"), field("rate", "Default Rate / PCS", "number", "0")]); var rows = db.factories.map(function (r) { return '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.mobile) + '</td><td>' + esc(r.address) + '</td><td>' + money(r.rate) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Factory/Worker", "Mobile", "Address", "Rate/PCS"], rows)) }
+    function addFactory(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.rate = num(d.rate); db.factories.push(d); log("Factory Created", d.name); factories() }
+    function products() { form("Style / Product Master", "addProduct", [field("style", "Unique Style Code", "text", "", 1), field("name", "Product Name", "text", "", 1), field("image", "Image File Name"), field("fabric", "Main Fabric"), field("color", "Color"), field("size", "Size"), field("barcode", "Barcode"), field("cost", "Cost / Piece", "number", "0"), field("price", "Wholesale Price", "number", "0"), field("retail", "Retail Price", "number", "0")]); var rows = db.products.slice().reverse().map(function (r) { return '<tr><td>' + esc(r.style) + '</td><td>' + esc(r.name) + '</td><td>' + esc(r.color) + '</td><td>' + esc(r.size) + '</td><td>' + esc(r.barcode) + '</td><td>' + money(r.cost) + '</td><td>' + money(r.price) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Style", "Product", "Color", "Size", "Barcode", "Cost/PC", "Wholesale"], rows)) }
+    function addProduct(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid();["cost", "price", "retail"].forEach(function (k) { d[k] = num(d[k]) }); db.products.push(d); log("Product Created", d.style); products() }
+    function transfer() { form("Factory → Showroom / Shop Transfer", "addTransfer", [field("date", "Date", "date", today(), 1), field("from", "From Factory", "text", "", 1), field("to", "To Showroom / Shop", "text", "Owner Permanent Shop", 1), field("style", "Style", "text", "", 1), field("color", "Color"), field("size", "Size"), field("qty", "Quantity", "number", "0", 1), field("reference", "Transfer No."), field("remarks", "Remarks")]); var rows = db.transfers.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.from) + '</td><td>' + esc(r.to) + '</td><td>' + esc(r.style) + '</td><td>' + r.qty + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "From", "To", "Style", "Qty"], rows)) }
+    function addTransfer(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.qty = num(d.qty); db.transfers.push(d); log("Stock Transfer", d.reference); transfer() }
+    function showroom() { var m = {}; db.transfers.forEach(function (r) { var k = r.to + "|" + r.style + "|" + (r.color || "") + "|" + (r.size || ""); m[k] = (m[k] || 0) + num(r.qty) }); db.sales.forEach(function (r) { var k = "Owner Permanent Shop|" + r.style + "|" + (r.color || "") + "|" + (r.size || ""); m[k] = (m[k] || 0) - num(r.qty) }); db.returns.forEach(function (r) { var k = "Owner Permanent Shop|" + r.style + "|" + (r.color || "") + "|" + (r.size || ""); m[k] = (m[k] || 0) + num(r.qty) }); var rows = Object.keys(m).map(function (k) { var p = k.split("|"); return '<tr><td>' + esc(p[1]) + '</td><td>' + esc(p[2]) + '</td><td>' + esc(p[3]) + '</td><td>' + esc(p[0]) + '</td><td>' + m[k] + '</td></tr>' }); document.getElementById("app").innerHTML = '<h1>Showroom / Shop Stock</h1>' + table(["Style", "Color", "Size", "Location", "Closing Qty"], rows) }
+    function customers() { form("Customer / Wholesale Party", "addCustomer", [field("name", "Shop / Customer Name", "text", "", 1), field("mobile", "Mobile"), field("address", "Address"), field("district", "District"), field("credit", "Credit Limit", "number", "0"), field("previousDue", "Previous Due", "number", "0")]); var rows = db.customers.map(function (r) { return '<tr><td>' + esc(r.name) + '</td><td>' + esc(r.mobile) + '</td><td>' + esc(r.address) + '</td><td>' + esc(r.district) + '</td><td>' + money(r.previousDue) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Customer", "Mobile", "Address", "District", "Previous Due"], rows)) }
+    function addCustomer(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.previousDue = num(d.previousDue); db.customers.push(d); log("Customer Created", d.name); customers() }
+    function sales() { var opts = '<option value="">Select Customer</option>' + options(db.customers, "id", "name"); form("Wholesale Sales / Invoice", "addSale", [field("date", "Date", "date", today(), 1), field("invoice", "Invoice No."), select("customer", "Customer", opts, 1), field("style", "Style Code", "text", "", 1), field("color", "Color"), field("size", "Size"), field("qty", "Quantity", "number", "0", 1), field("rate", "Rate / PCS", "number", "0", 1), field("discount", "Discount", "number", "0"), field("paid", "Paid", "number", "0"), field("method", "Payment Method"), field("location", "Stock Location", "text", "Owner Permanent Shop"), field("remarks", "Remarks")]); var rows = db.sales.slice().reverse().map(function (r) { var c = db.customers.find(function (x) { return x.id == r.customer }), t = saleTotal(r); return '<tr><td>' + r.date + '</td><td>' + esc(r.invoice) + '</td><td>' + esc(c ? c.name : "") + '</td><td>' + esc(r.style) + '</td><td>' + r.qty + '</td><td>' + money(t) + '</td><td>' + money(r.paid) + '</td><td>' + money(t - num(r.paid)) + '</td><td><button onclick="printInvoice(\'' + r.id + '\')">Invoice</button></td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Invoice", "Customer", "Style", "Qty", "Total", "Paid", "Due", "Print"], rows)) }
+    function addSale(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid();["qty", "rate", "discount", "paid"].forEach(function (k) { d[k] = num(d[k]) }); db.sales.push(d); log("Sale / Invoice", d.invoice); sales() }
+    function returns() { form("Sales Return", "addReturn", [field("date", "Date", "date", today(), 1), field("invoice", "Original Invoice"), field("customer", "Customer"), field("style", "Style", "text", "", 1), field("color", "Color"), field("size", "Size"), field("qty", "Return Quantity", "number", "0", 1), field("amount", "Return Amount", "number", "0"), field("reason", "Reason")]); var rows = db.returns.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.invoice) + '</td><td>' + esc(r.customer) + '</td><td>' + esc(r.style) + '</td><td>' + r.qty + '</td><td>' + money(r.amount) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Invoice", "Customer", "Style", "Qty", "Amount"], rows)) }
+    function addReturn(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.qty = num(d.qty); d.amount = num(d.amount); db.returns.push(d); log("Sales Return", d.invoice); returns() }
+    function payments() { form("Payment / Collection", "addPayment", [field("date", "Date", "date", today(), 1), field("type", "Party Type (Supplier/Customer/Factory)", "text", "Customer", 1), field("party", "Party Name / ID", "text", "", 1), field("amount", "Amount", "number", "0", 1), field("method", "Cash / Bank / bKash / Nagad"), field("reference", "Reference / Transaction No."), field("remarks", "Remarks")]); var rows = db.payments.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.type) + '</td><td>' + esc(r.party) + '</td><td>' + money(r.amount) + '</td><td>' + esc(r.method) + '</td><td>' + esc(r.reference) + '</td><td><button onclick="printReceipt(\'' + r.id + '\')">Receipt</button></td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Type", "Party", "Amount", "Method", "Reference", "Print"], rows)) }
+    function addPayment(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.amount = num(d.amount); db.payments.push(d); log("Payment", d.reference); payments() }
+    function expenses() { form("Expense Management", "addExpense", [field("date", "Date", "date", today(), 1), field("category", "Salary / Rent / Electricity / Transport / Other", "text", "", 1), field("amount", "Amount", "number", "0", 1), field("method", "Payment Method"), field("location", "Factory / Office / Shop"), field("remarks", "Remarks")]); var rows = db.expenses.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.category) + '</td><td>' + money(r.amount) + '</td><td>' + esc(r.location) + '</td><td>' + esc(r.remarks) + '</td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Category", "Amount", "Location", "Remarks"], rows)) }
+    function addExpense(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid(); d.amount = num(d.amount); db.expenses.push(d); log("Expense", d.category); expenses() }
+    function courier() { var opts = '<option value="">Select Customer</option>' + options(db.customers, "id", "name"); form("Courier / Delivery / COD", "addCourier", [field("date", "Date", "date", today(), 1), field("invoice", "Invoice No."), select("customer", "Customer", opts), field("destination", "Destination / Address"), field("courier", "Courier Company"), field("tracking", "Tracking No."), field("cod", "COD", "number", "0"), field("advance", "Advance", "number", "0"), field("payable", "Courier Payable", "number", "0"), select("status", "Status", '<option>Pending</option><option>Sent</option><option>In Transit</option><option>Delivered</option><option>Returned</option><option>Cancelled</option>'), field("remarks", "Remarks")]); var rows = db.courier.slice().reverse().map(function (r) { return '<tr><td>' + r.date + '</td><td>' + esc(r.invoice) + '</td><td>' + esc(r.destination) + '</td><td>' + esc(r.courier) + '</td><td>' + esc(r.tracking) + '</td><td>' + money(r.cod) + '</td><td><span class="pill">' + esc(r.status) + '</span></td></tr>' }); document.getElementById("app").insertAdjacentHTML("beforeend", table(["Date", "Invoice", "Destination", "Courier", "Tracking", "COD", "Status"], rows)) }
+    function addCourier(f) { var d = Object.fromEntries(new FormData(f)); d.id = uid();["cod", "advance", "payable"].forEach(function (k) { d[k] = num(d[k]) }); db.courier.push(d); log("Courier", d.tracking); courier() }
+    function costing() { document.getElementById("app").innerHTML = '<h1>Product Costing</h1><div class="box"><div class="grid">' + field("fabric", "Fabric Cost / PC", "number", "0") + field("accessories", "Accessories / PC", "number", "0") + field("factory", "Factory Bill / PC", "number", "0") + field("packaging", "Packaging / PC", "number", "0") + field("transport", "Transport / PC", "number", "0") + field("other", "Other Cost / PC", "number", "0") + field("price", "Wholesale Price / PC", "number", "0") + field("qty", "Planned PCS", "number", "0") + '</div><div class="actions"><button onclick="calcCost()">Calculate</button></div><div id="costout" style="margin-top:12px"></div></div><div class="alert">Cost build-up follows the proposal: fabric + accessories + production/factory bill + packaging + transport + other cost → total cost, cost/pc, wholesale price, profit/pc and total profit.</div>' }
+    function calcCost() { var ids = ["fabric", "accessories", "factory", "packaging", "transport", "other"], c = 0; ids.forEach(function (x) { c += num(document.querySelector('[name="' + x + '"]').value) }); var p = num(document.querySelector('[name="price"]').value), q = num(document.querySelector('[name="qty"]').value); document.getElementById("costout").innerHTML = '<b>Total Cost / PC:</b> ' + money(c) + ' &nbsp; <b>Profit / PC:</b> ' + money(p - c) + ' &nbsp; <b>Total Planned Profit:</b> ' + money((p - c) * q) }
+    function ledger() { var rows = db.customers.map(function (c) { var sales = sum(db.sales.filter(function (s) { return s.customer == c.id }), saleTotal), ret = sum(db.returns.filter(function (r) { return r.customer == c.name }), function (r) { return num(r.amount) }), pay = sum(db.payments.filter(function (p) { return p.type == "Customer" && (p.party == c.id || p.party == c.name) }), function (p) { return num(p.amount) }), salePaid = sum(db.sales.filter(function (s) { return s.customer == c.id }), function (s) { return num(s.paid) }); return '<tr><td>Customer</td><td>' + esc(c.name) + '</td><td>' + money(num(c.previousDue) + sales - ret - pay - salePaid) + '</td></tr>' }); document.getElementById("app").innerHTML = '<h1>Ledgers / Due</h1><p class="muted">Customer formula: Previous Due + New Sales − Return − Payment = Current Due. Supplier/factory detailed statements are kept through transaction registers.</p>' + table(["Type", "Party", "Current Due"], rows) }
+    function reports() { var sales = sum(db.sales, saleTotal), pur = sum(db.purchases, purchaseTotal), exp = sum(db.expenses, function (x) { return num(x.amount) }), factory = sum(db.production, function (x) { return num(x.accepted) * num(x.rate) }), simple = sales - pur - exp - factory; document.getElementById("app").innerHTML = '<h1>Reports</h1><div class="cards"><div class="card">Sales<div class="big">' + money(sales) + '</div></div><div class="card">Purchase<div class="big">' + money(pur) + '</div></div><div class="card">Factory Bill<div class="big">' + money(factory) + '</div></div><div class="card">Expense<div class="big">' + money(exp) + '</div></div><div class="card">P/L View<div class="big">' + money(simple) + '</div></div><div class="card">Invoices<div class="big">' + db.sales.length + '</div></div></div><div class="box"><button onclick="csv(&quot;sales&quot;)">Export Sales CSV</button> <button onclick="csv(&quot;purchases&quot;)">Export Purchase CSV</button> <button onclick="csv(&quot;production&quot;)">Export Production CSV</button> <button onclick="csv(&quot;expenses&quot;)">Export Expense CSV</button> <button onclick="window.print()">Print / Save PDF</button></div>' }
+    function csv(type) { var a = db[type] || []; if (!a.length) { alert("No data available"); return } var keys = Object.keys(a[0]), lines = [keys.join(",")]; a.forEach(function (r) { lines.push(keys.map(function (k) { return '"' + String(r[k] == null ? "" : r[k]).replace(/"/g, '""') + '"' }).join(",")) }); var blob = new Blob([lines.join("\r\n")], { type: "text/csv" }), a1 = document.createElement("a"); a1.href = URL.createObjectURL(blob); a1.download = "OnePlusFashion_" + type + "_" + today() + ".csv"; a1.click() }
+    function users() { var rows = db.users.map(function (u) { return '<tr><td>' + esc(u.name) + '</td><td>' + esc(u.username) + '</td><td>' + esc(u.role) + '</td></tr>' }); document.getElementById("app").innerHTML = '<h1>Users / Activity</h1><div class="box"><div class="muted">Roles from proposal: Admin, Manager, Accountant, Salesman, Factory Manager. This offline edition records activity locally; password authentication is intentionally not exposed in a browser-only file.</div></div>' + table(["Name", "Username", "Role"], rows) + '<h2>Recent Activity</h2>' + table(["Timestamp", "Action", "Reference"], db.logs.slice(-100).reverse().map(function (x) { return '<tr><td>' + esc(x.date) + '</td><td>' + esc(x.action) + '</td><td>' + esc(x.ref) + '</td></tr>' })) }
+    function settings() { document.getElementById("app").innerHTML = '<h1>Settings / Backup</h1><div class="box"><h2>Company Branding</h2><div class="grid">' + field("company", "Company Name", "text", db.company.name) + field("phone", "Phone", "text", db.company.phone) + field("address", "Address", "text", db.company.address) + '</div><div class="actions"><button onclick="saveCompany()">Save</button></div></div><div class="box"><h2>Data Safety</h2><button onclick="backup()">Download Full Backup</button> <label class="btn light">Restore Backup<input id="restore" type="file" accept=".json" style="display:none" onchange="restore(this)"></label> <button class="bad" onclick="clearData()">Clear All Data</button><p class="muted">Backup the JSON file to a pen drive/external drive regularly. Data is stored locally in this browser.</p></div>' }
+    function saveCompany() { db.company.name = document.querySelector('[name="company"]').value; db.company.phone = document.querySelector('[name="phone"]').value; db.company.address = document.querySelector('[name="address"]').value; save(); alert("Company settings saved.") }
+    function backup() { var blob = new Blob([JSON.stringify(db, null, 2)], { type: "application/json" }), a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "OnePlusFashion_ERP_Backup_" + today() + ".json"; a.click() }
+    function restore(inp) { var f = inp.files[0]; if (!f) return; var r = new FileReader(); r.onload = function () { try { db = JSON.parse(r.result); save(); alert("Backup restored."); go("dashboard") } catch (e) { alert("Invalid backup file") } }; r.readAsText(f) }
+    function clearData() { if (confirm("Delete ALL ERP data? Make a backup first.")) { db = fresh(); save(); go("dashboard") } }
+    function printInvoice(sid) { var s = db.sales.find(function (x) { return x.id == sid }), c = db.customers.find(function (x) { return x.id == s.customer }), t = saleTotal(s); var w = window.open("", "_blank"); w.document.write('<html><head><title>Invoice</title><style>body{font:14px Arial;padding:35px}h1{margin:0}table{width:100%;border-collapse:collapse;margin-top:20px}th,td{border:1px solid #999;padding:8px} .r{text-align:right}</style></head><body><h1>ONE PLUS FASHION</h1><div>Wholesale Garment Manufacturing & Distribution<br>Phone: 01814109285</div><hr><h2>SALES INVOICE / MEMO</h2><p>Invoice: ' + esc(s.invoice || s.id) + '<br>Date: ' + esc(s.date) + '<br>Customer: ' + esc(c ? c.name : "") + '<br>Mobile: ' + esc(c ? c.mobile : "") + '<br>Address: ' + esc(c ? c.address : "") + '</p><table><tr><th>Style</th><th>Color</th><th>Size</th><th>Qty</th><th>Rate</th><th>Amount</th></tr><tr><td>' + esc(s.style) + '</td><td>' + esc(s.color) + '</td><td>' + esc(s.size) + '</td><td>' + s.qty + '</td><td>' + money(s.rate) + '</td><td>' + money(num(s.qty) * num(s.rate)) + '</td></tr></table><p class="r">Discount: ' + money(s.discount) + '<br><b>Total: ' + money(t) + '</b><br>Paid: ' + money(s.paid) + '<br>Due: ' + money(t - num(s.paid)) + '</p><p>Thank you for your business.</p><script>window.print()<\/script></body></html>'); w.document.close() }
+    function printReceipt(pid) { var p = db.payments.find(function (x) { return x.id == pid }); var w = window.open("", "_blank"); w.document.write('<html><head><title>Money Receipt</title><style>body{font:14px Arial;padding:35px}table{width:100%;border-collapse:collapse}td{padding:8px;border-bottom:1px solid #ccc}.r{text-align:right}</style></head><body><h1>ONE PLUS FASHION</h1><div>Money Receipt</div><hr><table><tr><td>Receipt No.</td><td>' + esc(p.id) + '</td></tr><tr><td>Date</td><td>' + esc(p.date) + '</td></tr><tr><td>Received From / Party</td><td>' + esc(p.party) + '</td></tr><tr><td>Amount</td><td><b>' + money(p.amount) + '</b></td></tr><tr><td>Payment Method</td><td>' + esc(p.method) + '</td></tr><tr><td>Reference</td><td>' + esc(p.reference) + '</td></tr></table><br><p>Received By: ____________________</p><script>window.print()<\/script></body></html>'); w.document.close() }
+    window.onerror = function (msg, src, line) { var x = document.getElementById("app"); x.insertAdjacentHTML("afterbegin", '<div class="alert"><b>ERP error:</b> ' + esc(msg) + ' (line ' + line + ')</div>') };
+    setInterval(function () { var x = document.getElementById("clock"); if (x) x.innerHTML = new Date().toLocaleString() }, 1000);
+    save(); go("dashboard");
+  </script>
+</body>
+
+</html>
