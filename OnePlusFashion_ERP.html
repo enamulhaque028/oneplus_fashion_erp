@@ -9,20 +9,27 @@
 </head>
 
 <body>
+  <nav class="side" id="nav"></nav>
+  <div class="scrim" data-act="shell.closeMenu"></div>
   <header class="top">
-    <img class="logo" src="assets/img/intus_algorithm_logo.png" alt="Intu's Algorithm">
+    <button class="iconbtn" data-act="shell.menu" title="Menu"><span data-icon="menu"></span></button>
+    <div class="crumb" id="pageTitle"></div>
+    <div class="spacer"></div>
     <div class="gsearch">
-      <input id="gsearch" placeholder="Search customer by name or mobile number..." autocomplete="off">
+      <span data-icon="search"></span>
+      <input id="gsearch" placeholder="Search customer by name or mobile..." autocomplete="off">
       <div id="gresults"></div>
     </div>
-    <div class="right">
-      <span id="clock"></span>
-      <button id="lockBtn" class="light" data-act="auth.toggle">Admin: Locked</button>
-      <button class="light" data-act="backup.excel">Backup</button>
+    <div class="theme-switch" title="Theme">
+      <button data-act="shell.theme" data-theme-set="light" title="Light"><span data-icon="sun"></span></button>
+      <button data-act="shell.theme" data-theme-set="dark" title="Dark"><span data-icon="moon"></span></button>
     </div>
+    <span class="chip hide-sm"><span data-icon="clock"></span><span id="clock"></span></span>
+    <button id="lockBtn" class="light" data-act="auth.toggle">Admin: Locked</button>
+    <button class="good addsale" data-act="nav.go" data-page="sales"><span data-icon="cart"></span><span class="lb">Sale</span></button>
+    <button class="light backup" data-act="backup.excel" title="Download full Excel backup"><span data-icon="download"></span>Backup</button>
   </header>
   <div class="shell">
-    <nav class="side" id="nav"></nav>
     <main class="main" id="app"></main>
   </div>
   <div id="modal"></div>
@@ -46,13 +53,16 @@
 
   <!-- ui framework -->
   <script src="js/ui/actions.js"></script>
+  <script src="js/ui/icons.js"></script>
   <script src="js/ui/html.js"></script>
   <script src="js/ui/modal.js"></script>
   <script src="js/ui/router.js"></script>
+  <script src="js/ui/shell.js"></script>
   <script src="js/ui/lists.js"></script>
   <script src="js/ui/forms.js"></script>
   <script src="js/ui/records.js"></script>
   <script src="js/ui/search.js"></script>
+  <script src="js/ui/charts.js"></script>
 
   <!-- services: auth, printing, export -->
   <script src="js/services/auth.js"></script>

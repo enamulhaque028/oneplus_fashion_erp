@@ -20,7 +20,7 @@
       return H.tr([H.td(H.link(esc(p.name), "party.statement", { type: tab, id: p.id })), H.td(esc(p.mobile)), H.tdn(money(b.opening)), H.tdn(money(b.dr)), H.tdn(money(b.cr)), H.tdn("<b>" + dueText(b.bal) + "</b>", b.bal > 0 ? "red" : "")]);
     });
     H.mount(
-      '<h1>Ledgers / Due</h1><div class="tabs">' + C.PARTY_TYPES.map((t) => H.button(t + "s", "ledger.tab", { tab: t }, tab == t ? "on" : "")).join("") + "</div>" +
+      '<h1>Ledgers / Due</h1><div class="tabs">' + C.PARTY_TYPES.map((t) => H.button(t == "Factory" ? "Factories" : t + "s", "ledger.tab", { tab: t }, tab == t ? "on" : "")).join("") + "</div>" +
       `<p class="muted">${label.formula}</p>` +
       H.table(["Party", "Mobile", "#Opening", label.dr, label.cr, label.bal], rows, { foot: H.tr([H.td("Total"), H.tdEmpty(), total("opening"), total("dr"), total("cr"), total("bal")]) }) +
       reconciliation()

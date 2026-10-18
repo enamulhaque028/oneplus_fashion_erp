@@ -147,7 +147,7 @@
     printWindow("Cash Memo Preview", invoiceHtml(sample, { name: "Sample Fashion House", mobile: "01700000000", address: "Bongo Bazar", district: "Dhaka" }, 3000));
   }
 
-  OPF.print = { invoice, receipt, preview, snapshotRows };
+  OPF.print = { invoice, receipt, preview, snapshotRows, brandMark };
   OPF.actions.register({
     "print.invoice": (el) => invoice(el.dataset.id),
     "print.receipt": (el) => receipt(el.dataset.id),

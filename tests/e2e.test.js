@@ -55,7 +55,7 @@ const { start, sleep, ROOT } = require("./lib");
   section("Issue 2 - Raw stock in yards");
   await go("issue"); await fill({ style: "OPF-101", material: "Cotton Twill", color: "Black", qty: 300, unit: "Yard" }); await submit();
   await go("materials");
-  const heads = await page.$$eval(".table th", (t) => t.map((x) => x.innerText));
+  const heads = await page.$$eval(".table th", (t) => t.map((x) => x.textContent.trim())); // textContent: headings are upper-cased by CSS
   check("Yard column present, Current Qty removed", heads.includes("Yard") && !heads.includes("Current Qty"), true);
   check("1000 yd + 100 m - 300 yd = 809.36 yd", await page.evaluate(() => OPF.stock.raw()[0].yards), 809.36);
 

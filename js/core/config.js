@@ -67,6 +67,24 @@
       ["ledger", "Ledgers / Due"],
       ["users", "Users / Activity"],
       ["settings", "Settings / Backup"]
-    ]
+    ],
+
+    // Sidebar grouping (presentation only; every MENU id appears exactly once).
+    // [group label, icon, tone, [page ids]]; a group with one page shows as a single item.
+    NAV_GROUPS: [
+      ["Dashboard", "grid", "teal", ["dashboard"]],
+      ["Purchase", "bag", "orange", ["suppliers", "purchase", "materials"]],
+      ["Production", "factory", "violet", ["productionOrder", "issue", "production", "factories"]],
+      ["Product & Stock", "box", "blue", ["products", "transfer", "showroom", "costing"]],
+      ["Sales", "cart", "green", ["customers", "sales", "returns", "payments", "courier"]],
+      ["Accounts", "bars", "rose", ["expenses", "ledger", "reports"]],
+      ["Admin", "shield", "slate", ["users", "settings"]]
+    ],
+    PAGE_ICONS: {
+      dashboard: "grid", suppliers: "users", purchase: "bag", materials: "layers", productionOrder: "clipboard",
+      issue: "send", production: "check", factories: "factory", products: "tag", transfer: "transfer",
+      showroom: "store", customers: "user", sales: "receipt", returns: "undo", payments: "wallet",
+      expenses: "coins", courier: "truck", costing: "calc", reports: "bars", ledger: "book", users: "activity", settings: "gear"
+    }
   });
 })(window.OPF = window.OPF || {});

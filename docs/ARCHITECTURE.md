@@ -17,7 +17,7 @@ no install and no build step. The target is an old Windows 7 laptop (4 GB RAM) r
 ```
 OnePlusFashion_ERP.html   HTML shell: header, sidebar, <main id="app">, script tags in load order
 START_ERP.bat             Opens the HTML in Chrome / Firefox on Windows
-assets/css/app.css        Application styles
+assets/css/app.css        Application styles: design tokens (light + dark), shell, components
 assets/css/print.css      Invoice / receipt print styles (loaded into the print window)
 assets/img/               Logos
 js/boot-check.js          ES5 browser-support check (runs first)
@@ -34,13 +34,16 @@ js/domain/                Business rules - pure calculations over OPF.store.db, 
   audit.js                Reconciliation and data-quality checks
 js/ui/                    UI framework
   actions.js              Action registry + delegated event listeners
+  icons.js                Inline SVG line icons: OPF.icon(name)
   html.js                 HTML builders (field, select, table, card ...), mount/append
   modal.js                Dialog (admin password)
-  router.js               Page navigation, sidebar, "record being edited" state
+  router.js               Page navigation, "record being edited" state
+  shell.js                Grouped sidebar, header title, theme, collapse / mobile menu
   lists.js                <option> lists and <datalist> suggestions
   forms.js                Form helpers + the standard form page layout
   records.js              Generic create / edit / delete with admin check + logging
   search.js               Global customer search
+  charts.js               Dependency-free SVG charts (donut, line / bar / table trend)
 js/services/              Cross-cutting features
   auth.js                 Admin password and unlock session
   print.js                Invoice / cash memo and money receipt
@@ -148,6 +151,29 @@ values (e.g. "replace the old default phone") must also check `d.version`, so it
 see `memoBranding`. Bump `SCHEMA_VERSION` in
 `config.js`. Never rename `STORAGE_KEY`.
 
+## Look and feel (UI shell, theme, charts)
+
+- **Design system:** Material 3 style, modelled on the bseba ERP: tonal surfaces, soft shadows,
+  rounded cards and pill buttons, teal primary. Every colour is a CSS token in
+  `assets/css/app.css` (`:root`); `[data-theme="dark"]` on `<html>` swaps them. Never hard-code a
+  colour in a page.
+- **Old-browser CSS:** no flexbox `gap` (Chrome 84), `clamp()`, `:is()` or `aspect-ratio`. Space flex
+  children with margins (`.actions > *`). Grid `gap` is fine.
+- **Sidebar:** `NAV_GROUPS` and `PAGE_ICONS` in `config.js` group and decorate the flat `MENU`; every
+  MENU id must appear in exactly one group. `ui/shell.js` draws it on each navigation.
+- **UI preferences** (theme, collapsed sidebar) are stored under the localStorage key `opf_erp_ui`,
+  separate from the ERP data. Only `shell.init()` reads it; the self-test page never calls `init()`.
+- **Icons:** `OPF.icon(name)` in `ui/icons.js`. Static markup uses `<span data-icon="name">`, which
+  `shell.init()` replaces.
+- **Summary cards:** `H.card(label, value, cls, icon?)` picks an icon from the label and a pastel
+  tone from its position; the card's *text* stays "label value", which tests read.
+- **Charts** (`ui/charts.js`): one money axis, legend always shown for 2+ series, hover tooltip,
+  table view, `prefers-reduced-motion` respected. Series colours are `--series-1..3`, validated
+  for colour-blind separation and contrast in both themes. Set them with `style="fill:var(--...)"`:
+  SVG `fill=` / `stroke=` attributes ignore `var()`. Call `OPF.charts.bind(container)` after mounting
+  to switch on the hover. The donut shows costs only (purchases, factory bill, expenses): sales are
+  not part of costs, so they belong on the trend chart, not in the ring.
+
 ## Security notes
 
 - All user data is HTML-escaped (`util.esc`) before it reaches a template. `html.field` and
@@ -169,6 +195,7 @@ npm test           # runs all suites below; CHROME_PATH=/path/to/chrome if Chrom
 | `edge.test.js` | Several showrooms, kg units, cancelled stock warnings, validation rules, customer advance, supplier/factory vouchers, same-day invoices and date ranges, a 40-line invoice over several pages, Bangla text in print/CSV/Excel, keyboard-only entry, admin timeout, HTML escaping. |
 | `uat.test.js` | Performs `docs/QA_CHECKLIST.md` step by step, typing like a person, and asserts every "Expect" value in it. Change the checklist and this file together. |
 | `browser-smoke.html` | Self-test page: double-click it on any computer to check that browser runs the ERP. It uses in-memory data only and never touches saved ERP data. `node smoke.js [browser]` runs it headless; that also works for very old builds that puppeteer cannot drive. |
+| `fixtures/make-demo-data.js` | Builds `fixtures/OnePlusFashion_Demo_Data.json`: about 4 months of simulated business ending on the day it runs, for demos and manual testing. Each piece of data is created only after what it depends on (fabric before cutting, production before transfer, sales only from shop stock). The script then loads the file into the real ERP and aborts unless every ledger reconciles, no stock goes negative, every page renders and the file imports through Settings → Restore. Re-run it to move the dates up to today. |
 | `lib.js` | Shared harness: launches the browser on `file://` with no special flags and provides UI helpers. |
 
 **Browser versions verified** (on macOS, with archived builds):

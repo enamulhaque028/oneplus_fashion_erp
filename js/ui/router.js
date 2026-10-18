@@ -11,9 +11,8 @@
     editing: null, // { coll, id } while an admin edits an existing record
     refresh: () => {},
 
-    renderNav() {
-      OPF.html.$("nav").innerHTML = C.MENU.map(([id, label]) => OPF.html.button(label, "nav.go", { page: id }, router.current == id ? "on" : "")).join("");
-    },
+    // Sidebar and header title are drawn by ui/shell.js.
+    renderNav() { OPF.shell.render(router.current); },
 
     go(page, keepEditing) {
       if (!OPF.pages[page] || !OPF.pages[page].render) page = "dashboard";

@@ -57,13 +57,17 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 
 | Area | What it is |
 |---|---|
+| **Sidebar** (left) | The shop name and logo at the top, then the pages in groups: Purchase, Production, Product & Stock, Sales, Accounts, Admin. Click a group to open or close it; the group of the page you are on opens by itself, and that page is highlighted in green. **Search menu...** finds a page by name. The shop hotline is at the bottom. |
+| **Menu button** (☰, top left) | Shrinks the sidebar to icons only, for more room; click again to bring the names back. On a phone-sized window it slides the menu in and out. |
+| **Page title** (top left) | The group and the page you are on. |
 | **Search bar** (top) | Type a customer's name or at least 3 digits of their mobile. Click a result, or press Enter for the first result, to open the customer's full history. |
+| **Sun / moon** (top) | Light or dark colours. The choice is remembered on this computer. |
 | **Admin: Locked / Unlocked** (top right) | Shows whether editing is allowed. Click it to lock again when you are done. See [section 6](#6-editing-deleting-and-the-admin-password). |
+| **Sale** (green, top right) | Opens a new sale / invoice. |
 | **Backup** (top right) | Downloads a full Excel backup at once. |
-| **Sidebar** (left) | All pages. The current page is highlighted. |
-| **Form** | Where you enter a new record. Fields marked `*` are required. **Save** stores it; **Clear** empties the form. |
-| **Grey box** | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
-| **Register** (table below the form) | Saved records, newest first. Totals are in the bottom row. **Edit / Delete** are on the right. |
+| **Form** (white card with a green border) | Where you enter a new record. Fields marked with a red `*` are required. **Save** stores it; **Clear** empties the form. |
+| **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
+| **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
 
 Many fields suggest earlier entries as you type (style codes, materials, shops, invoice numbers,
 courier companies). Pick a suggestion to avoid spelling differences. "OPF-101" and "OPF 101"
@@ -86,8 +90,20 @@ count as two different styles.
 ## 5. Pages, one by one
 
 ### Dashboard
-Today's sales and collection, total customer due, what you owe suppliers and factories, finished
-pieces in stock, and pending parcels. The buttons jump to the most-used forms.
+- **Coloured buttons** at the top jump to the most-used pages.
+- **Period** (Today, Last 7 Days, This Month, This Year, All Time) sets the four large panels and the cost chart:
+  - **Sales**: number of invoices, total, paid, due and the % collected;
+  - **Purchase**: number of purchases, total, paid, due and the % paid;
+  - **Cash Flow**: money received (invoice cash + collections) and paid out (purchase payments,
+    supplier / factory payments, expenses), and the difference;
+  - **Outstanding**: what customers owe in total and what you owe suppliers and factories (always the current total).
+- **Six small cards** always show today: sales, collection, customer due, payable, finished
+  pieces in stock, and pending parcels.
+- **Cost Breakdown** (ring chart): how the period's costs split between purchases, factory bill
+  and expenses, with the amounts and percentages beside it. Point at a slice to see its value.
+- **Last 30 Days Trend**: daily sales, purchases and expenses. Point at the chart to see each
+  day's figures. **Line**, **Bar** and **Table** switch the view; Table lists the numbers day by day.
+- **Latest Invoices**: the six newest sales, with **Memo** to print each one.
 
 ### Suppliers
 The list of fabric and raw-material parties.

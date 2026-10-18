@@ -8,7 +8,7 @@ Keep it short and true: update it in the same change whenever a rule, command or
 **One Plus Fashion Smart ERP v4**: an offline, single-computer ERP for a Bangladeshi wholesale
 garment manufacturer (One Plus Fashion). It covers supplier, purchase, raw stock, production,
 transfer, showroom, sales/invoice, customer ledger, payment/receipt, courier/COD, costing and
-reports. The vendor branding in the header is Intu's Algorithm.
+reports.
 
 - **Runs from disk:** the user double-clicks `START_ERP.bat`, which opens `OnePlusFashion_ERP.html`
   over `file://` in Chrome or Firefox.
@@ -81,6 +81,9 @@ reports. The vendor branding in the header is Intu's Algorithm.
 - **Performance** (the target laptop is slow): across many parties use `ledger.balances()`,
   `allEntries()` or `breakdowns()`. They build postings once. Never call `ledger.balance()` or
   `breakdown()` inside a loop over parties. The e2e test fails if a page takes over 600 ms with 3,000 invoices.
+- **UI:** colours only through the CSS tokens in `assets/css/app.css` (light + dark); icons via
+  `OPF.icon(name)`; charts via `OPF.charts` (no chart libraries: offline). No flexbox `gap` in CSS
+  (Chrome 73). Theme / sidebar preferences use the separate key `opf_erp_ui`, never the ERP data.
 - **Match the surrounding style:**
   - `const`, arrow functions and template literals;
   - short comments that explain *why*;
@@ -94,6 +97,7 @@ npm test                                # e2e + edge + uat + smoke on installed 
 node e2e.test.js | edge.test.js | uat.test.js   # one suite
 node smoke.js [browser-exe]             # self-test page, headless; also checks the script list
 node --check <file>.js                  # quick syntax check
+node fixtures/make-demo-data.js         # rebuild demo data (dates end today), verified in the ERP
 ```
 
 Old-browser runs, required before calling a change "done" if it touches JS syntax or browser APIs:
@@ -127,8 +131,12 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   Settings (`company.*`, schema v5). The logo is drawn as inline SVG unless an image is uploaded.
   The shop-name lettering uses a heavy system font stretched with SVG `textLength`: the memo's
   typeface isn't available offline. Keep the layout matching that book.
+- **UI redesign (2026-10-18):** bseba-style Material 3 look - grouped icon sidebar, new header
+  (title, search, theme switch, clock, lock, Sale, Backup; no vendor logo), pastel cards, dashboard with period panels,
+  cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
+  IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 84, edge 39, uat 42 checks, all passing;
+  - current Chrome and Chromium 109: e2e 84, edge 51, uat 42 checks, all passing;
   - self-test 23 / 23 on Chrome 73, 109, current and Firefox 115.
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).

@@ -19,6 +19,7 @@
     OPF.store.load();
     OPF.store.save(); // persist any schema upgrade straight away
     OPF.actions.bind(document);
+    OPF.shell.init();
     OPF.search.init();
     tick();
     setInterval(tick, 1000);

@@ -27,7 +27,8 @@ PART 1 - BEFORE YOU START (3 min)
          Write the "Browser:" line here: ______________________________
 
 [ ] 1.4  Double-click START_ERP.bat.
-         Expect: the ERP opens with the Dashboard, the sidebar menu on the left and a clock at the top right.
+         Expect: the ERP opens with the Dashboard, the grouped sidebar menu on the left and the clock at the top.
+         Click the moon at the top: the screen turns dark. Click the sun to go back.
 
 
 PART 2 - PURCHASE AND PRODUCTION (8 min)

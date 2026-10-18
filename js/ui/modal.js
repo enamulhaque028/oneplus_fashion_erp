@@ -8,7 +8,7 @@
   function open({ html, validate, then, cancel }) {
     current = { validate, then, cancel };
     OPF.html.$("modal").innerHTML =
-      `<div class="overlay"><form class="dialog" data-submit="modal.ok">${html}` +
+      `<div class="overlay"><form class="dialog" data-submit="modal.ok"><div class="dlg-ic">${OPF.icon("lock")}</div>${html}` +
       `<div class="actions"><button>OK</button><button type="button" class="light" data-act="modal.cancel">Cancel</button></div></form></div>`;
     const input = document.querySelector("#modal input");
     if (input) input.focus();

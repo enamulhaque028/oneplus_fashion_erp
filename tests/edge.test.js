@@ -181,5 +181,39 @@ const { start, sleep } = require("./lib");
   const ep = popup(); await page.evaluate(() => OPF.print.preview()); const prev = await ep; await prev.close();
   check("HTML in names is escaped everywhere", [await page.evaluate(() => !!window.__hacked), (await page.$$eval("select[name=customer] option", (o) => o.map((x) => x.textContent))).some((t) => t.startsWith("<img"))], [false, true]);
 
+  section("UI shell: sidebar, header, theme, dashboard charts");
+  await go("courier");
+  check("every menu page appears exactly once in the grouped sidebar", await page.evaluate(() => {
+    const ids = Array.from(document.querySelectorAll('#nav .menu [data-act="nav.go"]')).map((b) => b.dataset.page).sort();
+    return [ids.length, ids.join() == OPF.config.MENU.map((m) => m[0]).sort().join()];
+  }), [22, true]);
+  check("the current page's group is open and the page highlighted", await page.evaluate(() => [document.querySelector("#nav .grp.open .on").dataset.page, document.getElementById("pageTitle").textContent]), ["courier", "SalesCourier / Delivery"]);
+  await act("nav.group", { group: "1" });
+  check("clicking a group opens it", await page.$eval('#nav [data-group="1"]', (b) => b.parentNode.classList.contains("open")), true);
+  await page.type("#navSearch", "ledg");
+  check("menu search filters the pages", await page.$$eval('#nav .menu [data-act="nav.go"]', (b) => b.map((x) => x.dataset.page)), ["ledger"]);
+  await page.$eval("#navSearch", (e) => { e.value = ""; e.dispatchEvent(new Event("input", { bubbles: true })); });
+  await page.click('[data-theme-set="dark"]');
+  await page.reload();
+  check("dark theme is remembered after reload, in its own key", await page.evaluate(() => [document.documentElement.getAttribute("data-theme"), JSON.parse(localStorage.getItem("opf_erp_ui")).theme, !("theme" in OPF.store.db)]), ["dark", "dark", true]);
+  await page.click('[data-theme-set="light"]');
+  await page.click(".top .iconbtn");
+  check("menu button collapses the sidebar to icons", await page.evaluate(() => document.body.classList.contains("nav-collapsed")), true);
+  await page.click(".top .iconbtn");
+  await go("dashboard");
+  await page.select('select[data-change="dashboard.period"]', "all");
+  const allSales = await db((d) => d.sales.length);
+  check("dashboard period 'All Time' counts every invoice", await page.$eval(".stat .cnt", (e) => +e.textContent), allSales);
+  check("cost breakdown ring and trend line are drawn", await page.evaluate(() => [!!document.querySelector(".donut svg"), document.querySelectorAll(".chart-wrap .ln").length]), [true, 3]);
+  await page.$eval(".chart-wrap[data-chart]", (e) => e.scrollIntoView({ block: "center" })); // the mouse only reaches what is on screen
+  const tb = await (await page.$(".chart-wrap[data-chart] svg")).boundingBox();
+  await page.mouse.move(tb.x + tb.width * 0.97, tb.y + tb.height * 0.5);
+  check("hovering the trend shows a tooltip with today's figures", await page.evaluate(() => { const t = document.querySelector(".chart-tip"); return [t.style.display, /Sales/.test(t.textContent) && /Purchases/.test(t.textContent)]; }), ["block", true]);
+  await act("dashboard.chart", { type: "bar" });
+  check("bar view draws bars", await page.evaluate(() => document.querySelectorAll(".chart-wrap .br").length > 0), true);
+  await act("dashboard.chart", { type: "table" });
+  check("table view lists 30 days", await page.$$eval(".dash2 .table tbody tr", (r) => r.length), 30);
+  check("chart colours use style (var() is ignored in SVG attributes)", await page.evaluate(() => document.querySelectorAll('svg [fill^="var("], svg [stroke^="var("]').length), 0);
+
   await T.finish();
 })().catch((e) => { console.error(e); process.exit(1); });

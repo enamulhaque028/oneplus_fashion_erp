@@ -19,6 +19,8 @@
   // data: { id: "x1", coll: "sales" } -> ' data-id="x1" data-coll="sales"'
   const dataAttrs = (data) => attrs(Object.keys(data || {}).reduce((o, k) => { o["data-" + k] = data[k]; return o; }, {}));
 
+  const REQ = ' <span class="req">*</span>';
+
   // opts: { type, value, required, readonly, list, change (action), attrs: {...extra} }
   function field(name, label, opts = {}) {
     const type = opts.type || "text";
@@ -27,12 +29,12 @@
       type == "number" ? { step: "any", min: "0" } : {},
       opts.attrs
     );
-    return `<div class="field"><label>${label}${opts.required ? " *" : ""}</label><input${attrs(a)}></div>`;
+    return `<div class="field"><label>${label}${opts.required ? REQ : ""}</label><input${attrs(a)}></div>`;
   }
 
   function select(name, label, optionsHtml, opts = {}) {
     const a = Object.assign({ name, required: !!opts.required, "data-change": opts.change }, opts.attrs);
-    return `<div class="field"><label>${label}${opts.required ? " *" : ""}</label><select${attrs(a)}>${optionsHtml}</select></div>`;
+    return `<div class="field"><label>${label}${opts.required ? REQ : ""}</label><select${attrs(a)}>${optionsHtml}</select></div>`;
   }
 
   // Arbitrary HTML placed in a form grid cell (e.g. a checkbox or helper button).
@@ -54,7 +56,14 @@
   const tdEmpty = (n = 1) => (n > 1 ? `<td colspan="${n}"></td>` : "<td></td>");
   const tr = (cells, cls) => `<tr${cls ? ` class="${cls}"` : ""}>${cells.join("")}</tr>`;
 
-  const card = (label, value, cls) => `<div class="card${cls ? " " + cls : ""}">${label}<div class="big">${value}</div></div>`;
+  // Summary card: soft icon (picked from the label unless given), label, big value.
+  const CARD_ICONS = [[/due|payable|shortage|over|difference|highest/i, "alert"], [/sale|invoice/i, "cart"], [/collection|received|paid|advance/i, "wallet"],
+    [/fabric|yard|raw/i, "layers"], [/parcel|courier|transfer/i, "truck"], [/stock|pcs|items|planned|actual|dispatched/i, "box"],
+    [/purchase|bill/i, "bag"], [/value|cost|expense|amount|p\/l|return|opening/i, "coins"], [/part(y|ies)|customer/i, "users"]];
+  function card(label, value, cls, icon) {
+    const hit = CARD_ICONS.find(([re]) => re.test(label));
+    return `<div class="card${cls ? " " + cls : ""}"><div class="cic">${OPF.icon(icon || (hit ? hit[1] : "trend"))}</div>${label}<div class="big">${value}</div></div>`;
+  }
   const cards = (list) => `<div class="cards">${list.join("")}</div>`;
   const pill = (text, kind) => `<span class="pill${kind ? " " + kind : ""}">${esc(text)}</span>`;
 
