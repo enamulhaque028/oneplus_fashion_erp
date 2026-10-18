@@ -142,6 +142,12 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
 - **Test results:**
   - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62 checks, all passing;
   - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
+- **Pending (decided 2026-10-18, do only when the user says so) - COD settlement:** the user chose
+  option B. Marking a courier parcel "Settled" must automatically record a customer collection of
+  Net COD (COD - Advance) with reference "COD <courier> <tracking>"; marking it "Not settled" again
+  must remove that collection. Still to confirm with the user before building: also record the
+  customer's Advance as a collection when the parcel is saved, and the courier charge as an expense.
+  Today settling does not touch the customer's due (it must be entered on Payment / Collection).
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).
 - **Out of scope for this offline edition:** multi-user, per-user login and roles, cloud backup,
