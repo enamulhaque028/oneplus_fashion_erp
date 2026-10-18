@@ -8,7 +8,7 @@ const { start, sleep } = require("./lib");
 
 (async () => {
   const T = await start("edge");
-  const { page, alerts, confirms, check, section, go, db, text, fill, submit, act, password, popup, setItems } = T;
+  const { page, alerts, confirms, check, section, go, db, text, fill, submit, act, password, printed, setItems } = T;
   await T.open();
   await T.reset();
   const calc = () => text("#calc");
@@ -79,7 +79,7 @@ const { start, sleep } = require("./lib");
   section("Supplier and factory payments");
   await go("payments"); await act("payments.collect", { type: "Supplier", id: sid }); await fill({ amount: 5000 });
   check("supplier breakdown: bill 20,000 today", /Today's Bill\s+20,000\.00/.test(await calc()) && /Remaining Due\s+15,000\.00/.test(await calc()), true);
-  const vp = popup(); await submit(); const voucher = await vp;
+  const vp = printed(); await submit(); const voucher = await vp;
   check("supplier payment prints a PAYMENT VOUCHER", /Payment Voucher[\s\S]*Paid To[\s\S]*Knit Yarn Co \(Supplier\)/i.test(await voucher.evaluate(() => document.body.innerText)), true);
   await voucher.close();
   await go("payments"); await act("payments.collect", { type: "Factory", id: fid }); await page.$eval('[name="print"]', (e) => (e.checked = false));
@@ -103,7 +103,7 @@ const { start, sleep } = require("./lib");
   await go("sales"); await fill({ customer: c1, location: "Owner Permanent Shop" });
   for (let i = 3; i < 40; i++) await act("sales.addItem");
   await setItems(Array.from({ length: 40 }, (_, i) => ({ style: "S1", color: "Blue", size: "L", qty: 1, rate: 10 + i })));
-  const lp = popup(); await act("sales.savePrint"); const longInv = await lp;
+  const lp = printed(); await act("sales.savePrint"); const longInv = await lp;
   check("all 40 lines printed", await longInv.$$eval(".mitems tbody tr", (r) => r.length), 41);
   const pdf = await longInv.pdf({ format: "A4", printBackground: true });
   // A4 printable height is 297 - 16 mm margins = 281 mm, about 1062 CSS px; the saved PDF is kept for inspection.
@@ -118,7 +118,7 @@ const { start, sleep } = require("./lib");
   await go("customers"); await fill({ name: bn, mobile: "01555555555", address: "নিউ মার্কেট" }); await submit();
   const cb = await db((d) => d.customers.find((c) => c.mobile == "01555555555").id);
   await go("sales"); await fill({ customer: cb }); await setItems([{ style: "S1", color: "Blue", size: "L", qty: 1, rate: 300 }]);
-  const bp = popup(); await act("sales.savePrint"); const bnInv = await bp;
+  const bp = printed(); await act("sales.savePrint"); const bnInv = await bp;
   check("Bangla name and address on the invoice", (await bnInv.evaluate(() => document.body.innerText)).includes(bn) && (await bnInv.evaluate(() => document.body.innerText)).includes("নিউ মার্কেট"), true);
   await bnInv.screenshot({ path: path.join(T.OUT, "invoice_bangla.png") }); await bnInv.close();
   await page.type("#gsearch", "রহিম");
@@ -178,7 +178,7 @@ const { start, sleep } = require("./lib");
   const evil = '<img src=x onerror="window.__hacked=1">Evil & Co';
   await go("customers"); await fill({ name: evil }); await submit();
   await go("customers"); await go("payments"); await go("sales");
-  const ep = popup(); await page.evaluate(() => OPF.print.preview()); const prev = await ep; await prev.close();
+  const ep = printed(); await page.evaluate(() => OPF.print.preview()); const prev = await ep; await prev.close();
   check("HTML in names is escaped everywhere", [await page.evaluate(() => !!window.__hacked), (await page.$$eval("select[name=customer] option", (o) => o.map((x) => x.textContent))).some((t) => t.startsWith("<img"))], [false, true]);
 
   section("UI shell: sidebar, header, theme, dashboard charts");

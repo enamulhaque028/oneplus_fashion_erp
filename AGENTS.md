@@ -133,13 +133,14 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   2026-09-29): layout in `js/services/print.js`, styles in `assets/css/print.css`, shop details in
   Settings (`company.*`, schema v5). The logo is drawn as inline SVG unless an image is uploaded.
   The shop-name lettering uses a heavy system font stretched with SVG `textLength`: the memo's
-  typeface isn't available offline. Keep the layout matching that book.
+  typeface isn't available offline. Keep the layout matching that book. Printing uses a hidden
+  iframe in the same page (`#printFrame`) - never `window.open` (no new tab, no pop-up blocker).
 - **UI redesign (2026-10-18):** bseba-style Material 3 look - grouped icon sidebar, new header
   (title, search, theme switch, clock, lock, Sale, Backup; no vendor logo), pastel cards, dashboard with period panels,
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 84, edge 65, uat 42 checks, all passing;
+  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42 checks, all passing;
   - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).

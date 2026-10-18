@@ -229,7 +229,7 @@ Record money received from customers, or paid to suppliers and factories.
 
 3. Enter the amount, method (Cash, Bank, bKash, Nagad, Rocket, Cheque) and reference / transaction number.
 4. Save. With **Print receipt after saving** ticked, the **Money Receipt** (customers) or
-   **Payment Voucher** (suppliers and factories) opens for printing.
+   **Payment Voucher** (suppliers and factories) prints: the print dialog opens over the page.
 
 - **Due Parties - Detailed** lists every customer who owes money, with today's figures.
 - **Payable to Suppliers / Factories** lists whom you owe.
@@ -316,7 +316,8 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 
 - **Invoices** print from **Save & Print Invoice**, or from the **Invoice** button in any list.
 - **Receipts** print automatically after a payment is saved, or from the **Receipt** button.
-- The print window opens with the print dialog. Choose the printer, or **Save as PDF**.
+- The print dialog opens over the ERP page - no new tab. Choose the printer, or **Save as PDF**
+  (the file name is suggested, e.g. "Cash Memo INV-00012"). Closing the dialog leaves you on the same page.
 - **Cash memo layout** (the same design as the shop's printed Cash Memo book):
   - the logo on the left, "Cash Memo" and the shop name, motto, business description, address,
     phone and e-mail in the middle, and the **HOTLINE** number on the right;
@@ -331,7 +332,6 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
   logo file in Settings to use it on the memo and receipt instead.
 - **Money receipt / payment voucher:** the same header and colours, the receipt number, the
   party, the payment breakdown and the amount in words.
-- **Nothing opens?** Allow pop-ups for the ERP file in the browser (the icon at the right of the address bar).
 - **Dark bars printing blank?** In the print dialog open **More settings** and tick **Background graphics**.
 - Any page (a statement, the due list, reports) can be printed with its **Print** button.
   The menu and buttons are left out of the printout.
@@ -404,7 +404,7 @@ invoice number; the ERP refuses a number that already exists.
 |---|---|
 | The ERP shows a message that the browser is too old | Install Chrome 109 (Windows 7) or Firefox 115, then open START_ERP.bat again. |
 | The page is blank or a red "ERP error" box appears | Take a photo of the screen and send it to the developer. Then reload the page (F5). Saved data is not lost. |
-| Invoice or receipt does not open | Allow pop-ups (see [section 7](#7-printing-invoices-and-receipts)). |
+| The print dialog does not appear | Wait a second and click the print button again; if it still does not appear, press F5 and retry. |
 | "Not enough stock" warning | Check that the stock location is right and that the transfer was recorded. You can still save if the goods really are there. |
 | A customer's due looks wrong | Open the customer profile and read the Ledger Statement line by line. Then check Ledgers / Due → Reconciliation Check. |
 | Two spellings of the same style or color | Edit the records so they match, and pick from the suggestions when typing. |

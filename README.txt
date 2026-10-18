@@ -66,7 +66,7 @@ New in v4:
 - Search bar (top): type a customer name or mobile number to open their full history and ledger.
 - Download Full Backup now creates an Excel (.xlsx) file with every register and ledger.
   To restore data into the ERP, use "Download Restore File (.json)" and "Restore from .json".
-- Invoices and money receipts open in a new window for printing. If nothing opens, allow pop-ups.
+- Invoices and money receipts print straight from the ERP page: the print dialog opens over it (no new tab).
 - Upload your shop logo in Settings / Backup; it is printed on invoices and receipts.
 - Existing v3 data is upgraded automatically the first time v4 opens. Take a backup before upgrading.
 

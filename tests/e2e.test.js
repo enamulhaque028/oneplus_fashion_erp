@@ -7,7 +7,7 @@ const { start, sleep, ROOT } = require("./lib");
 
 (async () => {
   const T = await start("e2e");
-  const { browser, page, errors, alerts, OUT, check, section, go, db, text, fill, submit, act, modalOpen, password, popup, setItems } = T;
+  const { browser, page, errors, alerts, OUT, check, section, go, db, text, fill, submit, act, modalOpen, password, printed, setItems } = T;
 
   await T.open();
   check("app booted from file:// without special flags", await page.evaluate(() => !!(window.OPF && OPF.store.db)), true);
@@ -106,7 +106,15 @@ const { start, sleep, ROOT } = require("./lib");
   await fill({ amount: 20000 });
   const bd = await text("#calc");
   check("breakdown 50,000 + 10,000 = 60,000 - 20,000 = 40,000", [/Previous Due\s+50,000\.00/, /Today's Purchase\s+10,000\.00/, /Total Due\s+60,000\.00/, /Paid Today \(this receipt\)\s+20,000\.00/, /Remaining Due\s+40,000\.00/].map((r) => r.test(bd)), [true, true, true, true, true]);
-  const rp = popup(); await submit(); const receipt = await rp;
+  // Printing must stay in this tab: count tabs and watch the print call.
+  await page.evaluate(() => { window.__printCalls = []; const real = OPF.print.output; OPF.print.output = (w) => { window.__printCalls.push([w.document.title, !!w.document.querySelector(".memo"), w.getComputedStyle(w.document.querySelector(".pill")).backgroundColor]); real(w); }; });
+  const tabsBefore = (await browser.pages()).length;
+  await submit(); await sleep(800);
+  check("printing opens no new tab or window", (await browser.pages()).length, tabsBefore);
+  check("the print dialog is called for the receipt, after its stylesheet loaded", await page.evaluate(() => window.__printCalls), [["Money Receipt MR-00001", true, "rgb(45, 52, 128)"]]);
+  await go("payments");
+  const firstPayment = await db((d) => d.payments[0].id);
+  const rp = printed(); await act("print.receipt", { id: firstPayment }); const receipt = await rp;
   const rt = await receipt.evaluate(() => document.body.innerText);
   check("receipt opens automatically with the same figures", /Money Receipt/.test(rt) && /Remaining Due\s+40,000\.00/.test(rt) && /Twenty Thousand Taka Only/.test(rt), true);
   check("print stylesheet loads in the print window", await receipt.evaluate(() => getComputedStyle(document.querySelector(".pill")).backgroundColor), "rgb(45, 52, 128)");
@@ -123,7 +131,7 @@ const { start, sleep, ROOT } = require("./lib");
   const due = await text("#dueOut");
   check("date-wise due list shows invoice and as-on balance", /INV-00001/.test(due) && /40,000\.00/.test(due), true);
   await page.screenshot({ path: path.join(OUT, "customers.png"), fullPage: true });
-  const ip = popup(); await page.evaluate(() => OPF.print.invoice(OPF.store.db.sales[0].id)); const inv = await ip;
+  const ip = printed(); await page.evaluate(() => OPF.print.invoice(OPF.store.db.sales[0].id)); const inv = await ip;
   const it = await inv.evaluate(() => document.body.innerText);
   check("cash memo: DUE stamp, Total / Advance / Due, previous 50,000, total due 60,000, words", /Cash Memo/.test(it) && /DUE/.test(it) && /Total\s+10,000\.00/.test(it) && /Advance\s+0\.00/.test(it) && /Due\s+10,000\.00/.test(it) && /Previous Due: 50,000\.00/.test(it) && /Total Due Now: 60,000\.00/.test(it) && /Ten Thousand Taka Only/.test(it), true);
   await inv.screenshot({ path: path.join(OUT, "invoice.png"), fullPage: true }); await inv.close();
@@ -235,7 +243,7 @@ const { start, sleep, ROOT } = require("./lib");
   await sleep(300);
   await fill({ tagline: "Wholesale Garments" }, "coForm"); await submit("coForm");
   check("logo and branding saved", await db((d) => [d.company.logo.startsWith("data:image/png;base64,"), d.company.tagline]), [true, "Wholesale Garments"]);
-  const lp = popup(); await act("print.preview"); const pv = await lp;
+  const lp = printed(); await act("print.preview"); const pv = await lp;
   check("invoice uses uploaded logo", await pv.evaluate(() => !!document.querySelector(".mlogo img")), true);
   await pv.screenshot({ path: path.join(OUT, "invoice_with_logo.png"), fullPage: true }); await pv.close();
   await act("auth.changePassword");

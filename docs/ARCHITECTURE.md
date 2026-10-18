@@ -18,7 +18,7 @@ no install and no build step. The target is an old Windows 7 laptop (4 GB RAM) r
 OnePlusFashion_ERP.html   HTML shell: header, sidebar, <main id="app">, script tags in load order
 START_ERP.bat             Opens the HTML in Chrome / Firefox on Windows
 assets/css/app.css        Application styles: design tokens (light + dark), shell, components
-assets/css/print.css      Invoice / receipt print styles (loaded into the print window)
+assets/css/print.css      Invoice / receipt print styles (loaded into the hidden print frame)
 assets/img/               Logos
 js/boot-check.js          ES5 browser-support check (runs first)
 js/core/                  Configuration, helpers, storage - no DOM, no business rules

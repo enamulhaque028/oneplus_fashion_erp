@@ -100,13 +100,14 @@
       if (!window.OPF_BROWSER_OK) { report("browser too old (needs Chrome 73+ or current Firefox)"); return; }
 
       /* ---- isolate: in-memory data, no real storage, no real pop-ups or dialogs ---- */
-      var S = OPF.store, H = OPF.html, printed = "";
+      var S = OPF.store, H = OPF.html;
+      function printed() { var f = document.getElementById("printFrame"); return f ? f.contentDocument.body.innerHTML : ""; }
       S.db = OPF.migrate.fresh();
       S.save = function () { return true; };
       S.load = function () { };
       window.alert = function () { };
       window.confirm = function () { return true; };
-      window.open = function () { return { document: { write: function (h) { printed = h; }, close: function () { } } }; };
+      OPF.print.output = function () { }; // build the print frame but never open a real print dialog
       OPF.actions.bind(document);
 
       function form(id) { return document.getElementById(id || "mainForm"); }
@@ -154,9 +155,9 @@
       OPF.pages.payments.collect("Customer", cid); fill({ amount: 20000 });
       check("payment breakdown 50,000 + 10,000 - 20,000 = 40,000", /Previous Due\s*50,000\.00/.test(calcText()) && /Total Due\s*60,000\.00/.test(calcText()) && /Remaining Due\s*40,000\.00/.test(calcText()), true);
       submit();
-      check("receipt generated automatically", /Money Receipt/.test(printed) && /Twenty Thousand Taka Only/.test(printed), true);
+      check("receipt generated automatically", /Money Receipt/.test(printed()) && /Twenty Thousand Taka Only/.test(printed()), true);
       OPF.print.invoice(db().sales[0].id);
-      check("cash memo print built", /Cash Memo/.test(printed) && /Total Due Now: <b>60,000\.00/.test(printed), true);
+      check("cash memo print built", /Cash Memo/.test(printed()) && /Total Due Now: <b>60,000\.00/.test(printed()), true);
 
       /* ---- courier / costing / ledger / export ---- */
       OPF.router.go("courier"); fill({ customer: cid, cod: 15000, advance: 1000, charge: 150, status: "Sent" });

@@ -1,6 +1,7 @@
 /* Printed documents, laid out like the shop's printed "Cash Memo" book:
    the cash memo (invoice) and the money receipt / payment voucher.
-   Opens a print window styled by assets/css/print.css. Shop details come from Settings. */
+   Printed from a hidden frame in the ERP page (no new tab), styled by assets/css/print.css.
+   Shop details come from Settings. */
 (function (OPF) {
   "use strict";
 
@@ -10,13 +11,40 @@
   // Item area height on an A4 memo; rows use about 8.2 mm each, the rest is blank lined space.
   const BODY_MM = 132, ROW_MM = 8.2;
 
+  // Print inside this page from a hidden frame - no new tab or window (and nothing for a
+  // pop-up blocker to stop). The frame stays until the next print so tests can read it.
+  let count = 0;
   function printWindow(title, body) {
-    const w = window.open("", "_blank");
-    if (!w) { alert("Pop-up blocked. Please allow pop-ups for this file to print invoices and receipts."); return; }
+    const old = document.getElementById("printFrame");
+    if (old) old.remove();
+    const frame = document.createElement("iframe");
+    frame.id = "printFrame";
+    frame.setAttribute("aria-hidden", "true");
+    frame.tabIndex = -1;
+    // Off screen at A4 size (not display:none: some browsers would then print an empty page).
+    frame.style.cssText = "position:absolute;left:-10000px;top:0;width:210mm;height:297mm;border:0";
+    document.body.appendChild(frame);
+    const win = frame.contentWindow, doc = win.document;
     const css = new URL("assets/css/print.css", document.baseURI).href;
-    w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><link rel="stylesheet" href="${css}"></head><body>${body}<script>window.onload=function(){window.print()}<\/script></body></html>`);
-    w.document.close();
+    doc.open();
+    doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>${esc(title)}</title><link rel="stylesheet" href="${css}"></head><body>${body}</body></html>`);
+    doc.close();
+    count++;
+    // Print once the stylesheet has loaded (listeners must be added after document.open()).
+    const ready = () => setTimeout(() => OPF.print.output(win), 50);
+    if (doc.readyState == "complete") ready(); else win.addEventListener("load", ready);
   }
+
+  // Opens the browser's print dialog for the frame. The page title is borrowed so "Save as PDF"
+  // suggests e.g. "Cash Memo INV-00012". The self-test page replaces this to stay silent.
+  function output(win) {
+    const title = document.title;
+    document.title = win.document.title;
+    win.focus();
+    win.print();
+    setTimeout(() => { document.title = title; }, 1000);
+  }
+
 
   /* ---- brand mark: the One Plus "op" logo, drawn so no image file is needed ----
      boxed = dark tile for the header; otherwise the pale watermark version. */
@@ -147,7 +175,7 @@
     printWindow("Cash Memo Preview", invoiceHtml(sample, { name: "Sample Fashion House", mobile: "01700000000", address: "Bongo Bazar", district: "Dhaka" }, 3000));
   }
 
-  OPF.print = { invoice, receipt, preview, snapshotRows, brandMark };
+  OPF.print = { invoice, receipt, preview, snapshotRows, brandMark, output, get count() { return count; } };
   OPF.actions.register({
     "print.invoice": (el) => invoice(el.dataset.id),
     "print.receipt": (el) => receipt(el.dataset.id),

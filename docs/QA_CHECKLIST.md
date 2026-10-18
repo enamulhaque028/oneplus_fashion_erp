@@ -86,8 +86,8 @@ PART 3 - SALES, PAYMENT, COURIER (8 min)
                                   Balance After This Invoice 60,000.00
 
 [ ] 3.4  Click "Save & Print Invoice".
-         Expect: a new window opens with the print dialog. (If nothing opens, allow pop-ups for this file
-         and try again.) Print it on A4 paper, then check the paper in Part 5.
+         Expect: the print dialog opens over the ERP page showing the cash memo - no new tab opens.
+         Print it on A4 paper, then check the paper in Part 5. After printing you are still on the Sales page.
 
 [ ] 3.5  Payment / Collection: in "Due Parties", click Collect next to Karim Store.
          Amount Paid Now = 20000, Method = bKash, Reference = TRX12345.
@@ -95,7 +95,7 @@ PART 3 - SALES, PAYMENT, COURIER (8 min)
                                   = Total Due 60,000.00    - Paid Today 20,000.00
                                   = Remaining Due 40,000.00
          Leave "Print receipt after saving" ticked and click Save.
-         Expect: the Money Receipt opens by itself. Print it.
+         Expect: the print dialog opens by itself showing the Money Receipt - no new tab. Print it.
 
 [ ] 3.6  Courier / Delivery: Invoice No. = INV-00001 (press Tab).
          Expect: Customer = Karim Store, Destination = Bongo Bazar, Dhaka, COD = 10000 fill in by themselves.

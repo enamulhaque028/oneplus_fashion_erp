@@ -41,7 +41,7 @@ async function start(outName) {
   const cdp = await page.target().createCDPSession();
   await cdp.send("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: OUT });
 
-  let passes = 0, failures = 0;
+  let passes = 0, failures = 0, printNo = 0;
   const t = {
     browser, page, version, errors, alerts, confirms, OUT, ROOT, APP, sleep,
     answerConfirms(yes) { confirmAnswer = yes; },
@@ -79,8 +79,21 @@ async function start(outName) {
       if (confirmPw != null) await page.type("#pw2", confirmPw);
       await page.click('#modal button:not([type="button"])');
     },
-    // Resolves with the next window the page opens (print windows).
-    popup: () => new Promise((res) => browser.once("targetcreated", async (target) => { const p = await target.page(); await sleep(800); res(p); })),
+    // Resolves with the next printed document (invoice / receipt). The ERP prints from a hidden
+    // frame in the same page; its HTML is saved as a file and opened in a scratch tab, so tests
+    // can read, screenshot or PDF it. Start it BEFORE the action that prints.
+    printed: () => (async () => {
+      const before = await page.evaluate(() => OPF.print.count);
+      for (let i = 0; i < 100 && (await page.evaluate(() => OPF.print.count)) == before; i++) await sleep(100);
+      await sleep(400);
+      const html = await page.evaluate(() => "<!doctype html>" + document.getElementById("printFrame").contentDocument.documentElement.outerHTML);
+      const file = path.join(OUT, `printed-${++printNo}.html`);
+      fs.writeFileSync(file, html);
+      const p = await browser.newPage();
+      await p.goto("file://" + file);
+      await sleep(300);
+      return p;
+    })(),
 
     async setItems(rows) {
       await page.evaluate((rows) => {

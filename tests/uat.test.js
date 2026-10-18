@@ -7,7 +7,7 @@ const { start, sleep } = require("./lib");
 
 (async () => {
   const T = await start("uat");
-  const { page, check, section, go, db, text, act, password, popup, typeInto } = T;
+  const { page, check, section, go, db, text, act, password, printed, typeInto } = T;
   await T.open();
   await T.reset();
   const calc = () => text("#calc");
@@ -76,7 +76,7 @@ const { start, sleep } = require("./lib");
   check("Expect: Subtotal (2 items, 35 PCS) 10,500.00", /Subtotal \(2 items, 35 PCS\)\s+10,500\.00/.test(sc), true);
   check("Expect: Total Amount 10,000.00 / Due Amount 10,000.00", /Total Amount\s+10,000\.00/.test(sc) && /= Due Amount\s+10,000\.00/.test(sc), true);
   check("Expect: Previous Balance 50,000.00 / After This Invoice 60,000.00", /Previous Balance\s+50,000\.00/.test(sc) && /After This Invoice\s+60,000\.00/.test(sc), true);
-  const ip = popup(); await act("sales.savePrint"); const inv = await ip;
+  const ip = printed(); await act("sales.savePrint"); const inv = await ip;
   const it = await inv.evaluate(() => document.body.textContent.replace(/\s+/g, " "));
   check("Expect on memo: Cash Memo, Sl. No. INV-00001, Karim Store, Courier empty, DUE stamp", /Cash Memo/.test(it) && /Sl\. No\.\s*INV-00001/.test(it) && /Karim Store/.test(it) && /DUE/.test(it), true);
   check("Expect on memo: Less: Discount - 500.00, Total 10,000.00, Advance 0.00, Due 10,000.00", /Less: Discount\s*- 500\.00/.test(it) && /Total\s*10,000\.00/.test(it) && /Advance\s*0\.00/.test(it) && /Due\s*10,000\.00/.test(it), true);
@@ -95,7 +95,7 @@ const { start, sleep } = require("./lib");
   const bd = await calc();
   check("Expect: Previous Due 50,000 + Today's Purchase 10,000 = Total Due 60,000", /Previous Due\s+50,000\.00/.test(bd) && /Today's Purchase\s+10,000\.00/.test(bd) && /Total Due\s+60,000\.00/.test(bd), true);
   check("Expect: Paid Today 20,000 -> Remaining Due 40,000", /Paid Today \(this receipt\)\s+20,000\.00/.test(bd) && /Remaining Due\s+40,000\.00/.test(bd), true);
-  const rp = popup(); await save(); const receipt = await rp;
+  const rp = printed(); await save(); const receipt = await rp;
   const rt = await receipt.evaluate(() => document.body.textContent.replace(/\s+/g, " "));
   check("Expect on receipt: Money Receipt MR-00001, bKash, TRX12345, Remaining Due 40,000.00, Twenty Thousand Taka Only", /Money Receipt/.test(rt) && /MR-00001/.test(rt) && /bKash/.test(rt) && /TRX12345/.test(rt) && /Remaining Due\s*40,000\.00/.test(rt) && /Twenty Thousand Taka Only/.test(rt), true);
   await receipt.close();

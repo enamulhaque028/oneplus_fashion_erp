@@ -21694,7 +21694,7 @@
       "ref": "MR-00203"
     },
     {
-      "date": "2026-10-18T14:12:52.847Z",
+      "date": "2026-10-18T14:22:10.841Z",
       "action": "Demo data loaded",
       "ref": "tests/fixtures/make-demo-data.js"
     }
