@@ -155,7 +155,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
 - **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in
   `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`. Client ID set in
   `CLOUD.GOOGLE_CLIENT_ID` on 2026-10-18 (project `one-plus-fashion-erp`, origin
-  `https://enamulhaque028.github.io`, consent screen in **Testing** with test users). Never commit the
+  `https://enamulhaque028.github.io`, consent screen **published (In production)** on 2026-10-18; privacy / terms pages: `privacy.html`, `terms.html`). Never commit the
   client secret - the browser token flow does not use it. The real Google sign-in still needs a manual
   check on the hosted link, including on Windows 7 Chrome 109.
   Sync state lives under localStorage key `opf_erp_cloud` (tab token in sessionStorage
