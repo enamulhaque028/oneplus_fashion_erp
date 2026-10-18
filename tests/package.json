@@ -3,13 +3,14 @@
   "private": true,
   "description": "Tests for One Plus Fashion ERP (development only - not needed to run the ERP).",
   "scripts": {
-    "test": "node e2e.test.js && node edge.test.js && node uat.test.js && node regression.test.js && node smoke.js",
+    "test": "node e2e.test.js && node edge.test.js && node uat.test.js && node regression.test.js && node cloud.test.js && node smoke.js",
     "test:e2e": "node e2e.test.js",
     "test:edge": "node edge.test.js",
     "test:uat": "node uat.test.js",
     "test:smoke": "node smoke.js",
     "test:regression": "node regression.test.js",
-    "demo-data": "node fixtures/make-demo-data.js"
+    "demo-data": "node fixtures/make-demo-data.js",
+    "test:cloud": "node cloud.test.js"
   },
   "devDependencies": {
     "puppeteer-core": "^23.0.0"

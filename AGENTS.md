@@ -12,7 +12,8 @@ reports.
 
 - **Runs from disk:** the user double-clicks `START_ERP.bat`, which opens `OnePlusFashion_ERP.html`
   over `file://` in Chrome or Firefox.
-- **No server, build step, package install or internet.**
+- **No server, build step or package install. Works without internet**; the only network use is the
+  optional Google Drive sync (off unless a Client ID is set, and only on the hosted https link).
 - **Target:** an old Windows 7 laptop with 4 GB RAM. The newest browsers available are Chrome 109 and Firefox 115.
 - **Minimum supported:** Chrome 73.
 - **Data:** one JSON document in `localStorage` under the key `opf_erp_smart_v3`.
@@ -30,12 +31,15 @@ reports.
 
 ## Hard constraints (breaking these breaks the product)
 
-1. **No ES modules, no `fetch()`, no `import`.** `file://` blocks them. The code uses plain
+1. **No ES modules, no `fetch()` of local files, no `import`.** `file://` blocks them (the Google Drive
+   calls in `js/services/drive.js` use `fetch` over https, which is fine). The code uses plain
    `<script src>` files that share `window.OPF`. Every file is an IIFE:
    `(function (OPF) { "use strict"; ... })(window.OPF = window.OPF || {});`
 2. **ES2019 at most.** No `?.`, no `??`, no class fields, no top-level `await` (Chrome 73).
    `js/boot-check.js` stays ES5.
-3. **No external dependencies, CDNs or web fonts.** It must work with no internet. The Excel
+3. **No external dependencies, CDNs or web fonts.** It must work with no internet. Single exception:
+   `js/services/drive.js` loads Google's sign-in script and calls the Drive API, only when cloud
+   sync is configured; everything must still work offline (local save first, sync later). The Excel
    writer (`js/services/xlsx.js`) and SHA-256 (`js/core/sha256.js`) are hand-written for this reason.
 4. **Script order matters.** It is `core → domain → ui → services → pages → app`. A new JS file
    must be added to **both**:
@@ -96,7 +100,7 @@ reports.
 
 ```bash
 cd tests && npm install                 # once; only puppeteer-core
-npm test                                # e2e + edge + uat + regression + smoke on installed Chrome
+npm test                                # e2e + edge + uat + regression + cloud + smoke on installed Chrome
 node e2e.test.js | edge.test.js | uat.test.js   # one suite
 node smoke.js [browser-exe]             # self-test page, headless; also checks the script list
 node --check <file>.js                  # quick syntax check
@@ -140,7 +144,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62 checks, all passing;
+  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62, cloud 30 checks, all passing;
   - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
 - **Pending (decided 2026-10-18, do only when the user says so) - COD settlement:** the user chose
   option B. Marking a courier parcel "Settled" must automatically record a customer collection of
@@ -148,6 +152,14 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   must remove that collection. Still to confirm with the user before building: also record the
   customer's Advance as a collection when the parcel is saved, and the courier charge as an expense.
   Today settling does not touch the customer's due (it must be entered on Payment / Collection).
+- **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in
+  `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`. Client ID set in
+  `CLOUD.GOOGLE_CLIENT_ID` on 2026-10-18 (project `one-plus-fashion-erp`, origin
+  `https://enamulhaque028.github.io`, consent screen in **Testing** with test users). Never commit the
+  client secret - the browser token flow does not use it. The real Google sign-in still needs a manual
+  check on the hosted link, including on Windows 7 Chrome 109.
+  Sync state lives under localStorage key `opf_erp_cloud` (tab token in sessionStorage
+  `opf_erp_cloud_token`), never in the ERP data.
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).
 - **Out of scope for this offline edition:** multi-user, per-user login and roles, cloud backup,

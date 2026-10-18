@@ -24,6 +24,7 @@
       '<div class="box"><h2 style="margin-top:0">Admin Password</h2><p class="muted">' +
       (hasPassword ? "An admin password is set. It is required to edit or delete records, change settings and restore backups." : "No admin password yet. You will be asked to create one the first time you edit or delete a record.") +
       "</p>" + H.button(hasPassword ? "Change Admin Password" : "Create Admin Password", "auth.changePassword") + "</div>" +
+      OPF.cloud.settingsHtml() +
       '<div class="box"><h2 style="margin-top:0">Data Safety</h2><div class="actions">' +
       H.button("Download Full Backup (Excel .xlsx)", "backup.excel", null, "good") + H.button("Download Restore File (.json)", "backup.json") +
       '<label class="btn light">Restore from .json<input type="file" accept=".json" style="display:none" data-change="backup.restore"></label>' +

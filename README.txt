@@ -16,6 +16,7 @@ The ERP is the whole folder, not only the .html file. Always copy or move these 
   OnePlusFashion_ERP.html, START_ERP.bat, assets\ and js\
 The folders docs\ and tests\ are for developers and are not needed to run the ERP.
 
+Google Drive backup (sign in with Google, works on any computer): see docs\CLOUD_SETUP.md to switch it on.
 How to use the ERP: see docs\USER_GUIDE.md (every page, printing, backups, formulas, troubleshooting).
 
 Before going live:

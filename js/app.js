@@ -37,7 +37,9 @@
     OPF.search.init();
     tick();
     setInterval(tick, 1000);
-    OPF.router.start(); // opens the page in the address (#/...), else the dashboard
+    // Google Drive sync shows its sign-in screen first when needed, then the ERP opens the page in
+    // the address (#/...), else the dashboard. Without sync configured it opens straight away.
+    OPF.cloud.start(() => OPF.router.start());
   }
 
   OPF.app = { rollover };

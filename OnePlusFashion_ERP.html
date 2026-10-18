@@ -25,6 +25,7 @@
       <button data-act="shell.theme" data-theme-set="dark" title="Dark"><span data-icon="moon"></span></button>
     </div>
     <span class="chip hide-sm"><span data-icon="clock"></span><span id="clock"></span></span>
+    <button id="syncBadge" class="chip sync" data-act="cloud.badge" hidden></button>
     <button id="lockBtn" class="light" data-act="auth.toggle">Admin: Locked</button>
     <a class="btn good addsale" href="#/sales"><span data-icon="cart"></span><span class="lb">Sale</span></a>
     <button class="light backup" data-act="backup.excel" title="Download full Excel backup"><span data-icon="download"></span>Backup</button>
@@ -70,6 +71,8 @@
   <script src="js/services/xlsx.js"></script>
   <script src="js/services/sheets.js"></script>
   <script src="js/services/backup.js"></script>
+  <script src="js/services/drive.js"></script>
+  <script src="js/services/cloud.js"></script>
 
   <!-- pages (sidebar order) -->
   <script src="js/pages/dashboard.js"></script>

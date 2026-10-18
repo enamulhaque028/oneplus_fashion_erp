@@ -50,6 +50,8 @@ js/services/              Cross-cutting features
   xlsx.js                 Dependency-free .xlsx writer (SpreadsheetML + ZIP)
   sheets.js               Every register / ledger / stock report as tabular data
   backup.js               Excel backup, JSON restore file, CSV, clear all
+  drive.js                Google sign-in token + Google Drive REST (only network code)
+  cloud.js                Drive sync rules, login screen, sync badge, Settings section
 js/pages/                 One file per screen; registers OPF.pages.<id> and its actions
   partyViews.js           Customer profile + supplier/factory statement (OPF.views)
 js/app.js                 Start-up (loaded last)
@@ -181,6 +183,20 @@ see `memoBranding`. Bump `SCHEMA_VERSION` in
   to switch on the hover. The donut shows costs only (purchases, factory bill, expenses): sales are
   not part of costs, so they belong on the trend chart, not in the ring.
 
+## Google Drive sync
+
+Design: `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`; setup: `docs/CLOUD_SETUP.md`.
+- **Off by default.** `OPF.drive.enabled()` needs `CLOUD.GOOGLE_CLIENT_ID` and an http(s) page;
+  otherwise `OPF.cloud.start` just opens the ERP. Tests switch it on with `window.OPF_CLOUD_TEST`.
+- **Local first.** Every `store.save()` notifies `cloud.js` (`store.onSave`). It bumps a change
+  counter and uploads after `UPLOAD_DELAY_MS`. Data replaced from Drive is applied with `applying`
+  set, so it is not counted as a local change.
+- **One data file** in the shop's Drive (scope `drive.file`, found by `appProperties.opfErp`). The
+  Drive `version` decides: changed only there → download; only here → upload; both → ask, and keep
+  the loser as a conflict copy. A dated copy is kept before the first upload of each day (30 kept).
+- **Google access** (token model) lasts an hour and can only be requested from a click: the next
+  click (capture listener) renews it when a sync is waiting. It is kept per tab in sessionStorage.
+
 ## Security notes
 
 - All user data is HTML-escaped (`util.esc`) before it reaches a template. `html.field` and
@@ -201,6 +217,7 @@ npm test           # runs all suites below; CHROME_PATH=/path/to/chrome if Chrom
 | `e2e.test.js` | Every business rule through the UI: data upgrades; purchase, stock, production, transfer, sales, payments, courier, costing; reconciliation; admin password, edit/delete, search; returns, expenses, settings, logo; Excel/JSON backup, clear, restore; every page renders; performance with 3,000 invoices (each page under 0.6 s). |
 | `edge.test.js` | Several showrooms, kg units, cancelled stock warnings, validation rules, customer advance, supplier/factory vouchers, same-day invoices and date ranges, a 40-line invoice over several pages, Bangla text in print/CSV/Excel, keyboard-only entry, admin timeout, HTML escaping. |
 | `regression.test.js` | Loads the demo data (324 invoices, 203 payments) and compares every invoice, purchase, party balance, receipt breakdown, invoice previous due, stock line, dashboard period, Customers summary, date-wise due list and Excel column with an independent oracle written in the test. It then drives risky cases through the UI: decimals and rounding, overpayment, backdated and future-dated entries, editing and deleting payments, moving a sale between months, time zones, invoice references, midnight rollover, and search with +880. |
+| `cloud.test.js` | Google sign-in + Drive sync with fakes at the network boundary (fake `google.accounts.oauth2`, fake `fetch` to an in-test Drive shared by separate browser profiles): first sign-in upload, restore on a second computer, upload after saves, changes from another computer, offline conflict and conflict copy, daily copies (30 kept), expired access renewed by a click, reload keeps access, sign-out, first visit without internet. |
 | `uat.test.js` | Performs `docs/QA_CHECKLIST.md` step by step, typing like a person, and asserts every "Expect" value in it. Change the checklist and this file together. |
 | `browser-smoke.html` | Self-test page: double-click it on any computer to check that browser runs the ERP. It uses in-memory data only and never touches saved ERP data. `node smoke.js [browser]` runs it headless; that also works for very old builds that puppeteer cannot drive. |
 | `fixtures/make-demo-data.js` | Builds `fixtures/OnePlusFashion_Demo_Data.json`: about 4 months of simulated business ending on the day it runs, for demos and manual testing. Each piece of data is created only after what it depends on (fabric before cutting, production before transfer, sales only from shop stock). The script then loads the file into the real ERP and aborts unless every ledger reconciles, no stock goes negative, every page renders and the file imports through Settings → Restore. Re-run it to move the dates up to today. |

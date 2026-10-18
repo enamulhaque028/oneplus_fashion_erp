@@ -11,6 +11,16 @@
     LOG_LIMIT: 3000,
     LOGO_WARN_KB: 300,
 
+    // Google sign-in + Google Drive sync (see docs/CLOUD_SETUP.md). Leave GOOGLE_CLIENT_ID empty to
+    // keep the ERP fully offline: no login screen, no network. Only works on the hosted (https) link.
+    CLOUD: {
+      GOOGLE_CLIENT_ID: "221238920928-f7u2jtl9eve5aj4pgogbl9f5clee26qi.apps.googleusercontent.com",
+      FOLDER: "One Plus Fashion ERP",
+      DATA_FILE: "OnePlusFashion ERP Data.json",
+      KEEP_DAILY_BACKUPS: 30,
+      UPLOAD_DELAY_MS: 4000
+    },
+
     UNITS: ["Yard", "Meter", "Kg", "Pcs"],
     METHODS: ["Cash", "Bank", "bKash", "Nagad", "Rocket", "Cheque"],
     PO_STATUS: ["Open", "In Progress", "Completed", "Cancelled"],

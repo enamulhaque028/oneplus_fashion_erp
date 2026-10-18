@@ -344,9 +344,46 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 
 ## 8. Backup, restore and data safety
 
-**Where the data is:** inside the browser on this computer. It is **not** in the ERP folder,
-**not** online, and **not** shared with other computers. If the browser's data is cleared, or
-Windows / Chrome is reinstalled, it is gone, unless you have a backup.
+### Google Drive backup (sign in with Google)
+
+When the ERP is opened from its web link, and the sign-in key is set up (see `docs/CLOUD_SETUP.md`),
+every computer shows a sign-in screen the first time:
+
+1. Click **Sign in with Google** and choose the shop's Google account.
+2. The ERP connects to Google Drive:
+   - **first computer:** its data is uploaded to a folder **One Plus Fashion ERP** in that Drive;
+   - **another computer:** the data is downloaded, and the ERP opens with everything as it was;
+   - **both have data:** it asks which copy to keep. The other one is saved in Drive as a
+     "Conflict copy" file, so nothing is lost.
+3. From then on the ERP opens straight away, even without internet.
+
+**Every save is backed up a few seconds later.** The badge at the top shows:
+
+| Badge | Meaning |
+|---|---|
+| **Synced** (green) | Everything is in Google Drive. |
+| **Saving…** / **Changes waiting** (blue) | Uploading, or about to. |
+| **Offline – will sync later** (amber) | No internet; changes are kept and go up when it returns. |
+| **Click to sync** (amber) | Google access expires about once an hour. Your next click anywhere renews it. |
+| **Not signed in** (amber) | This computer isn't backing up. Click the badge to sign in. |
+| **Sync problem** (red) | Point at the badge to see why; click it to try again. |
+
+- **Changes made on another computer** come in when the ERP opens or when you come back to its tab.
+  A short notice says "Updated with the latest data from Google Drive".
+- **Use one computer at a time.** If two computers changed the data while one was offline, the ERP
+  asks which copy to keep, as above.
+- **Daily copies:** the folder also keeps a copy for each day ("OnePlusFashion ERP Backup <date>.json"),
+  the last 30 days. Any of them can be loaded with **Restore from .json** after downloading it from Drive.
+- **Settings / Backup → Google Drive backup** shows the account and last sync time, with
+  **Sync now** and **Sign out**. Signing out keeps the data on the computer; the sign-in screen
+  appears the next time the ERP opens.
+- The admin password travels with the data, so it is the same on every computer.
+
+### Backup files (any version)
+
+**Where the data is:** inside the browser on this computer, plus Google Drive when signed in
+(above). Without Google Drive backup it is **not** online and **not** shared with other computers:
+if the browser's data is cleared, or Windows / Chrome is reinstalled, it is gone, unless you have a backup.
 
 | Button (Settings / Backup) | What it does |
 |---|---|

@@ -7,8 +7,13 @@
   const C = OPF.config;
   const { lc, pad, uid, today } = OPF.util;
 
+  const listeners = [];
+
   const store = {
     db: null,
+
+    // Called after every successful save (used by Google Drive sync).
+    onSave(fn) { listeners.push(fn); },
 
     load() {
       const raw = localStorage.getItem(C.STORAGE_KEY);
@@ -25,11 +30,12 @@
     save() {
       try {
         localStorage.setItem(C.STORAGE_KEY, JSON.stringify(store.db));
-        return true;
       } catch (e) {
         alert("Could not save: browser storage is full. Download a backup now, and remove a large shop logo from Settings.");
         return false;
       }
+      listeners.forEach((fn) => fn());
+      return true;
     },
 
     replace(db) {
