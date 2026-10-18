@@ -144,7 +144,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62, cloud 30 checks, all passing;
+  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62, cloud 34 checks, all passing;
   - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
 - **Pending (decided 2026-10-18, do only when the user says so) - COD settlement:** the user chose
   option B. Marking a courier parcel "Settled" must automatically record a customer collection of

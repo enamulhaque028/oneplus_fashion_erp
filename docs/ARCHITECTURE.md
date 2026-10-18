@@ -192,7 +192,8 @@ Design: `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`; setup: 
   counter and uploads after `UPLOAD_DELAY_MS`. Data replaced from Drive is applied with `applying`
   set, so it is not counted as a local change.
 - **One data file** in the shop's Drive (scope `drive.file`, found by `appProperties.opfErp`). The
-  Drive `version` decides: changed only there → download; only here → upload; both → ask, and keep
+  `syncId` the ERP stamps on each upload decides (never Drive's `version`, which Google changes by
+  itself): changed only there → download; only here → upload; both → ask, and keep
   the loser as a conflict copy. A dated copy is kept before the first upload of each day (30 kept).
 - **Google access** (token model) lasts an hour and can only be requested from a click: the next
   click (capture listener) renews it when a sync is waiting. It is kept per tab in sessionStorage.

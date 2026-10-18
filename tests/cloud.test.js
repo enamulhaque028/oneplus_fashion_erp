@@ -28,7 +28,19 @@ class FakeDrive {
     const parts = body.split("--" + b).slice(1, -1).map((p) => p.slice(p.indexOf("\r\n\r\n") + 4).replace(/\r\n$/, ""));
     return { meta: JSON.parse(parts[0]), content: parts[1] };
   }
+  // Real Drive raises `version` for changes made on its side too (processing, copies...), so the
+  // number returned by an upload is soon out of date. Mimic that after every write.
+  drift(f) { if (f) f.version++; }
   handle(req) {
+    const r = this.route(req);
+    const m = /\/files\/(\w+)(\/copy)?$/.exec(new URL(req.url).pathname);
+    if (req.method != "GET" && r.status == 200) {
+      if (m) this.drift(this.files[m[1]]);
+      else if (r.body) this.drift(this.files[JSON.parse(r.body).id]);
+    }
+    return r;
+  }
+  route(req) {
     const u = new URL(req.url), p = u.pathname, auth = (req.headers || {}).Authorization || "";
     this.log.push(req.method + " " + p + (u.searchParams.get("alt") ? "?alt=media" : ""));
     if (this.rejectAuth || !/^Bearer tok/.test(auth)) return this.json(401, { error: "unauthorized" });
@@ -161,12 +173,21 @@ class FakeDrive {
   check("badge shows the change is waiting / saving", ["pending", "saving", "reconnect"].indexOf(await statusOf(A)) >= 0, true);
   check("then Synced", await waitStatus(A, "synced"), "synced");
   check("Drive has A's new sale", drive.data().sales.length, demoSales + 1);
+  check("no 'Which data should be kept?' question for a save on the same computer", await A.page.evaluate(() => !!document.getElementById("cloudDialog")), false);
+  await A.page.evaluate(() => { const db = OPF.store.db; db.suppliers.push({ id: "supA1", name: "Test Supplier", created: new Date().toISOString() }); OPF.store.save(); });
+  check("adding a supplier syncs without a question either", [await waitStatus(A, "synced"), await A.page.evaluate(() => !!document.getElementById("cloudDialog"))], ["synced", false]);
+
+  section("A computer set up before the sync-stamp fix carries on without a question");
+  await A.page.evaluate(() => { const m = OPF.cloud.meta; delete m.syncId; m.version = "3"; localStorage.setItem("opf_erp_cloud", JSON.stringify(m)); });
+  delete drive.kind("data")[0].appProperties.syncId;
+  await sell(A, 1);
+  check("its next save uploads normally", [await waitStatus(A, "synced"), await A.page.evaluate(() => !!document.getElementById("cloudDialog")), drive.data().sales.length], ["synced", false, demoSales + 2]);
 
   section("Computer B (empty): signing in with the same account restores everything");
   const B = await computer("B");
   await B.page.click("#cloudGate .gbtn");
   await B.page.waitForFunction(() => !document.getElementById("cloudGate"), { timeout: 8000 });
-  check("B now has exactly A's data", [await count(B, "sales"), await count(B, "customers"), await count(B, "payments")], [demoSales + 1, JSON.parse(demo).customers.length, JSON.parse(demo).payments.length]);
+  check("B now has exactly A's data", [await count(B, "sales"), await count(B, "customers"), await count(B, "payments")], [demoSales + 2, JSON.parse(demo).customers.length, JSON.parse(demo).payments.length]);
   check("customer dues match on both computers", await B.page.evaluate(() => OPF.ledger.totalDue("Customer")), await A.page.evaluate(() => OPF.ledger.totalDue("Customer")));
 
   section("A change on B reaches A");
@@ -189,9 +210,10 @@ class FakeDrive {
   await A.page.waitForSelector("#cloudDialog", { timeout: 6000 });
   await A.page.screenshot({ path: path.join(OUT, "3_conflict.png") });
   check("the question shows both copies", await A.page.$$eval("#cloudDialog .cd-opt b", (b) => b.map((x) => x.textContent)), ["Google Drive copy", "This computer's copy"]);
+  check("each copy lists its suppliers too", await A.page.$$eval("#cloudDialog .cd-opt span", (s) => s.map((x) => /\d+ suppliers/.test(x.textContent))), [true, true]);
   await A.page.click('#cloudDialog [data-pick="local"]');
   check("keeping this computer's copy uploads it", await waitStatus(A, "synced"), "synced");
-  check("Drive now has A's offline sale but not B's expense", [drive.data().sales.length, drive.data().expenses.some((e) => e.id == "eB1")], [demoSales + 2, false]);
+  check("Drive now has A's offline sale but not B's expense", [drive.data().sales.length, drive.data().expenses.some((e) => e.id == "eB1")], [demoSales + 3, false]);
   check("B's version was kept as a Conflict copy (nothing lost)", drive.kind("conflict").map((f) => [/Conflict copy .* \(Google Drive\)\.json$/.test(f.name), JSON.parse(f.content).expenses.some((e) => e.id == "eB1")]), [[true, true]]);
 
   section("Daily safety copies: one per day, last 30 kept");

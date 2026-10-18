@@ -371,7 +371,9 @@ every computer shows a sign-in screen the first time:
 - **Changes made on another computer** come in when the ERP opens or when you come back to its tab.
   A short notice says "Updated with the latest data from Google Drive".
 - **Use one computer at a time.** If two computers changed the data while one was offline, the ERP
-  asks which copy to keep, as above.
+  asks which copy to keep, as above. Each choice shows its invoice, customer, supplier and payment
+  counts and the time of its last change; normally keep the newer one. It never asks for saves made
+  on just one computer.
 - **Daily copies:** the folder also keeps a copy for each day ("OnePlusFashion ERP Backup <date>.json"),
   the last 30 days. Any of them can be loaded with **Restore from .json** after downloading it from Drive.
 - **Settings / Backup → Google Drive backup** shows the account and last sync time, with

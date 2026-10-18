@@ -55,10 +55,12 @@ everything back. **Not** a goal: two people working at the same time (one comput
   the next click anywhere in the ERP renews it (`prompt: ""`, `login_hint` = the account), which
   normally closes by itself. Until then the badge shows "Click to sync".
 - Offline-first: data is always saved to localStorage first; sync state (account, Drive file id,
-  last synced Drive version, unsynced-change counter, device id, last daily backup) lives under its
+  syncId of the last synced copy, unsynced-change counter, device id, last daily backup) lives under its
   own localStorage key `opf_erp_cloud`, never inside the ERP data.
-- Change detection uses the Drive file `version`; a revision counter guards against saves made
-  during an upload.
+- Change detection uses a `syncId` the ERP writes into the file's appProperties on every upload
+  (a different one in Drive = another computer saved). Not Drive's `version`: Google raises it for
+  its own background changes, which caused false "Which data should be kept?" questions
+  (fixed 2026-10-18). A revision counter guards against saves made during an upload.
 - Old-browser rules still apply (ES2019, no `?.`); works in Chrome 109 / Firefox 115.
 
 ## Testing

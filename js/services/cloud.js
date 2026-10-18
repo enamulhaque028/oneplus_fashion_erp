@@ -7,7 +7,9 @@
    - Every save is kept locally first, then uploaded a few seconds later. The upload replaces
      "OnePlusFashion ERP Data.json" in Drive (a normal ERP restore file); once a day the previous
      version is kept as a dated backup copy (last 30 kept).
-   - Drive's file `version` tells whether another computer saved since our last sync:
+   - Every upload stamps the file with a new `syncId` (appProperties). A different syncId in Drive
+     means another computer saved since our last sync. (Drive's own `version` is not used: Google
+     raises it for its own background changes too, which looked like edits from elsewhere.)
        changed there, nothing new here  -> take the Drive copy;
        changed here, not there          -> upload;
        changed in both                  -> ask which to keep; the other is saved as a "Conflict copy".
@@ -42,8 +44,9 @@
 
   const DATA_COLLECTIONS = ["sales", "customers", "suppliers", "purchases", "payments", "products", "expenses", "production", "transfers", "factories"];
   const hasData = (db) => DATA_COLLECTIONS.some((k) => (db[k] || []).length);
-  const counts = (db) => ({ invoices: db.sales.length, customers: db.customers.length, payments: db.payments.length, purchases: db.purchases.length });
-  const countText = (c) => (c ? `${c.invoices || 0} invoices · ${c.customers || 0} customers · ${c.payments || 0} payments` : "");
+  const counts = (db) => ({ invoices: db.sales.length, customers: db.customers.length, suppliers: db.suppliers.length, payments: db.payments.length, purchases: db.purchases.length });
+  const countText = (c) => (c ? `${c.invoices || 0} invoices · ${c.customers || 0} customers` + (c.suppliers == null ? "" : ` · ${c.suppliers} suppliers`) + ` · ${c.payments || 0} payments` : "");
+  const syncIdOf = (file) => (file.appProperties || {}).syncId || "";
   const when = (iso) => (iso ? new Date(iso).toLocaleString() : "unknown");
 
   /* ---------- header badge and status ---------- */
@@ -111,7 +114,7 @@
   function run() {
     return currentFile().then((file) => {
       if (!file) return uploadNew();
-      const changedThere = file.version != meta.version;
+      const changedThere = syncIdOf(file) != (meta.syncId || "");
       if (changedThere && !dirty()) return applyRemote(file);
       if (changedThere) return conflict(file);
       if (dirty()) return upload(file);
@@ -121,7 +124,7 @@
   // The Drive data file: by remembered id, else by searching (new computer, or file re-created).
   function currentFile() {
     const known = meta.fileId
-      ? D.meta(meta.fileId).catch((e) => { if (e.code == "missing") { meta.fileId = null; meta.version = null; return null; } throw e; })
+      ? D.meta(meta.fileId).catch((e) => { if (e.code == "missing") { meta.fileId = null; meta.syncId = null; return null; } throw e; })
       : Promise.resolve(null);
     return known.then((f) => f || D.find("data").then((list) => {
       const found = list[0] || null;
@@ -137,12 +140,14 @@
 
   function payload() {
     const db = OPF.store.db;
-    return { text: JSON.stringify(db), props: { opfErp: "data", savedAt: new Date().toISOString(), savedBy: meta.deviceId, counts: JSON.stringify(counts(db)) } };
+    return { text: JSON.stringify(db), props: { opfErp: "data", savedAt: new Date().toISOString(), savedBy: meta.deviceId, syncId: uid(), counts: JSON.stringify(counts(db)) } };
   }
 
-  function synced(file, rev) {
+  // syncId: the stamp of the copy both sides now hold.
+  function synced(file, rev, syncId) {
     meta.fileId = file.id;
-    meta.version = file.version;
+    meta.syncId = syncId;
+    delete meta.version; // older builds compared Drive's version
     meta.syncedRev = rev;
     meta.lastSync = new Date().toISOString();
     saveMeta();
@@ -152,12 +157,13 @@
     const rev = meta.rev, p = payload();
     return folderId()
       .then((fid) => D.create({ name: S().DATA_FILE, parents: [fid], mimeType: "application/json", appProperties: p.props }, p.text))
-      .then((f) => { meta.lastBackupDay = today(); synced(f, rev); });
+      .then((f) => { meta.lastBackupDay = today(); synced(f, rev, p.props.syncId); });
   }
 
   function upload(file) {
     const rev = meta.rev;
-    return dailyBackup(file).then(() => { const p = payload(); return D.update(file.id, { appProperties: p.props }, p.text); }).then((f) => synced(f, rev));
+    const p = payload();
+    return dailyBackup(file).then(() => D.update(file.id, { appProperties: p.props }, p.text)).then((f) => synced(f, rev, p.props.syncId));
   }
 
   // Before the first upload of the day, keep the previous version as a dated copy (last N kept).
@@ -176,7 +182,7 @@
       if (!data || typeof data != "object" || !Array.isArray(data.sales)) throw Object.assign(new Error("The Drive file is not ERP data."), { code: "bad" });
       applying = true;
       try { OPF.store.replace(OPF.migrate.normalize(data)); } finally { applying = false; }
-      synced(file, meta.rev);
+      synced(file, meta.rev, syncIdOf(file));
       if (!quiet) {
         OPF.router.reload();
         toast("Updated with the latest data from Google Drive.");
@@ -331,7 +337,7 @@
     if (dirty() && !confirm("Some changes are not in Google Drive yet. Sign out anyway? They stay on this computer only.")) return;
     if (!dirty() && !confirm("Sign out of Google Drive backup on this computer?")) return;
     D.forgetToken();
-    ["account", "fileId", "folderId", "version", "lastSync", "lastBackupDay"].forEach((k) => { delete meta[k]; });
+    ["account", "fileId", "folderId", "syncId", "version", "lastSync", "lastBackupDay"].forEach((k) => { delete meta[k]; });
     meta.syncedRev = meta.rev;
     saveMeta();
     location.reload();
