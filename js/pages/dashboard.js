@@ -69,14 +69,14 @@
 
     const latest = byDateDesc(db.sales).slice(0, 6).map((s) => {
       const c = S.byId("customers", s.customer), due = K.saleDue(s);
-      return H.tr([H.td(c ? H.link(esc(c.name), "customer.open", { id: c.id }) : esc(s.customer)), H.td(s.date), H.td(esc(s.invoice)), H.tdn(money(K.saleTotal(s))),
+      return H.tr([H.td(c ? H.customerLink(esc(c.name), c.id) : esc(s.customer)), H.td(s.date), H.td(esc(s.invoice)), H.tdn(money(K.saleTotal(s))),
         H.tdn(money(s.paid), "green"), H.tdn(money(due), due > 0 ? "red" : ""), H.td(H.button(OPF.icon("printer") + "Memo", "print.invoice", { id: s.id }, "sm"), "act no-print")]);
     });
     const periodLabel = (PERIODS.find((p) => p[0] == period) || PERIODS[0])[1];
 
     H.mount(
       "<h1>Dashboard</h1>" +
-      `<div class="quick no-print">${QUICK.map(([page, icon, label]) => H.button(OPF.icon(icon) + label, "nav.go", { page })).join("")}</div>` +
+      `<div class="quick no-print">${QUICK.map(([page, icon, label]) => H.pageLink(OPF.icon(icon) + label, page, "btn")).join("")}</div>` +
       `<div class="filterbar no-print"><span class="ic">${OPF.icon("calendar")}</span><select data-change="dashboard.period">${PERIODS.map(([v, l]) => `<option value="${v}"${v == period ? " selected" : ""}>${l}</option>`).join("")}</select>` +
       `<span class="muted">${period == "all" ? "All records" : esc(from) + (from == to ? "" : " to " + esc(to))}</span></div>` +
       '<div class="stats">' +
@@ -102,7 +102,7 @@
       `<div class="sumchips"><div>Total Sales<b>${money(totals[0])}</b></div><div>Total Purchases<b>${money(totals[1])}</b></div><div>Total Expenses<b>${money(totals[2])}</b></div><div>Avg. Daily Sales<b>${money(totals[0] / 30)}</b></div></div>` +
       OPF.charts.trend({ labels: days, series, type: chartType }) +
       "</div></div>" +
-      `<div class="box"><div class="panel-title"><span class="ic" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">${OPF.icon("receipt")}</span><span class="grow"><b>Latest Invoices</b><small>Newest six sales</small></span>${H.button("View All", "nav.go", { page: "sales" }, "light sm")}</div>` +
+      `<div class="box"><div class="panel-title"><span class="ic" style="background:linear-gradient(135deg,#8b5cf6,#6366f1)">${OPF.icon("receipt")}</span><span class="grow"><b>Latest Invoices</b><small>Newest six sales</small></span>${H.pageLink("View All", "sales", "btn light sm")}</div>` +
       H.table(["Customer", "Date", "Invoice", "#Amount", "#Paid", "#Due", ""], latest, { tight: true }) + "</div>" +
       '<div class="box flow"><b>End-to-End Workflow</b><div class="muted" style="margin-top:4px">Supplier → Purchase → Raw Stock → Material Issue → Production → Finished Goods → Factory/Shop Transfer → Showroom → Sales → Customer Ledger → Payment → Courier → Invoice → P/L</div>' +
       "<div class=\"alert\" style=\"margin-bottom:0\">This edition is optimized for your Windows 7 / 4 GB RAM laptop. It is offline and requires no Python, MySQL, Node.js or VPS for single-computer use. Use the search bar at the top to open any customer's full history.</div></div>"

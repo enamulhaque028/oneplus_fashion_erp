@@ -183,6 +183,7 @@
       check("all " + OPF.config.MENU.length + " pages render", broken, []);
       OPF.views.customer(cid);
       check("customer profile renders", /Ledger Statement/.test(document.getElementById("app").textContent), true);
+      check("page addresses update (links, Back, new tab)", location.hash, "#/customer/" + cid);
 
       report();
     })();

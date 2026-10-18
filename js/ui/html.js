@@ -70,6 +70,12 @@
   // rows: [label, valueHtml, bold?]
   const calcTable = (rows) => `<table>${rows.map((r) => `<tr${r[2] ? ' class="b"' : ""}><td>${r[0]}</td><td class="v">${r[1]}</td></tr>`).join("")}</table>`;
 
+  // Navigation as real links (open in new tab, Back button): routes come from ui/router.js.
+  const href = (label, route, cls) => `<a href="${esc(route)}"${cls ? ` class="${cls}"` : ""}>${label}</a>`;
+  const pageLink = (label, page, cls) => href(label, OPF.router.routes.page(page), cls);
+  const customerLink = (label, id, cls) => href(label, OPF.router.routes.customer(id), cls);
+  const statementLink = (label, type, id, cls) => href(label, OPF.router.routes.statement(type, id), cls);
+
   const button = (label, act, data, cls) => `<button type="button" class="${cls || ""}" data-act="${act}"${dataAttrs(data)}>${label}</button>`;
   const link = (label, act, data) => `<a href="#" data-act="${act}"${dataAttrs(data)}>${label}</a>`;
 
@@ -77,5 +83,5 @@
   const mount = (html) => { $("app").innerHTML = html; };
   const append = (html) => { $("app").insertAdjacentHTML("beforeend", html); };
 
-  OPF.html = { attrs, dataAttrs, field, select, cell, options, optionList, datalist, table, td, tdn, tdEmpty, tr, card, cards, pill, calcTable, button, link, $, mount, append };
+  OPF.html = { href, pageLink, customerLink, statementLink, attrs, dataAttrs, field, select, cell, options, optionList, datalist, table, td, tdn, tdEmpty, tr, card, cards, pill, calcTable, button, link, $, mount, append };
 })(window.OPF = window.OPF || {});

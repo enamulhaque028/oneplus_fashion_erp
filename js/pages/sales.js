@@ -46,7 +46,7 @@
     const rows = list.map(({ s, pcs, total, due }) => {
       const c = customers[s.customer];
       return H.tr([
-        H.td(s.date), H.td(esc(s.invoice)), H.td(c ? H.link(esc(c.name), "customer.open", { id: c.id }) : esc(s.customer)),
+        H.td(s.date), H.td(esc(s.invoice)), H.td(c ? H.customerLink(esc(c.name), c.id) : esc(s.customer)),
         H.td(esc(s.items.map((i) => i.style).join(", "))), H.tdn(fmtQty(pcs)), H.tdn(money(total)), H.tdn(money(s.paid)),
         H.tdn(dueText(due), due > 0 ? "red" : ""), H.td(due > 0 ? H.pill("Due", "due") : H.pill("Cash", "cash")),
         R.rowActions("sales", s.id, H.button("Invoice", "print.invoice", { id: s.id }, "sm"))

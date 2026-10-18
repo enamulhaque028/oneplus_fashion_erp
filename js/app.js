@@ -23,7 +23,7 @@
     OPF.search.init();
     tick();
     setInterval(tick, 1000);
-    OPF.router.go("dashboard");
+    OPF.router.start(); // opens the page in the address (#/...), else the dashboard
   }
 
   document.addEventListener("DOMContentLoaded", start);

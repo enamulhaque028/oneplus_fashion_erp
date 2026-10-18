@@ -35,7 +35,7 @@
     const rows = S.db.customers.filter((c) => bm[c.id].bal > 0.004).sort((a, b) => bm[b.id].bal - bm[a.id].bal).map((c) => {
       const b = todays[c.id];
       return H.tr([
-        H.td(H.link(esc(c.name), "customer.open", { id: c.id })), H.td(esc(c.mobile)), H.tdn(money(b.prev)), H.tdn(money(b.bill)), H.tdn(money(b.total)), H.tdn(money(b.less)),
+        H.td(H.customerLink(esc(c.name), c.id)), H.td(esc(c.mobile)), H.tdn(money(b.prev)), H.tdn(money(b.bill)), H.tdn(money(b.total)), H.tdn(money(b.less)),
         H.tdn("<b>" + money(bm[c.id].bal) + "</b>", "red"), H.td(H.button("Collect", "payments.collect", { type: "Customer", id: c.id }, "sm"), "act no-print")
       ]);
     });
@@ -49,7 +49,7 @@
     ["Supplier", "Factory"].forEach((type) => {
       const bm = L.balances(type);
       S.db[C.PARTY_COLL[type]].filter((p) => bm[p.id].bal > 0.004).forEach((p) => rows.push(H.tr([
-        H.td(type), H.td(H.link(esc(p.name), "party.statement", { type, id: p.id })), H.td(esc(p.mobile)), H.tdn(money(bm[p.id].bal), "red"),
+        H.td(type), H.td(H.statementLink(esc(p.name), type, p.id)), H.td(esc(p.mobile)), H.tdn(money(bm[p.id].bal), "red"),
         H.td(H.button("Pay", "payments.collect", { type, id: p.id }, "sm"), "act no-print")
       ])));
     });

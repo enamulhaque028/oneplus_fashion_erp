@@ -1,6 +1,6 @@
 /* Application frame: grouped sidebar with icons and expandable sections, header title,
-   light / dark theme, collapsible and mobile sidebar. Presentation only - navigation itself
-   still goes through the "nav.go" action and OPF.router.
+   light / dark theme, collapsible and mobile sidebar. Presentation only - sidebar items are
+   real links to the page routes (#/page), so they open in a new tab and work with Back.
 
    UI preferences (theme, collapsed sidebar) live under their own localStorage key, never in the
    ERP data. Only init() touches it, and the self-test page never calls init(). */
@@ -21,8 +21,8 @@
   const groupOf = (page) => C.NAV_GROUPS.findIndex((g) => g[3].indexOf(page) >= 0);
 
   function item(id, current, sub) {
-    return `<button type="button" class="${current == id ? "on" : ""}" data-act="nav.go" data-page="${id}" title="${esc(LABELS[id])}">` +
-      `${OPF.icon(C.PAGE_ICONS[id])}<span class="lb">${esc(LABELS[id])}</span></button>`;
+    return `<a class="item${current == id ? " on" : ""}" href="${OPF.router.routes.page(id)}" data-page="${id}" title="${esc(LABELS[id])}">` +
+      `${OPF.icon(C.PAGE_ICONS[id])}<span class="lb">${esc(LABELS[id])}</span></a>`;
   }
 
   function menuHtml(current) {
@@ -33,7 +33,7 @@
       if (pages.length == 1) return `<div class="one" data-tone="${tone}">${item(pages[0], current)}</div>`;
       const isOpen = q || gi == active || open[gi];
       return `<div class="grp${isOpen ? " open" : ""}${gi == active ? " has-on" : ""}" data-tone="${tone}">` +
-        `<button type="button" data-act="nav.group" data-group="${gi}" title="${esc(label)}">${OPF.icon(icon)}<span class="lb">${esc(label)}</span>${OPF.icon("chevron").replace('class="i"', 'class="i chev"')}</button>` +
+        `<button type="button" class="item" data-act="nav.group" data-group="${gi}" title="${esc(label)}">${OPF.icon(icon)}<span class="lb">${esc(label)}</span>${OPF.icon("chevron").replace('class="i"', 'class="i chev"')}</button>` +
         `<div class="sub">${shown.map((id) => item(id, current, true)).join("")}</div></div>`;
     }).join("");
   }

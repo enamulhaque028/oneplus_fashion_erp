@@ -10,10 +10,11 @@
   const ledgerRow = (x) => H.tr([H.td(x.date || "Opening"), H.td(esc(x.kind)), H.td(esc(x.ref)), H.tdn(x.dr ? money(x.dr) : ""), H.tdn(x.cr ? money(x.cr) : ""), H.tdn(dueText(x.bal))]);
   const lastBalance = (entries) => (entries.length ? entries[entries.length - 1].bal : 0);
 
-  function customer(id) {
+  // fromHistory: the address already shows this view (link, Back / Forward, new tab).
+  function customer(id, fromHistory) {
     const c = S.byId("customers", id);
-    if (!c) { OPF.router.go("customers"); return; }
-    OPF.router.show("customers", () => renderCustomer(id));
+    if (!c) { OPF.router.go("customers", false, fromHistory); return; }
+    OPF.router.show("customers", () => renderCustomer(id), false, { route: OPF.router.routes.customer(id), title: c.name, fromHistory });
   }
 
   function renderCustomer(id) {
@@ -29,7 +30,7 @@
     H.mount(
       `<h1>${esc(c.name)}</h1><div class="actions no-print" style="margin-top:-6px;margin-bottom:12px">` +
       H.button("Collect Payment", "payments.collect", { type: "Customer", id }) + H.button("Edit Profile", "record.edit", { coll: "customers", id }, "light") +
-      H.button("Print Statement", "print.page", null, "light") + H.button("Back to Customers", "nav.go", { page: "customers" }, "light") + "</div>" +
+      H.button("Print Statement", "print.page", null, "light") + H.pageLink("Back to Customers", "customers", "btn light") + "</div>" +
       H.cards([
         H.card("Previous Due (opening)", money(c.previousDue)), H.card("Total Sales", money(sum(sales, K.saleTotal))), H.card("Returns", money(sum(returns, (r) => r.amount))),
         H.card("Total Received", money(received), "ok"), H.card("Current Due", dueText(bal), bal > 0 ? "hl" : "ok"), H.card("Invoices", sales.length)
@@ -53,18 +54,19 @@
     );
   }
 
-  function statement(type, id) {
-    if (type == "Customer") { customer(id); return; }
-    const menu = type == "Supplier" ? "suppliers" : "factories";
-    if (!S.byId(C.PARTY_COLL[type], id)) { OPF.router.go(menu); return; }
-    OPF.router.show(menu, () => renderStatement(type, id, menu));
+  function statement(type, id, fromHistory) {
+    if (type == "Customer") { customer(id, fromHistory); return; }
+    if (!C.PARTY_COLL[type]) { OPF.router.go("ledger", false, fromHistory); return; } // stale or hand-typed link
+    const menu = type == "Supplier" ? "suppliers" : "factories", p = S.byId(C.PARTY_COLL[type], id);
+    if (!p) { OPF.router.go(menu, false, fromHistory); return; }
+    OPF.router.show(menu, () => renderStatement(type, id, menu), false, { route: OPF.router.routes.statement(type, id), title: p.name, fromHistory });
   }
 
   function renderStatement(type, id, menu) {
     const p = S.byId(C.PARTY_COLL[type], id), entries = L.entries(type, id), bal = lastBalance(entries);
     H.mount(
       `<h1>${esc(p.name)} <span class="muted">${type} statement</span></h1><div class="actions no-print" style="margin-bottom:12px">` +
-      H.button("Make Payment", "payments.collect", { type, id }) + H.button("Print Statement", "print.page", null, "light") + H.button("Back", "nav.go", { page: menu }, "light") + "</div>" +
+      H.button("Make Payment", "payments.collect", { type, id }) + H.button("Print Statement", "print.page", null, "light") + H.pageLink("Back", menu, "btn light") + "</div>" +
       H.cards([
         H.card("Opening", money(p.previousDue)),
         H.card(type == "Supplier" ? "Total Purchases" : "Production Bill", money(sum(entries.filter((x) => x.kind != "Opening"), (x) => x.dr))),

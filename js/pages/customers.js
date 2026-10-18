@@ -5,7 +5,7 @@
   const H = OPF.html, F = OPF.forms, R = OPF.records, K = OPF.calc, L = OPF.ledger, S = OPF.store;
   const { esc, num, r2, sum, money, dueText, today, monthStart } = OPF.util;
 
-  const openLink = (c) => H.link(esc(c.name), "customer.open", { id: c.id });
+  const openLink = (c) => H.customerLink(esc(c.name), c.id);
 
   function render() {
     F.page({
@@ -27,7 +27,7 @@
       const bal = bm[c.id].bal, overLimit = num(c.credit) && bal > num(c.credit);
       return H.tr([
         H.td(openLink(c)), H.td(esc(c.mobile)), H.td(esc(c.district)), H.tdn(dueText(bal), bal > 0 ? "red" : "green"),
-        H.td(overLimit ? H.pill("Over limit", "due") : ""), R.rowActions("customers", c.id, H.button("View", "customer.open", { id: c.id }, "sm light"))
+        H.td(overLimit ? H.pill("Over limit", "due") : ""), R.rowActions("customers", c.id, H.customerLink("View", c.id, "btn sm light"))
       ]);
     };
 

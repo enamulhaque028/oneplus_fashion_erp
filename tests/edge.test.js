@@ -184,14 +184,14 @@ const { start, sleep } = require("./lib");
   section("UI shell: sidebar, header, theme, dashboard charts");
   await go("courier");
   check("every menu page appears exactly once in the grouped sidebar", await page.evaluate(() => {
-    const ids = Array.from(document.querySelectorAll('#nav .menu [data-act="nav.go"]')).map((b) => b.dataset.page).sort();
+    const ids = Array.from(document.querySelectorAll('#nav .menu a.item')).map((b) => b.dataset.page).sort();
     return [ids.length, ids.join() == OPF.config.MENU.map((m) => m[0]).sort().join()];
   }), [22, true]);
   check("the current page's group is open and the page highlighted", await page.evaluate(() => [document.querySelector("#nav .grp.open .on").dataset.page, document.getElementById("pageTitle").textContent]), ["courier", "SalesCourier / Delivery"]);
   await act("nav.group", { group: "1" });
   check("clicking a group opens it", await page.$eval('#nav [data-group="1"]', (b) => b.parentNode.classList.contains("open")), true);
   await page.type("#navSearch", "ledg");
-  check("menu search filters the pages", await page.$$eval('#nav .menu [data-act="nav.go"]', (b) => b.map((x) => x.dataset.page)), ["ledger"]);
+  check("menu search filters the pages", await page.$$eval('#nav .menu a.item', (b) => b.map((x) => x.dataset.page)), ["ledger"]);
   await page.$eval("#navSearch", (e) => { e.value = ""; e.dispatchEvent(new Event("input", { bubbles: true })); });
   await page.click('[data-theme-set="dark"]');
   await page.reload();
@@ -214,6 +214,66 @@ const { start, sleep } = require("./lib");
   await act("dashboard.chart", { type: "table" });
   check("table view lists 30 days", await page.$$eval(".dash2 .table tbody tr", (r) => r.length), 30);
   check("chart colours use style (var() is ignored in SVG attributes)", await page.evaluate(() => document.querySelectorAll('svg [fill^="var("], svg [stroke^="var("]').length), 0);
+
+  section("Page navigation: real links, address bar, Back / Forward, new tabs");
+  await page.evaluate(() => { location.hash = "#/dashboard"; });
+  await sleep(200);
+  check("every sidebar item is a link to its page (right-click -> open in new tab)", await page.evaluate(() =>
+    OPF.config.MENU.every(([id]) => !!document.querySelector(`#nav a.item[href="#/${id}"]`)) && !document.querySelector('#nav a.item[data-act]')), true);
+  // Click a sidebar link like a person: open its group first when the link is hidden.
+  async function navClick(id, modifier) {
+    const sel = `#nav a.item[href="#/${id}"]`;
+    if (!(await page.$eval(sel, (e) => e.offsetParent !== null))) {
+      const gi = await page.evaluate((id) => OPF.config.NAV_GROUPS.findIndex((g) => g[3].indexOf(id) >= 0), id);
+      await page.click(`#nav [data-group="${gi}"]`);
+    }
+    if (modifier) await page.keyboard.down(modifier);
+    await page.click(sel);
+    if (modifier) await page.keyboard.up(modifier);
+    await sleep(150);
+  }
+  const hereIs = () => page.evaluate(() => [location.hash, document.querySelector("#app h1").textContent, document.title]);
+  await navClick("suppliers");
+  check("clicking a sidebar link opens the page and changes the address and tab title", await hereIs(), ["#/suppliers", "Supplier / Fabric Party", "Suppliers · One Plus Fashion ERP"]);
+  await navClick("customers");
+  const cust = await db((d) => d.customers.find((c) => c.name == "Mirpur Traders"));
+  await page.click(`a[href="#/customer/${cust.id}"]`); await sleep(150);
+  check("customer name links open the profile with its own address", await hereIs(), [`#/customer/${cust.id}`, "Mirpur Traders", "Mirpur Traders · One Plus Fashion ERP"]);
+  await page.goBack(); await sleep(150);
+  check("Back returns to the previous page", (await hereIs())[0], "#/customers");
+  await page.goBack(); await sleep(150);
+  check("Back again returns to the page before", (await hereIs()).slice(0, 2), ["#/suppliers", "Supplier / Fabric Party"]);
+  await page.goForward(); await sleep(150);
+  check("Forward works too", (await hereIs())[0], "#/customers");
+  await page.evaluate(() => OPF.pages.payments.collect("Customer", OPF.store.db.customers[0].id)); await sleep(100);
+  await page.goBack(); await sleep(150);
+  check("pages opened by buttons (Collect) are in the history as well", (await hereIs())[0], "#/customers");
+
+  const tab = await T.browser.newPage();
+  await tab.goto(T.APP + `#/customer/${cust.id}`); await sleep(400);
+  check("a customer link opened in a new tab shows that customer (same saved data)", await tab.evaluate(() => [document.querySelector("#app h1").textContent, document.querySelector("#nav a.item.on").dataset.page]), ["Mirpur Traders", "customers"]);
+  const sup = await db((d) => d.suppliers[0]);
+  await tab.goto(T.APP + `#/statement/Supplier/${sup.id}`); await sleep(400);
+  check("supplier statement links work in a new tab", await tab.evaluate(() => document.querySelector("#app h1").textContent.indexOf("Supplier statement") > 0), true);
+  await tab.goto(T.APP + "#/no-such-page"); await sleep(400);
+  check("an unknown address falls back to the dashboard and corrects the address", await tab.evaluate(() => [location.hash, document.querySelector("#app h1").textContent]), ["#/dashboard", "Dashboard"]);
+  await tab.goto(T.APP + "#/statement/Nonsense/x1"); await sleep(400);
+  check("a broken statement link opens the Ledgers page instead of failing", await tab.evaluate(() => location.hash), "#/ledger");
+  await tab.close();
+
+  await navClick("suppliers");
+  const before = await page.evaluate(() => history.length);
+  // The ERP must leave modified clicks to the browser: record whether anything cancelled the click.
+  await page.evaluate(() => { window.__prevented = null; window.addEventListener("click", (e) => { window.__prevented = e.defaultPrevented; }, { once: true }); });
+  const opened = new Promise((res) => T.browser.once("targetcreated", (t) => res(t.url())));
+  await navClick("expenses", process.platform == "darwin" ? "Meta" : "Control");
+  const newTabUrl = await Promise.race([opened, sleep(3000).then(() => "")]);
+  check("Ctrl / Cmd-click is left to the browser and this tab stays put", [await page.evaluate(() => window.__prevented), await page.evaluate(() => location.hash), await page.evaluate(() => history.length) == before], [false, "#/suppliers", true]);
+  // Classic headless (used for Chromium 109) has no tabs to open, so only check the new tab where it can exist.
+  if (!process.env.OLD_BROWSER) check("Ctrl / Cmd-click opens the page in a new tab", /#\/expenses$/.test(newTabUrl), true);
+  await page.type('#mainForm [name="name"]', "Half typed");
+  await navClick("suppliers");
+  check("clicking the current page's link redraws it (clears the form)", await page.$eval('#mainForm [name="name"]', (e) => e.value), "");
 
   await T.finish();
 })().catch((e) => { console.error(e); process.exit(1); });

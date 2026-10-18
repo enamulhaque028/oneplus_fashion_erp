@@ -15,11 +15,11 @@
     });
     const bm = L.balances("Factory");
     const rows = OPF.store.db.factories.map((r) => {
-      const b = bm[r.id], statement = { type: "Factory", id: r.id };
+      const b = bm[r.id];
       return H.tr([
-        H.td(H.link(esc(r.name), "party.statement", statement)), H.td(esc(r.mobile)), H.td(esc(r.address)), H.tdn(money(r.rate)),
+        H.td(H.statementLink(esc(r.name), "Factory", r.id)), H.td(esc(r.mobile)), H.td(esc(r.address)), H.tdn(money(r.rate)),
         H.tdn(money(b.dr)), H.tdn(money(b.cr)), H.tdn(dueText(b.bal), b.bal > 0 ? "red" : ""),
-        R.rowActions("factories", r.id, H.button("Statement", "party.statement", statement, "sm light"))
+        R.rowActions("factories", r.id, H.statementLink("Statement", "Factory", r.id, "btn sm light"))
       ]);
     });
     H.append(H.table(["Factory/Worker", "Mobile", "Address", "#Rate/PCS", "#Production Bill", "#Paid", "#Current Payable", ""], rows));

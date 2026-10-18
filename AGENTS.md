@@ -70,6 +70,9 @@ reports.
   for display. `num()` accepts `"1,250.50"`.
 - **Escaping:** every user value in HTML goes through `OPF.util.esc`, or through `H.field` /
   `H.attrs`, which escape attributes.
+- **Navigation:** links, not buttons: `H.pageLink(label, page, cls)`, `H.customerLink`,
+  `H.statementLink` (routes `#/page`, `#/customer/<id>`, `#/statement/<type>/<id>`). A new view
+  must get a route in `ui/router.js` so new tabs, bookmarks and Back work.
 - **Events:** no inline `onclick`. Use `data-act` / `data-change` / `data-submit` / `data-calc` plus
   `OPF.actions.register({ "page.verb": fn })`. Handlers get `(element, event)`; parameters travel in `data-*`.
 - **Forms:** use `form.elements.namedItem(name)` (via `F.el` / `F.get` / `F.set`), never `form.style`
@@ -136,8 +139,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 84, edge 51, uat 42 checks, all passing;
-  - self-test 23 / 23 on Chrome 73, 109, current and Firefox 115.
+  - current Chrome and Chromium 109: e2e 84, edge 65, uat 42 checks, all passing;
+  - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).
 - **Out of scope for this offline edition:** multi-user, per-user login and roles, cloud backup,

@@ -159,6 +159,13 @@ see `memoBranding`. Bump `SCHEMA_VERSION` in
   colour in a page.
 - **Old-browser CSS:** no flexbox `gap` (Chrome 84), `clamp()`, `:is()` or `aspect-ratio`. Space flex
   children with margins (`.actions > *`). Grid `gap` is fine.
+- **Addresses (routing):** every view has a hash route - `#/<page>`, `#/customer/<id>`,
+  `#/statement/<type>/<id>` (only the part after `#` can change for `file://` pages). Navigation in
+  markup is a real link: `H.pageLink`, `H.customerLink`, `H.statementLink` - not a `data-act` button -
+  so right-click "Open in new tab", Ctrl/Cmd-click and Back / Forward work. `router.go` / `router.show`
+  draw immediately and record the route with `history.pushState`; the `hashchange` listener draws
+  views reached by links, Back / Forward or a pasted address; `router.start()` opens the address
+  at start-up. Unknown or broken addresses fall back (dashboard / ledger) and replace the address.
 - **Sidebar:** `NAV_GROUPS` and `PAGE_ICONS` in `config.js` group and decorate the flat `MENU`; every
   MENU id must appear in exactly one group. `ui/shell.js` draws it on each navigation.
 - **UI preferences** (theme, collapsed sidebar) are stored under the localStorage key `opf_erp_ui`,

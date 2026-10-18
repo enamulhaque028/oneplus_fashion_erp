@@ -69,6 +69,14 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 | **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
 | **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
 
+**Pages work like a website.** Every page has its own address, shown after `#` in the address bar,
+e.g. `OnePlusFashion_ERP.html#/suppliers` or `#/customer/...` for a customer's profile. So:
+- the browser's **Back** and **Forward** buttons move between the pages you visited;
+- right-click a menu item, customer name or **Statement** / **View** button and choose
+  **Open link in new tab**, or Ctrl-click it (Cmd-click on a Mac), to work in two pages at once.
+  All tabs use the same saved data; after saving in one tab, press F5 in the other to see the change;
+- you can bookmark a page, and **F5** reloads the page you are on.
+
 Many fields suggest earlier entries as you type (style codes, materials, shops, invoice numbers,
 courier companies). Pick a suggestion to avoid spelling differences. "OPF-101" and "OPF 101"
 count as two different styles.

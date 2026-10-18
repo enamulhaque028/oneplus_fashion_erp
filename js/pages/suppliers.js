@@ -15,11 +15,11 @@
     });
     const bm = L.balances("Supplier");
     const rows = OPF.store.db.suppliers.map((r) => {
-      const statement = { type: "Supplier", id: r.id }, bal = bm[r.id].bal;
+      const bal = bm[r.id].bal;
       return H.tr([
-        H.td(H.link(esc(r.name), "party.statement", statement)), H.td(esc(r.company)), H.td(esc(r.mobile)), H.td(esc(r.address)),
+        H.td(H.statementLink(esc(r.name), "Supplier", r.id)), H.td(esc(r.company)), H.td(esc(r.mobile)), H.td(esc(r.address)),
         H.tdn(money(r.previousDue)), H.tdn(dueText(bal), bal > 0 ? "red" : ""),
-        R.rowActions("suppliers", r.id, H.button("Statement", "party.statement", statement, "sm light"))
+        R.rowActions("suppliers", r.id, H.statementLink("Statement", "Supplier", r.id, "btn sm light"))
       ]);
     });
     H.append("<h2>Supplier Register</h2>" + H.table(["Party", "Company", "Mobile", "Address", "#Previous Due", "#Current Payable", ""], rows));
