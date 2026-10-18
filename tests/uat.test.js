@@ -100,14 +100,33 @@ const { start, sleep } = require("./lib");
   check("Expect on receipt: Money Receipt MR-00001, bKash, TRX12345, Remaining Due 40,000.00, Twenty Thousand Taka Only", /Money Receipt/.test(rt) && /MR-00001/.test(rt) && /bKash/.test(rt) && /TRX12345/.test(rt) && /Remaining Due\s*40,000\.00/.test(rt) && /Twenty Thousand Taka Only/.test(rt), true);
   await receipt.close();
 
-  section("Step 11  Courier COD");
+  section("Step 11  Courier / Delivery");
   await go("courier"); await type({ invoice: "INV-00001" });
   check("Expect: Customer and Destination fill in; COD = 10,000", await page.evaluate(() => ["destination", "cod"].map((k) => document.querySelector(`#mainForm [name="${k}"]`).value)), ["Bongo Bazar, Dhaka", "10000"]);
-  await type({ courier: "Pathao", tracking: "PT-1", cod: 15000, advance: 1000, charge: 150 });
-  check("Expect: Net COD 14,000", await page.$eval('[name="netCod"]', (e) => e.value), "14000");
-  check("Expect: Net Receivable from Courier 13,850.00", /Net Receivable from Courier\s+13,850\.00/.test(await calc()), true);
+  const dueBefore = await page.evaluate(() => OPF.ledger.totalDue("Customer"));
+  await type({ courier: "Pathao", tracking: "PT-1", remarks: "Deliver after 5 pm" });
   await save();
-  check("Expect: 'Out of 1 parcels sent: 0 delivered, 1 pending'", /Out of 1 parcels sent: 0 delivered, 1 pending/.test(await text("#app")), true);
+  check("Expect: the parcel is in the list with its note; Pending Parcels 1", [/PT-1/.test(await text("#app .table")), /Deliver after 5 pm/.test(await text("#app .table")), /Pending Parcels\s*1/.test(await text("#app"))], [true, true, true]);
+  check("Expect: Customer Due on the Dashboard is unchanged", await page.evaluate(() => OPF.ledger.totalDue("Customer")), dueBefore);
+
+  section("Step 3.7  Rough Notes");
+  await go("notes");
+  await type({ subject: "Idea" });
+  await page.click("#rtBox"); await page.keyboard.type("Try a ");
+  await page.click('[data-cmd="bold"]'); await page.keyboard.type("blue denim"); await page.click('[data-cmd="bold"]'); await page.keyboard.type(" style");
+  await page.keyboard.press("Enter"); await page.keyboard.type("Ask the price");
+  await page.click('[data-act="notes.addSketch"]');
+  await page.$eval("#skCanvas", (c) => c.scrollIntoView({ block: "center" }));
+  const bb = await (await page.$("#skCanvas")).boundingBox();
+  await page.mouse.move(bb.x + bb.width * 0.3, bb.y + bb.height * 0.3); await page.mouse.down();
+  await page.mouse.move(bb.x + bb.width * 0.7, bb.y + bb.height * 0.7, { steps: 10 }); await page.mouse.up();
+  await save();
+  check("Expect: a card with 'blue denim' in bold, two lines, and the sketch", await page.evaluate(() => {
+    const c = document.querySelector(".note-card");
+    return [c.querySelector(".note-body b") && c.querySelector(".note-body b").textContent, c.querySelector(".note-body").innerText.trim().split("\n").length, !!c.querySelector("canvas.note-sketch")];
+  }), ["blue denim", 2, true]);
+  await page.type('[data-change="notes.search"]', "denim"); await page.keyboard.press("Enter"); await page.keyboard.press("Tab");
+  check("Expect: Search notes 'denim' shows only this note", await page.$$eval("#app .note-card", (r) => r.length), 1);
 
   section("Step 12  Costing");
   await go("costing");

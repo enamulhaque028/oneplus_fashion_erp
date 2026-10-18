@@ -8,7 +8,7 @@
   const PAGE_OF = {
     suppliers: "suppliers", purchases: "purchase", issues: "issue", productionOrders: "productionOrder",
     production: "production", factories: "factories", products: "products", transfers: "transfer",
-    customers: "customers", sales: "sales", returns: "returns", payments: "payments", expenses: "expenses", courier: "courier"
+    customers: "customers", sales: "sales", returns: "returns", payments: "payments", expenses: "expenses", courier: "courier", notes: "notes"
   };
 
   // Records that other records point to cannot be deleted: [collection, field, own field (default id)].
@@ -21,7 +21,7 @@
     productionOrders: [["production", "order"], ["issues", "order"]]
   };
 
-  const label = (r) => r.invoice || r.no || r.name || r.slip || r.reference || r.tracking || r.style || r.category || r.id;
+  const label = (r) => r.invoice || r.no || r.name || r.slip || r.reference || r.tracking || r.style || r.category || r.subject || r.id;
 
   // True when another record points at `rec` (see REFERENCED_BY); text keys compare case-insensitively.
   function isReferenced(coll, rec) {

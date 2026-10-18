@@ -47,6 +47,7 @@
     printer: '<path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/>',
     cloud: '<path d="M7 18h10.5a4 4 0 0 0 .4-7.98A6 6 0 0 0 6.2 9.6 4.2 4.2 0 0 0 7 18z"/>',
     cloudoff: '<path d="M7 18h10.5a4 4 0 0 0 1.6-.33M20.9 13.6a4 4 0 0 0-3-3.58A6 6 0 0 0 9.4 5.4M6.2 9.6A4.2 4.2 0 0 0 7 18"/><path d="m3 3 18 18"/>',
+    note: '<path d="M5 3h10l4 4v14H5z"/><path d="M15 3v4h4"/><path d="M8.5 12h7M8.5 16h5"/>',
     list: '<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/>'
   };
 

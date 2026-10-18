@@ -5,7 +5,7 @@
   "use strict";
 
   const C = OPF.config;
-  const { num, r2, lc, pad } = OPF.util;
+  const { num, r2, lc, pad, esc } = OPF.util;
 
   function fresh() {
     return {
@@ -14,7 +14,7 @@
       auth: { salt: "", hash: "" },
       suppliers: [], materials: [], purchases: [], issues: [], products: [],
       productionOrders: [], production: [], factories: [], transfers: [],
-      customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [],
+      customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [], notes: [],
       showrooms: [{ id: "main", name: C.MAIN_SHOP }],
       logs: [],
       users: [{ id: "u1", name: "Administrator", username: "admin", role: "Admin" }]
@@ -102,6 +102,14 @@
           c.netCod = r2(num(c.cod) - num(c.advance));
         }
         if (!c.settled) c.settled = "No";
+      });
+    },
+    // Rough Notes became rich text: plain notes get an HTML copy with the same line breaks.
+    function noteHtml(d) {
+      d.notes.forEach((n) => {
+        if (n.html == null) n.html = esc(String(n.text || "")).replace(/\r?\n/g, "<br>");
+        if (n.sketch === undefined) n.sketch = null;
+        if (n.color == null) n.color = "";
       });
     }
   ];

@@ -48,6 +48,8 @@
   <script src="../js/ui/records.js"></script>
   <script src="../js/ui/search.js"></script>
   <script src="../js/ui/charts.js"></script>
+  <script src="../js/ui/richtext.js"></script>
+  <script src="../js/ui/sketch.js"></script>
   <script src="../js/services/auth.js"></script>
   <script src="../js/services/print.js"></script>
   <script src="../js/services/xlsx.js"></script>
@@ -73,6 +75,7 @@
   <script src="../js/pages/payments.js"></script>
   <script src="../js/pages/expenses.js"></script>
   <script src="../js/pages/courier.js"></script>
+  <script src="../js/pages/notes.js"></script>
   <script src="../js/pages/costing.js"></script>
   <script src="../js/pages/reports.js"></script>
   <script src="../js/pages/ledger.js"></script>
@@ -162,15 +165,29 @@
       check("cash memo print built", /Cash Memo/.test(printed()) && /Total Due Now: <b>60,000\.00/.test(printed()), true);
 
       /* ---- courier / costing / ledger / export ---- */
-      OPF.router.go("courier"); fill({ customer: cid, cod: 15000, advance: 1000, charge: 150, status: "Sent" });
-      check("courier net COD 14,000", form().elements.namedItem("netCod").value, "14000");
+      var dueBefore = OPF.ledger.totalDue("Customer");
+      OPF.router.go("courier"); fill({ customer: cid, cod: 15000, status: "Sent", remarks: "note" });
       submit();
+      check("courier parcel saved, dues unchanged", [db().courier.length, OPF.ledger.totalDue("Customer")], [1, dueBefore]);
+      OPF.router.go("notes"); fill({ subject: "Idea" });
+      document.getElementById("rtBox").innerHTML = "line 1<br><b>bold</b><script>x()<\/script>";
+      submit();
+      check("rough note saved, formatting cleaned", db().notes.map(function (n) { return [n.text, n.html]; }), [["line 1\nbold", "line 1<br><b>bold</b>"]]);
+      document.querySelector('[data-act="notes.addSketch"]').click();
+      var cv = document.getElementById("skCanvas"), r = cv.getBoundingClientRect();
+      [["pointerdown", 0.2], ["pointermove", 0.5], ["pointermove", 0.8], ["pointerup", 0.8]].forEach(function (s) {
+        cv.dispatchEvent(new PointerEvent(s[0], { bubbles: true, cancelable: true, pointerId: 1, button: 0, clientX: r.left + r.width * s[1], clientY: r.top + r.height * 0.5 }));
+      });
+      document.getElementById("rtBox").innerHTML = "with sketch";
+      submit();
+      var sk = db().notes.filter(function (n) { return n.text == "with sketch"; })[0].sketch;
+      check("sketch pad draws and saves strokes", [sk.strokes.length, sk.strokes[0].p.length], [1, 6]);
       OPF.router.go("costing"); fill({ fabricYd: 1.5, fabricRate: 100, accessories: 20, factory: 25, packaging: 5, transport: 3, other: 2, margin: 20 }, "costForm");
       check("costing 205 -> selling price 246", /Selling Price \/ PC\s*246\.00/.test(document.getElementById("costout").textContent.replace(/\s+/g, " ")), true);
       check("stock summary 1,170 PCS in showroom", OPF.stock.byStyle()[0].shop, 1170);
       check("ledgers reconcile", OPF.audit.run().checks.map(function (c) { return c.ok; }), [true, true, true]);
       var blob = OPF.xlsx.build(OPF.sheets.all());
-      check("Excel file builds (21 sheets)", [blob.size > 5000, OPF.sheets.all().length], [true, 21]);
+      check("Excel file builds (22 sheets)", [blob.size > 5000, OPF.sheets.all().length], [true, 22]);
       check("customer search", OPF.search.results("0171").map(function (r) { return r.c.name; }), ["Karim Store"]);
 
       /* ---- admin password + edit ---- */

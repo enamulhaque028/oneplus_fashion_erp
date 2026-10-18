@@ -60,8 +60,6 @@ const { start, sleep } = require("./lib");
   check("received more than dispatched is rejected", alerts.pop(), "Received quantity cannot be more than dispatched quantity.");
   await go("sales"); await fill({ customer: c1, discount: 99999 }); await setItems([{ style: "S1", color: "Blue", size: "L", qty: 1, rate: 300 }]); await submit();
   check("discount above subtotal is rejected", alerts.pop(), "Discount cannot be more than the subtotal.");
-  await go("courier"); await fill({ cod: 1000, advance: 1500 }); await submit();
-  check("advance above COD is rejected", alerts.pop(), "Advance cannot be more than the COD amount.");
   await go("payments"); await act("payments.collect", { id: c1 }); await fill({ amount: 0 }); await submit();
   check("zero payment is blocked by the form", await db((d) => d.payments.length), 0);
   await go("returns"); await fill({ invoice: "INV-00001" }); await fill({ qty: 25 });
@@ -186,7 +184,7 @@ const { start, sleep } = require("./lib");
   check("every menu page appears exactly once in the grouped sidebar", await page.evaluate(() => {
     const ids = Array.from(document.querySelectorAll('#nav .menu a.item')).map((b) => b.dataset.page).sort();
     return [ids.length, ids.join() == OPF.config.MENU.map((m) => m[0]).sort().join()];
-  }), [22, true]);
+  }), [23, true]);
   check("the current page's group is open and the page highlighted", await page.evaluate(() => [document.querySelector("#nav .grp.open .on").dataset.page, document.getElementById("pageTitle").textContent]), ["courier", "SalesCourier / Delivery"]);
   await act("nav.group", { group: "1" });
   check("clicking a group opens it", await page.$eval('#nav [data-group="1"]', (b) => b.parentNode.classList.contains("open")), true);

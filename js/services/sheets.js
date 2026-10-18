@@ -30,7 +30,7 @@
         ["P/L View", r2(salesTotal - returns - purchases - factoryBill - expenses)],
         ["Customer Due (Balance)", L.totalDue("Customer")], ["Supplier Payable (Balance)", L.totalDue("Supplier")], ["Factory Payable (Balance)", L.totalDue("Factory")],
         ["Godown PCS", sum(styles, (x) => x.godown)], ["Showroom PCS", sum(styles, (x) => x.shop)], ["Finished Stock Value", sum(styles, (x) => x.value)],
-        ["Raw Fabric Yard", sum(raw, (x) => x.yards)], ["Pending Parcels", courier.pending], ["Receivable from Courier", r2(courier.pendingAmt + courier.receivable)]
+        ["Raw Fabric Yard", sum(raw, (x) => x.yards)], ["Pending Parcels", courier.pending]
       ] },
       { name: "Customers", head: ["Name", "Mobile", "Address", "District", "Credit Limit", "Previous Due", "Sales Total", "Received / Returned", "Current Due"],
         rows: db.customers.map((c) => [c.name, txt(c.mobile), txt(c.address), txt(c.district), num(c.credit), num(c.previousDue), cb[c.id].dr, cb[c.id].cr, cb[c.id].bal]) },
@@ -62,8 +62,9 @@
         rows: db.payments.map((p) => { const s = p.snap || {}; return [txt(p.no), p.date, p.type, st.partyName(p.type, p.party), num(p.amount), txt(p.method), txt(p.reference), orNull(s.prev), orNull(s.bill), orNull(s.total), orNull(s.remaining), txt(p.remarks)]; }) },
       { name: "Expenses", head: ["Date", "Category", "Amount", "Method", "Location", "Remarks"],
         rows: db.expenses.map((e) => [e.date, e.category, num(e.amount), txt(e.method), txt(e.location), txt(e.remarks)]) },
-      { name: "Courier", head: ["Date", "Invoice", "Customer", "Destination", "Courier", "Tracking", "COD", "Advance", "Net COD", "Charge", "Status", "Settled", "Remarks"],
-        rows: db.courier.map((c) => [c.date, txt(c.invoice), st.partyName("Customer", c.customer), txt(c.destination), txt(c.courier), txt(c.tracking), num(c.cod), num(c.advance), K.courierNet(c), num(c.charge), c.status, c.settled, txt(c.remarks)]) },
+      { name: "Courier", head: ["Date", "Invoice", "Customer", "Destination", "Courier", "Tracking", "COD (note)", "Status", "Note"],
+        rows: db.courier.map((c) => [c.date, txt(c.invoice), st.partyName("Customer", c.customer), txt(c.destination), txt(c.courier), txt(c.tracking), num(c.cod), c.status, txt(c.remarks)]) },
+      { name: "Rough Notes", head: ["Date", "Subject", "Note", "Sketch", "Colour"], rows: db.notes.map((x) => [x.date, txt(x.subject), txt(x.text), OPF.sketch.isEmpty(x.sketch) ? "" : "Yes (open in the ERP)", x.color || "plain"]) },
       { name: "Party Ledger", head: ["Party Type", "Party", "Date", "Type", "Reference", "Debit (+)", "Credit (-)", "Balance"], rows: ledgerRows },
       { name: "Stock Summary", head: ["Style", "Product", "Godown PCS", "Showroom PCS", "Total PCS", "Cost / PC", "Stock Value"],
         rows: styles.map((x) => [x.style, x.name, x.godown, x.shop, x.total, x.cost, x.value]) },

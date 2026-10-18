@@ -94,7 +94,7 @@ count as two different styles.
 | Goods go to the shop | Record dispatched and received pieces | Factory → Shop |
 | A customer buys | Make the invoice, print it | Sales / Invoice |
 | Money comes in | Record the collection, print the receipt | Payment / Collection |
-| A parcel is sent | Record COD and tracking; update status on delivery | Courier / Delivery |
+| A parcel is sent | Record it with tracking and a note; update status on delivery. When the courier pays, enter it on Payment / Collection | Courier / Delivery |
 | Any expense | Record it | Expenses |
 | End of day / week | Check the Dashboard and Ledgers; **download backups** | Dashboard, Ledgers, Settings |
 
@@ -242,16 +242,31 @@ Salary, rent, electricity, transport and other costs, with date, amount, method 
 They are included in the P/L on the Reports page.
 
 ### Courier / Delivery
-Record parcels and COD.
+A simple record of parcels sent. **It never changes any due.**
 - Enter the **Invoice No.** and the customer, address and COD (the invoice due) fill in.
-- **Net COD to Collect** = COD − Advance paid by the customer. Example: COD 15,000, advance 1,000 → 14,000.
-- **Net Receivable from Courier** = Net COD − Courier Charge.
-- **Parcel Tracking Dashboard**: e.g. "Out of 15 parcels sent: 5 delivered, 10 pending". It also shows:
-  - COD still in transit;
-  - money the courier owes you for delivered parcels;
-  - the total receivable.
-- Change a parcel's **Status** from the dropdown in the list. When the courier pays you for a
-  delivered parcel, click **Not settled** to mark it **Settled**. Both need the admin password.
+- **COD Amount** is a note for your reference only. There is no Advance, Charge or Settled.
+- **Note:** anything to remember about the parcel.
+- The cards at the top count parcels: Sent, Delivered, Pending and Returned.
+- Change a parcel's **Status** from the dropdown in the list (needs the admin password).
+- **When the courier pays you,** enter the money on **Payment / Collection** for that customer.
+  The customer's due goes down only from that entry.
+
+### Rough Notes
+A notepad for ideas, reminders or anything to note: a date, an optional subject, the note and a sketch.
+- **Formatting:** select text and use the toolbar: **B** bold, *I* italic, U underline, **H** heading,
+  bullet or numbered list, **ab** highlight, five text colours, and **Clear** to remove formatting.
+  Ctrl+B / Ctrl+I / Ctrl+U also work. Pasted text comes in plain (no formatting from other programs).
+- **Sketch:** click **Add sketch** and draw with the mouse, a finger or a pen. Pick a colour and a
+  line thickness; **Eraser** rubs out, **Undo** removes the last line, **Clear** empties the sketch.
+  **Remove sketch** takes it off the note. One sketch per note.
+- **Colour:** pick the note's colour (Plain, Yellow, Pink, Green, Blue, Purple, Orange) - for example
+  one colour for design ideas and another for reminders. New notes start yellow; the editor shows
+  the colour while you write.
+- Saved notes show as cards in their colour, newest first, with their formatting and sketch.
+  **Search notes** finds a word in the subject or the note.
+- Notes don't change any figure. They are included in backups (.json, and Google Drive). The Excel
+  backup has the note text and says "Yes" where a note has a sketch (the drawing itself opens in the ERP).
+- Editing or deleting a note needs the admin password, like other records.
 
 ### Costing & Stock Summary
 **Product Costing:** enter the cost per piece:
@@ -420,8 +435,6 @@ The first time a newer ERP version opens, it upgrades older saved data by itself
 | Invoice due | Invoice total − Paid on the invoice |
 | Customer due | Previous Due + Invoices − Paid on invoices − Returns − Collections (below zero = Advance) |
 | Payment breakdown | Previous Due (before the day) + Today's purchases − Paid earlier today − This payment = Remaining |
-| Net COD | COD − Advance |
-| Receivable from courier | Net COD − Courier charge |
 | Cost per piece | Fabric (yards × rate) + Accessories + Factory + Packaging + Transport + Other |
 | Selling price | Cost per piece × (1 + Margin % ÷ 100) |
 | Stock value | Pieces in stock × Cost / Piece (from Style / Product) |

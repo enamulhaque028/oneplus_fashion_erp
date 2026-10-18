@@ -231,10 +231,8 @@ const money = (s) => n(String(s).replace(/[^\d.-]/g, "")) * (/Advance/.test(s) ?
     [cur.sales.length, cur.sales.filter((s) => due(s) <= 0).length, cur.sales.filter((s) => due(s) > 0).length]);
   await act("sales.tab", { tab: "All" });
   const open = ["Pending", "Sent", "In Transit"], live2 = cur.courier.filter((c) => c.status != "Cancelled");
-  const net = (c) => R(n(c.cod) - n(c.advance) - n(c.charge));
-  check("courier dashboard: sent / delivered / pending / in transit / due from courier", await page.evaluate(() => { const s = OPF.calc.courierSummary(OPF.store.db.courier); return [s.sent, s.delivered, s.pending, s.pendingAmt, s.receivable]; }),
-    [live2.length, live2.filter((c) => c.status == "Delivered").length, live2.filter((c) => open.indexOf(c.status) >= 0).length,
-      R(live2.filter((c) => open.indexOf(c.status) >= 0).reduce((t, c) => t + net(c), 0)), R(live2.filter((c) => c.status == "Delivered" && c.settled != "Yes").reduce((t, c) => t + net(c), 0))]);
+  check("courier dashboard: sent / delivered / pending / returned", await page.evaluate(() => { const s = OPF.calc.courierSummary(OPF.store.db.courier); return [s.sent, s.delivered, s.pending, s.returned]; }),
+    [live2.length, live2.filter((c) => c.status == "Delivered").length, live2.filter((c) => open.indexOf(c.status) >= 0).length, live2.filter((c) => c.status == "Returned").length]);
   const orders = await page.evaluate(() => OPF.store.db.productionOrders.map((o) => OPF.calc.orderActual(o)));
   check("production order Actual = accepted PCS of linked production", cur.productionOrders.filter((o, i) => orders[i] != cur.production.filter((p) => p.order == o.id).reduce((t, p) => t + n(p.accepted), 0)).map((o) => o.no), []);
 

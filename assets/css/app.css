@@ -277,6 +277,7 @@ form.box { border-color: var(--primary-border) }
 /* ---------- forms ---------- */
 .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 16px }
 .grid.g2 { grid-template-columns: 1fr 1fr; align-content: start }
+.grid .field.wide { grid-column: 1 / -1 }
 .cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
 .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text-2); margin-bottom: 5px }
 .field label .req { color: var(--danger); margin-left: 2px }
@@ -658,3 +659,59 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 /* short notice ("Updated from Google Drive") */
 #cloudToast { position: fixed; left: 50%; bottom: 22px; z-index: 95; transform: translate(-50%, 30px); opacity: 0; pointer-events: none; padding: 11px 18px; border-radius: 12px; background: #1e293b; color: #fff; font-size: 13.5px; box-shadow: var(--shadow-3); transition: opacity .25s ease, transform .25s ease }
 #cloudToast.show { opacity: 1; transform: translate(-50%, 0) }
+
+/* ---------- Rough Notes: rich text, sketch pad, note cards ---------- */
+.hide { display: none !important }
+.rt { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); overflow: hidden }
+.rt-bar, .sk-bar { display: flex; flex-wrap: wrap; align-items: center; padding: 6px; background: var(--surface-2); border-bottom: 1px solid var(--border) }
+.rt-bar > *, .sk-bar > * { margin: 2px }
+.rt-btn { min-width: 34px; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; font-weight: 600; box-shadow: none; cursor: pointer }
+.rt-btn:hover, .rt-btn.on { background: var(--primary-soft); border-color: var(--primary-border); color: var(--primary-ink) }
+.rt-hl { background: #fde68a; color: #1e293b; padding: 0 3px; border-radius: 3px }
+.rt-sep { width: 1px; height: 22px; background: var(--border-strong); margin: 0 6px !important }
+.rt-dot, .sk-ink { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer }
+.sk-ink.on { box-shadow: 0 0 0 2px var(--primary) }
+.sk-size { width: 34px; height: 32px; padding: 0; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); box-shadow: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer }
+.sk-size i { display: block; border-radius: 50%; background: var(--text) }
+.sk-size.on { background: var(--primary-soft); border-color: var(--primary-border) }
+.rt-box { min-height: 140px; max-height: 420px; overflow-y: auto; padding: 12px 14px; outline: none; line-height: 1.55; color: var(--text) }
+.rt-box:empty:before { content: attr(data-placeholder); color: var(--muted) }
+.rt-box h3, .note-body h3 { margin: 6px 0; font-size: 17px }
+.rt-box ul, .rt-box ol, .note-body ul, .note-body ol { margin: 4px 0; padding-left: 24px }
+.rt-box mark, .note-body mark { background: #fde68a; color: #1e293b; padding: 0 2px; border-radius: 3px }
+.sk { max-width: 900px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 10px }
+/* Sketches sit on light "paper" in both themes so dark ink always shows. */
+.sk-paper, .note-sketch { display: block; width: 100%; background: #fffdf6; background-image: radial-gradient(#e4e0d4 1px, transparent 1px); background-size: 22px 22px }
+.sk-paper { cursor: crosshair; touch-action: none }
+.sk-paper.erasing { cursor: cell }
+.note-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-gap: 16px; align-items: start; margin-bottom: 20px }
+.note-card { display: flex; flex-direction: column; background: var(--nc-bg); border: 1px solid var(--nc-line); border-top: 5px solid var(--nc-edge); border-radius: var(--radius); box-shadow: var(--shadow-1); padding: 14px 16px; min-width: 0 }
+.note-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px }
+.note-head b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px }
+.note-head small { color: var(--muted); white-space: nowrap }
+.note-body { color: var(--text-2); line-height: 1.5; max-height: 220px; overflow: auto; word-wrap: break-word }
+.note-sketch { margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm) }
+.note-act { margin-top: auto; padding-top: 10px; text-align: right }
+.note-act .sm { margin-left: 6px }
+
+/* Note colours: background, border and top edge per colour; deeper tints in dark mode. */
+.nc-plain { --nc-bg: var(--surface); --nc-line: var(--border); --nc-edge: var(--border-strong) }
+.nc-yellow { --nc-bg: #fff8d6; --nc-line: #f3e3a0; --nc-edge: #f5b83d }
+.nc-pink { --nc-bg: #ffe9f0; --nc-line: #f8c9d8; --nc-edge: #ec6a93 }
+.nc-green { --nc-bg: #e6f7ea; --nc-line: #bfe6c9; --nc-edge: #38b26a }
+.nc-blue { --nc-bg: #e6f0fd; --nc-line: #c3d8f6; --nc-edge: #4a8be0 }
+.nc-purple { --nc-bg: #f1ebff; --nc-line: #d9ccfa; --nc-edge: #8b6cf0 }
+.nc-orange { --nc-bg: #ffefe1; --nc-line: #f8d2b0; --nc-edge: #f08a3c }
+:root[data-theme="dark"] .nc-yellow { --nc-bg: #2f2a14; --nc-line: #4a4120; --nc-edge: #d9a12f }
+:root[data-theme="dark"] .nc-pink { --nc-bg: #331d27; --nc-line: #4d2b3a; --nc-edge: #d8577f }
+:root[data-theme="dark"] .nc-green { --nc-bg: #16301f; --nc-line: #23472f; --nc-edge: #36a35f }
+:root[data-theme="dark"] .nc-blue { --nc-bg: #172840; --nc-line: #243c5c; --nc-edge: #4a86d6 }
+:root[data-theme="dark"] .nc-purple { --nc-bg: #251d3d; --nc-line: #372c5a; --nc-edge: #8467e0 }
+:root[data-theme="dark"] .nc-orange { --nc-bg: #33221a; --nc-line: #4d3324; --nc-edge: #d97a35 }
+.note-card .note-body { color: var(--text) }
+.rt[class*="nc-"] .rt-box { background: var(--nc-bg); transition: background .2s }
+.nc-pick { display: flex; flex-wrap: wrap; align-items: center }
+.nc-sw { width: 34px; height: 34px; margin: 0 8px 4px 0; padding: 0; border-radius: 10px; border: 2px solid var(--nc-line); background: var(--nc-bg); box-shadow: inset 0 5px 0 var(--nc-edge); cursor: pointer }
+.nc-sw:hover { transform: translateY(-1px) }
+.nc-sw.on { outline: 3px solid var(--primary); outline-offset: 2px }
+.nc-sw.nc-plain { background-image: linear-gradient(135deg, transparent 46%, var(--border-strong) 46%, var(--border-strong) 54%, transparent 54%) }

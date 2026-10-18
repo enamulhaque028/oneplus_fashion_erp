@@ -21,7 +21,7 @@
 
   const REQ = ' <span class="req">*</span>';
 
-  // opts: { type, value, required, readonly, list, change (action), attrs: {...extra} }
+  // opts: { type, value, required, readonly, list, change (action), wide (full row), attrs: {...extra} }
   function field(name, label, opts = {}) {
     const type = opts.type || "text";
     const a = Object.assign(
@@ -29,7 +29,7 @@
       type == "number" ? { step: "any", min: "0" } : {},
       opts.attrs
     );
-    return `<div class="field"><label>${label}${opts.required ? REQ : ""}</label><input${attrs(a)}></div>`;
+    return `<div class="field${opts.wide ? " wide" : ""}"><label>${label}${opts.required ? REQ : ""}</label><input${attrs(a)}></div>`;
   }
 
   function select(name, label, optionsHtml, opts = {}) {
@@ -38,7 +38,7 @@
   }
 
   // Arbitrary HTML placed in a form grid cell (e.g. a checkbox or helper button).
-  const cell = (label, html) => `<div class="field"><label>${label || "&nbsp;"}</label>${html}</div>`;
+  const cell = (label, html, wide) => `<div class="field${wide ? " wide" : ""}"><label>${label || "&nbsp;"}</label>${html}</div>`;
 
   const options = (list, valueOf, textOf) => list.map((x) => `<option value="${esc(valueOf(x))}">${esc(textOf(x))}</option>`).join("");
   const optionList = (values, selected) => values.map((v) => `<option${v == selected ? " selected" : ""}>${esc(v)}</option>`).join("");

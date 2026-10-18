@@ -5,7 +5,7 @@
   OPF.config = Object.freeze({
     // Unchanged since v3 so data saved by older versions keeps loading.
     STORAGE_KEY: "opf_erp_smart_v3",
-    SCHEMA_VERSION: 5,
+    SCHEMA_VERSION: 6,
     MAIN_SHOP: "Owner Permanent Shop",
     ADMIN_MINUTES: 15,
     LOG_LIMIT: 3000,
@@ -72,6 +72,7 @@
       ["payments", "Payment / Collection"],
       ["expenses", "Expenses"],
       ["courier", "Courier / Delivery"],
+      ["notes", "Rough Notes"],
       ["costing", "Costing & Stock Summary"],
       ["reports", "Reports"],
       ["ledger", "Ledgers / Due"],
@@ -88,13 +89,14 @@
       ["Product & Stock", "box", "blue", ["products", "transfer", "showroom", "costing"]],
       ["Sales", "cart", "green", ["customers", "sales", "returns", "payments", "courier"]],
       ["Accounts", "bars", "rose", ["expenses", "ledger", "reports"]],
+      ["Rough Notes", "note", "orange", ["notes"]],
       ["Admin", "shield", "slate", ["users", "settings"]]
     ],
     PAGE_ICONS: {
       dashboard: "grid", suppliers: "users", purchase: "bag", materials: "layers", productionOrder: "clipboard",
       issue: "send", production: "check", factories: "factory", products: "tag", transfer: "transfer",
       showroom: "store", customers: "user", sales: "receipt", returns: "undo", payments: "wallet",
-      expenses: "coins", courier: "truck", costing: "calc", reports: "bars", ledger: "book", users: "activity", settings: "gear"
+      expenses: "coins", courier: "truck", notes: "note", costing: "calc", reports: "bars", ledger: "book", users: "activity", settings: "gear"
     }
   });
 })(window.OPF = window.OPF || {});

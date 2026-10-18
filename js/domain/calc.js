@@ -37,7 +37,6 @@
   const salePcs = (s) => sum(s.items || [], (i) => i.qty);
 
   const productionBill = (p) => r2(num(p.accepted) * num(p.rate));
-  const courierNet = (c) => r2(num(c.cod) - num(c.advance));
 
   const orderActual = (o) => sum(OPF.store.db.production.filter((p) => p.order == o.id), (p) => p.accepted);
 
@@ -59,25 +58,18 @@
     return { fabric, total, profit, price, qty, totalCost: r2(total * qty), totalSales: r2(price * qty), totalProfit: r2(profit * qty) };
   }
 
-  // Receivable amounts are Net COD minus the courier's charge.
+  // Parcel counts only. Courier records are notes: money moves only through Sales and Payment entries.
   function courierSummary(list) {
-    const s = { sent: 0, delivered: 0, pending: 0, returned: 0, cancelled: 0, pendingAmt: 0, receivable: 0 };
+    const s = { sent: 0, delivered: 0, pending: 0, returned: 0, cancelled: 0 };
     list.forEach((c) => {
-      const net = r2(courierNet(c) - num(c.charge));
       if (c.status == "Cancelled") { s.cancelled++; return; }
       s.sent++;
-      if (c.status == "Delivered") {
-        s.delivered++;
-        if (c.settled != "Yes") s.receivable = r2(s.receivable + net);
-      } else if (c.status == "Returned") {
-        s.returned++;
-      } else {
-        s.pending++;
-        s.pendingAmt = r2(s.pendingAmt + net);
-      }
+      if (c.status == "Delivered") s.delivered++;
+      else if (c.status == "Returned") s.returned++;
+      else s.pending++;
     });
     return s;
   }
 
-  OPF.calc = { yardsOf, purchase, itemAmount, saleSubtotal, saleTotal, saleDue, salePcs, productionBill, courierNet, orderActual, orderStatus, costing, courierSummary };
+  OPF.calc = { yardsOf, purchase, itemAmount, saleSubtotal, saleTotal, saleDue, salePcs, productionBill, orderActual, orderStatus, costing, courierSummary };
 })(window.OPF = window.OPF || {});

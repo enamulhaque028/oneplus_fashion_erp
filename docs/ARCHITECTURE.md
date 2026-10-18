@@ -44,6 +44,8 @@ js/ui/                    UI framework
   records.js              Generic create / edit / delete with admin check + logging
   search.js               Global customer search
   charts.js               Dependency-free SVG charts (donut, line / bar / table trend)
+  richtext.js             Rough Notes formatting toolbar + HTML cleaner (allow-list; runs on save AND display)
+  sketch.js               Rough Notes sketch pad; sketches stored as strokes on a 1000 x 560 grid, not images
 js/services/              Cross-cutting features
   auth.js                 Admin password and unlock session
   print.js                Invoice / cash memo and money receipt

@@ -99,10 +99,16 @@ PART 3 - SALES, PAYMENT, COURIER (8 min)
 
 [ ] 3.6  Courier / Delivery: Invoice No. = INV-00001 (press Tab).
          Expect: Customer = Karim Store, Destination = Bongo Bazar, Dhaka, COD = 10000 fill in by themselves.
-         Change: Courier = Pathao, Tracking = PT-1, COD = 15000, Advance = 1000, Courier Charge = 150.
-         Expect: Net COD to Collect = 14000, and "Net Receivable from Courier 13,850.00" in the grey box.
+         Change: Courier = Pathao, Tracking = PT-1, Note = Deliver after 5 pm. (No Advance or Charge fields.)
          Save.
-         Expect at the top: "Out of 1 parcels sent: 0 delivered, 1 pending."
+         Expect: the parcel is in the list with its note, and "Pending Parcels 1" at the top.
+         Expect: Customer Due on the Dashboard is the same as before (a parcel never changes dues).
+
+[ ] 3.7  Rough Notes (left menu): Subject = Idea. In Note type "Try a ", click B, type "blue denim",
+         click B again, type " style", press Enter, type "Ask the price".
+         Click "Add sketch" and draw a line with the mouse. Save.
+         Expect: a note card with "blue denim" in bold on the first line, "Ask the price" on the
+         second, and the drawing below. Type "denim" in Search notes and press Enter: only this note shows.
 
 
 PART 4 - REPORTS AND CONTROLS (5 min)
@@ -180,7 +186,7 @@ The owner reads each rule and confirms it matches how the shop keeps its books.
 [ ] 7.3  Supplier payable = Previous Due + Purchases − Payments.
          A purchase costs Qty × Rate + Transport + Loading + Other − Discount.
 [ ] 7.4  Factory payable = Accepted PCS × Rate − Payments. Rejected pieces are not paid.
-[ ] 7.5  Courier: Net COD = COD − Advance. The money due from the courier is Net COD minus the courier charge.
+[ ] 7.5  Courier / Delivery is a record only: dues change only through Sales and Payment / Collection entries.
 [ ] 7.6  Transfer shortage (Dispatched − Received) is only reported; it is not charged to anyone.
 [ ] 7.7  P/L on the Reports page = Sales − Returns − Purchases − Factory Bill − Expenses (a simple cash view).
 Owner comments: _______________________________________________________________

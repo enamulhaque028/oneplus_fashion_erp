@@ -50,7 +50,7 @@
         H.td(p.date), H.td(esc(p.no)), H.tdn(money(p.amount)), H.td(esc(p.method)), H.td(esc(p.reference)), H.td(H.button("Receipt", "print.receipt", { id: p.id }, "sm"), "act no-print")
       ]))) +
       (returns.length ? "<h2>Sales Returns</h2>" + H.table(["Date", "Invoice", "Style", "#Qty", "#Amount", "Reason"], returns.map((r) => H.tr([H.td(r.date), H.td(esc(r.invoice)), H.td(esc(r.style)), H.tdn(fmtQty(r.qty)), H.tdn(money(r.amount)), H.td(esc(r.reason))]))) : "") +
-      (parcels.length ? "<h2>Courier Parcels</h2>" + H.table(["Date", "Invoice", "Courier", "Tracking", "#Net COD", "Status"], parcels.map((x) => H.tr([H.td(x.date), H.td(esc(x.invoice)), H.td(esc(x.courier)), H.td(esc(x.tracking)), H.tdn(money(K.courierNet(x))), H.td(H.pill(x.status))]))) : "")
+      (parcels.length ? "<h2>Courier Parcels</h2>" + H.table(["Date", "Invoice", "Courier", "Tracking", "#COD", "Status"], parcels.map((x) => H.tr([H.td(x.date), H.td(esc(x.invoice)), H.td(esc(x.courier)), H.td(esc(x.tracking)), H.tdn(money(x.cod)), H.td(H.pill(x.status))]))) : "")
     );
   }
 

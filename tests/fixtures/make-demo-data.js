@@ -63,9 +63,9 @@ const METHODS = ["Cash", "Cash", "Cash", "bKash", "Nagad", "Bank", "Cheque"];
 /* ---------- simulation ---------- */
 function build() {
   const db = {
-    version: 5, company: null, auth: { salt: "", hash: "" }, materials: [],
+    version: 6, company: null, auth: { salt: "", hash: "" }, materials: [],
     suppliers: [], purchases: [], issues: [], products: [], productionOrders: [], production: [], factories: [], transfers: [],
-    customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [],
+    customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [], notes: [],
     showrooms: [{ id: "main", name: MAIN }, { id: "outlet", name: OUTLET }], logs: [],
     users: [{ id: "u1", name: "Administrator", username: "admin", role: "Admin" }]
   };
@@ -123,7 +123,8 @@ function build() {
         const color = pick(PRODUCTS[pi][6]), size = pick(PRODUCTS[pi][7]), fi = between(0, FACTORIES.length - 1);
         const planned = round(between(250, 650), 50), need = Math.ceil(planned * ypp);
         // now and then an order is cancelled before cutting: no fabric issued, no production
-        if (chance(0.05)) {
+        // (the 8th order always is, so the demo shows every order state whatever the random draws)
+        if (chance(0.05) || no.po == 7) {
           db.productionOrders.push({ id: id("po"), no: "PO-" + pad(++no.po, 4), date, style, color, size, planned, factory: "fac" + fi, status: "Cancelled", remarks: "Buyer cancelled", created: stamp(date) });
           continue;
         }
@@ -199,19 +200,19 @@ function build() {
       // ---- some due invoices go out by courier as COD ----
       const due = total - paid;
       if (due > 0 && chance(0.3)) {
-        const age = -off, advance = chance(0.3) ? pick([500, 1000]) : 0;
-        let status = "Pending", settled = "No";
-        if (age > 12) { status = pick(["Delivered", "Delivered", "Delivered", "Delivered", "Delivered", "Delivered", "Returned", "In Transit", "Cancelled"]); settled = status == "Delivered" && age > 16 && chance(0.85) ? "Yes" : "No"; }
+        const age = -off;
+        let status = "Pending", courierPaid = false;
+        if (age > 12) { status = pick(["Delivered", "Delivered", "Delivered", "Delivered", "Delivered", "Delivered", "Returned", "In Transit", "Cancelled"]); courierPaid = status == "Delivered" && age > 16 && chance(0.85); }
         else if (age > 3) status = pick(["Sent", "In Transit", "In Transit", "Delivered"]);
         else status = pick(["Pending", "Sent"]);
-        const charge = pick([60, 100, 120, 150]), cod = due, courier = pick(COURIERS);
-        const parcel = { id: id("cr"), date, invoice: sale.invoice, customer: c.id, destination: c.address + ", " + c.district, courier, tracking: courier.slice(0, 2).toUpperCase() + pad(++no.trk + 50210, 6), cod, advance, netCod: cod - advance, charge, status, settled, remarks: "", created: stamp(date) };
+        const cod = due, courier = pick(COURIERS);
+        const parcel = { id: id("cr"), date, invoice: sale.invoice, customer: c.id, destination: c.address + ", " + c.district, courier, tracking: courier.slice(0, 2).toUpperCase() + pad(++no.trk + 50210, 6), cod, status, remarks: chance(0.2) ? pick(["Call before delivery", "Fragile - pack well", "Deliver after 5 pm"]) : "", created: stamp(date) };
         db.courier.push(parcel);
-        if (settled == "Yes") {
-          // the courier paid the shop: recorded as a customer collection (net COD), a few days later
+        if (courierPaid) {
+          // the courier paid the shop, entered on Payment / Collection a few days later (the parcel record itself never changes dues)
           const payDate = dayISO(off + between(3, 6));
-          db.payments.push({ id: id("py"), no: "MR-" + pad(++no.mr, 5), date: payDate, type: "Customer", party: c.id, amount: parcel.netCod, method: "Bank", reference: "COD " + courier + " " + parcel.tracking, remarks: "COD settlement", created: stamp(payDate) });
-          custDue[c.id] -= parcel.netCod;
+          db.payments.push({ id: id("py"), no: "MR-" + pad(++no.mr, 5), date: payDate, type: "Customer", party: c.id, amount: cod, method: "Bank", reference: "COD " + courier + " " + parcel.tracking, remarks: "Courier paid", created: stamp(payDate) });
+          custDue[c.id] -= cod;
         }
       }
     }
@@ -260,6 +261,20 @@ function build() {
     if (chance(0.2)) exp(pick(["Food", "Maintenance", "Other"]), round(between(300, 2500), 50), pick(["Office", "Shop", "Factory"]));
   }
   db.logs.push({ date: new Date().toISOString(), action: "Demo data loaded", ref: "tests/fixtures/make-demo-data.js" });
+  // ---- a few rough notes (formatted text; one with a sketch, stored as strokes on a 1000 x 560 grid) ----
+  const jacket = { w: 1000, h: 560, strokes: [
+    { c: "#1f2937", s: 3, e: 0, p: [350, 110, 450, 85, 550, 85, 650, 110, 800, 200, 720, 250, 650, 210, 650, 480, 350, 480, 350, 210, 280, 250, 200, 200, 350, 110] },
+    { c: "#2563eb", s: 7, e: 0, p: [500, 95, 500, 480] },
+    { c: "#dc2626", s: 3, e: 0, p: [560, 300, 620, 300, 620, 360, 560, 360, 560, 300] }
+  ] };
+  [[-20, "New design idea", "<h3>Winter denim jacket</h3><div>Fabric: <b>12 oz denim</b>, blue and black.</div><ul><li>Ask Rahim Fabrics for the price</li><li><span style=\"color:#dc2626\">Sample ready by the 1st</span></li></ul>",
+    "Winter denim jacket\nFabric: 12 oz denim, blue and black.\n• Ask Rahim Fabrics for the price\n• Sample ready by the 1st", jacket, "blue"],
+    [-6, "Reminder", "Courier: Steadfast pickup changes to <mark>4 pm</mark> from next week.", "Courier: Steadfast pickup changes to 4 pm from next week.", null, "pink"],
+    [-1, "", "Karim Store wants <b>50 pcs</b> of style 1203 next month - keep stock.", "Karim Store wants 50 pcs of style 1203 next month - keep stock.", null, "yellow"]].forEach(([off, subject, html, text, sketch, color]) => {
+    const date = dayISO(off);
+    db.notes.push({ id: id("nt"), date, subject, html, text, sketch, color, created: stamp(date) });
+  });
+
   return db;
 }
 
@@ -283,7 +298,7 @@ function build() {
     const negFinished = Object.keys(st.godown).filter((k) => st.godown[k] < 0).length + Object.keys(st.shop).filter((k) => st.shop[k] < 0).length;
     const negRaw = OPF.stock.raw().filter((x) => x.yards < -0.01).length;
     const counts = {};
-    ["suppliers", "purchases", "issues", "products", "productionOrders", "production", "factories", "transfers", "customers", "sales", "returns", "payments", "expenses", "courier", "logs"].forEach((k) => { counts[k] = db[k].length; });
+    ["suppliers", "purchases", "issues", "products", "productionOrders", "production", "factories", "transfers", "customers", "sales", "returns", "payments", "expenses", "courier", "notes", "logs"].forEach((k) => { counts[k] = db[k].length; });
     const statuses = {}; db.productionOrders.forEach((o) => { const s = OPF.calc.orderStatus(o, OPF.calc.orderActual(o)); statuses[s] = (statuses[s] || 0) + 1; });
     const parcels = {}; db.courier.forEach((c) => { parcels[c.status] = (parcels[c.status] || 0) + 1; });
     return { checks: a.checks.map((c) => c.ok), orphanIssues: a.issues.filter((x) => /not linked/.test(x)), negFinished, negRaw, counts, statuses, parcels, today: db.sales.filter((s) => s.date == OPF.util.today()).length };

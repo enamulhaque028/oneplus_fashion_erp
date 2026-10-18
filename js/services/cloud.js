@@ -42,7 +42,7 @@
   const dirty = () => meta.rev != meta.syncedRev;
   const online = () => navigator.onLine !== false;
 
-  const DATA_COLLECTIONS = ["sales", "customers", "suppliers", "purchases", "payments", "products", "expenses", "production", "transfers", "factories"];
+  const DATA_COLLECTIONS = ["sales", "customers", "suppliers", "purchases", "payments", "products", "expenses", "production", "transfers", "factories", "notes"];
   const hasData = (db) => DATA_COLLECTIONS.some((k) => (db[k] || []).length);
   const counts = (db) => ({ invoices: db.sales.length, customers: db.customers.length, suppliers: db.suppliers.length, payments: db.payments.length, purchases: db.purchases.length });
   const countText = (c) => (c ? `${c.invoices || 0} invoices · ${c.customers || 0} customers` + (c.suppliers == null ? "" : ` · ${c.suppliers} suppliers`) + ` · ${c.payments || 0} payments` : "");

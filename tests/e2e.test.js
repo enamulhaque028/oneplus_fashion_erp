@@ -25,7 +25,9 @@ const { start, sleep, ROOT } = require("./lib");
   check("production order numbered", mig.po, "PO-0001");
   check("courier net COD", mig.net, 1500);
   check("balance 1000 + 2900 - 1000 - 300 - 500", mig.bal, 2100);
-  check("schema version", mig.v, 5);
+  check("schema version", mig.v, 6);
+  check("upgraded data gets an empty Rough Notes list", await page.evaluate(() => OPF.store.db.notes), []);
+  check("a plain note from before rich text keeps its line breaks", await page.evaluate(() => OPF.migrate.normalize({ notes: [{ id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2" }] }).notes[0]), { id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2", html: "a &lt; b<br>line 2", sketch: null, color: "" });
   check("old default branding replaced by the memo-book details", await db((d) => [d.company.phone, d.company.address, d.company.tagline, d.company.hotline, d.company.motto, d.company.memoNote]),
     ["01619-741055, 01621-346375", "Shop # 99 (1st Floor), Ashraf Setu Shopping Complex, Tongi, Gazipur.", "Manufacturer and Wholesaler of Readymade Garments.", "01878638475", "QUALITY OUR VISION", "Allah has Made Business Lawful, Usury is Forbidden."]);
   await page.evaluate(() => { OPF.store.db.company.address = ""; OPF.store.db.company.phone = "01999999999"; OPF.store.save(); });
@@ -136,16 +138,18 @@ const { start, sleep, ROOT } = require("./lib");
   check("cash memo: DUE stamp, Total / Advance / Due, previous 50,000, total due 60,000, words", /Cash Memo/.test(it) && /DUE/.test(it) && /Total\s+10,000\.00/.test(it) && /Advance\s+0\.00/.test(it) && /Due\s+10,000\.00/.test(it) && /Previous Due: 50,000\.00/.test(it) && /Total Due Now: 60,000\.00/.test(it) && /Ten Thousand Taka Only/.test(it), true);
   await inv.screenshot({ path: path.join(OUT, "invoice.png"), fullPage: true }); await inv.close();
 
-  section("Issue 8 - Courier COD");
+  section("Courier / Delivery is a record only (never changes dues)");
+  const dueBeforeCourier = await page.evaluate(() => OPF.ledger.totalDue("Customer"));
   await go("courier"); await fill({ invoice: "INV-00001" });
   check("invoice fills customer, address and COD (= due)", await page.evaluate(() => { const f = document.getElementById("mainForm"); return ["customer", "destination", "cod"].map((k) => f.elements.namedItem(k).value); }), [c1, "Bongo Bazar, Dhaka", "10000"]);
-  await fill({ courier: "Pathao", tracking: "PT1", cod: 15000, advance: 1000, charge: 150, status: "Sent" });
-  check("net COD field auto = 14,000", await page.$eval('[name="netCod"]', (e) => e.value), "14000");
+  check("no Advance, Charge, Net COD or Settled fields", await page.evaluate(() => ["advance", "charge", "netCod", "settled"].filter((k) => document.getElementById("mainForm").elements.namedItem(k))), []);
+  await fill({ courier: "Pathao", tracking: "PT1", cod: 15000, status: "Sent", remarks: "Call before delivery" });
   await submit();
-  await fill({ customer: c2, courier: "RedX", tracking: "RX1", cod: 3000, charge: 100, status: "Delivered" }); await submit();
-  check("stored net COD 14,000", await db((d) => d.courier.find((c) => c.tracking == "PT1").netCod), 14000);
-  check("parcel summary", await page.evaluate(() => OPF.calc.courierSummary(OPF.store.db.courier)), { sent: 2, delivered: 1, pending: 1, returned: 0, cancelled: 0, pendingAmt: 13850, receivable: 2900 });
-  check("dashboard sentence", /Out of 2 parcels sent: 1 delivered, 1 pending/.test(await text("#app")), true);
+  await fill({ customer: c2, courier: "RedX", tracking: "RX1", cod: 3000, status: "Delivered" }); await submit();
+  check("parcel saved with COD as a note", await db((d) => { const c = d.courier.find((x) => x.tracking == "PT1"); return [c.cod, c.remarks]; }), [15000, "Call before delivery"]);
+  check("parcel counts", await page.evaluate(() => OPF.calc.courierSummary(OPF.store.db.courier)), { sent: 2, delivered: 1, pending: 1, returned: 0, cancelled: 0 });
+  check("parcel cards: Sent 2, Delivered 1, Pending 1", await page.$$eval("#app .card", (c) => c.slice(0, 3).map((x) => x.textContent.replace(/\s+/g, ""))), ["ParcelsSent2", "Delivered1", "PendingParcels1"]);
+  check("saving parcels does not change customer dues", await page.evaluate(() => OPF.ledger.totalDue("Customer")), dueBeforeCourier);
 
   section("Issue 9 - Costing and stock summary");
   await go("costing");
@@ -220,12 +224,89 @@ const { start, sleep, ROOT } = require("./lib");
   await go("issue"); await act("record.delete", { coll: "issues", id: await db((d) => d.issues[0].id) });
   check("deleted issue returns fabric to stock", await page.evaluate(() => OPF.stock.raw()[0].yards), 1309.36);
 
-  section("Previously untested - Courier status / settlement");
+  section("Courier status change");
+  const dueBeforeStatus = await page.evaluate(() => OPF.ledger.totalDue("Customer"));
   await go("courier");
   await page.evaluate((id) => { const s = document.querySelector(`select[data-change="courier.status"][data-id="${id}"]`); s.value = "Delivered"; s.dispatchEvent(new Event("change", { bubbles: true })); }, await db((d) => d.courier.find((c) => c.tracking == "PT1").id));
   check("status change saved", await db((d) => d.courier.map((c) => c.status).sort()), ["Delivered", "Delivered"]);
-  await act("courier.settle", { id: await db((d) => d.courier.find((c) => c.tracking == "RX1").id) });
-  check("settled parcel no longer receivable", await page.evaluate(() => OPF.calc.courierSummary(OPF.store.db.courier).receivable), 13850);
+  check("status change does not change customer dues", await page.evaluate(() => OPF.ledger.totalDue("Customer")), dueBeforeStatus);
+
+  section("Rough Notes: rich text and sketch");
+  await go("notes");
+  const drawLine = async (pts) => {
+    await page.$eval("#skCanvas", (c) => c.scrollIntoView({ block: "center" }));
+    const bb = await (await page.$("#skCanvas")).boundingBox();
+    await page.mouse.move(bb.x + pts[0][0] * bb.width, bb.y + pts[0][1] * bb.height); await page.mouse.down();
+    for (const q of pts.slice(1)) await page.mouse.move(bb.x + q[0] * bb.width, bb.y + q[1] * bb.height, { steps: 6 });
+    await page.mouse.up();
+  };
+  check("a new note starts yellow, and the editor shows the colour", await page.evaluate(() => [document.querySelector('#mainForm [name="color"]').value, document.querySelector("#ncPick .on").dataset.color, document.querySelector("#mainForm .rt").classList.contains("nc-yellow")]), ["yellow", "yellow", true]);
+  await page.click('[data-act="notes.color"][data-color="green"]');
+  await sleep(350); // the editor fades to the new colour
+  check("choosing green marks it and tints the editor", await page.evaluate(() => [document.querySelector("#ncPick .on").dataset.color, getComputedStyle(document.getElementById("rtBox")).backgroundColor]), ["green", "rgb(230, 247, 234)"]);
+  await fill({ subject: "Next idea" });
+  await page.click("#rtBox"); await page.keyboard.type("Try a new ");
+  await page.click('[data-cmd="bold"]'); await page.keyboard.type("blue denim");
+  const boldOn = await page.$eval('[data-cmd="bold"]', (b) => b.classList.contains("on"));
+  await page.click('[data-cmd="bold"]');
+  check("the Bold button lights up while bold is on, and goes off", [boldOn, await page.$eval('[data-cmd="bold"]', (b) => b.classList.contains("on"))], [true, false]);
+  await page.keyboard.press("Enter"); await page.click('[data-cmd="insertUnorderedList"]'); await page.keyboard.type("Ask Rahim for price");
+  check("Add sketch opens the pad", [await page.$("#skCanvas") == null, (await page.click('[data-act="notes.addSketch"]'), await page.$("#skCanvas") != null)], [true, true]);
+  await drawLine([[0.2, 0.2], [0.5, 0.6], [0.8, 0.2]]);
+  await page.click('[data-ink="#dc2626"]'); await page.click('[data-size="14"]'); await drawLine([[0.1, 0.9], [0.9, 0.9]]);
+  await drawLine([[0.3, 0.5], [0.4, 0.5]]); await page.click('[data-act="sk.undo"]');
+  await submit();
+  const n1 = await db((d) => d.notes.find((n) => n.subject == "Next idea"));
+  check("formatted text saved as clean HTML", [/<b>blue denim<\/b>/.test(n1.html), /<ul><li>Ask Rahim for price<\/li><\/ul>/.test(n1.html)], [true, true]);
+  check("the colour is saved and the card is green", [n1.color, await page.evaluate(() => document.querySelector(".note-card").className)], ["green", "note-card nc-green"]);
+  check("a plain copy is kept for search and Excel", n1.text, "Try a new blue denim\n• Ask Rahim for price");
+  check("sketch saved as strokes (Undo removed the last one): ink, red thick line", n1.sketch.strokes.map((s) => [s.c, s.s]), [["#1f2937", 3], ["#dc2626", 14]]);
+  check("a sketch is small (under 2 KB)", JSON.stringify(n1.sketch).length < 2000, true);
+  check("the card shows the formatting and draws the sketch", await page.evaluate(() => {
+    const c = document.querySelector(".note-card"), cv = c.querySelector("canvas.note-sketch");
+    const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
+    let ink = 0; for (let i = 3; i < px.length; i += 4) if (px[i] > 0) ink++;
+    return [!!c.querySelector(".note-body b"), !!c.querySelector(".note-body li"), ink > 100];
+  }), [true, true, true]);
+  await page.click("#rtBox"); await page.keyboard.type("Call the courier on Monday"); await submit();
+  check("a note without a sketch has none", await db((d) => d.notes.find((n) => n.text == "Call the courier on Monday").sketch), null);
+  await submit();
+  check("an empty note is not saved", [await db((d) => d.notes.length), alerts.pop()], [2, "Write the note or draw a sketch first."]);
+
+  section("Rough Notes: only safe formatting is kept (notes also arrive from backups and Google Drive)");
+  await page.evaluate(() => {
+    window.__xss = 0;
+    OPF.store.db.notes.push({ id: "nX", date: "2026-01-01", subject: "<img src=x onerror=window.__xss=1>", text: "x",
+      html: '<img src=x onerror="window.__xss=1"><script>window.__xss=1<\/script><a href="javascript:window.__xss=1" onclick="window.__xss=1">link</a><b onmouseover="window.__xss=1" style="color:#dc2626">ok</b><span style="color:#123456;background:url(x)">odd</span><iframe src="javascript:window.__xss=1"></iframe>',
+      sketch: { strokes: [{ c: "javascript:alert(1)", s: 9999, p: ["1", "x", 3, 4] }, { bad: true }] } });
+    OPF.store.save();
+  });
+  await go("notes"); await sleep(200);
+  check("no script ran and no unsafe element or attribute is on the page", await page.evaluate(() => {
+    const c = Array.from(document.querySelectorAll(".note-card")).find((x) => /link/.test(x.textContent));
+    return [window.__xss, c.querySelectorAll("img,script,iframe,a,[onerror],[onclick],[onmouseover]").length, c.querySelector(".note-body").innerHTML];
+  }), [0, 0, 'link<b><span style="color:#dc2626">ok</span></b>odd']);
+  check("a damaged sketch is repaired to safe values", await page.evaluate(() => OPF.sketch.valid(OPF.store.byId("notes", "nX").sketch)), { w: 1000, h: 560, strokes: [{ c: "#1f2937", s: 40, e: 0, p: [1, 0, 3, 4] }] });
+  check("pasting puts in plain text only", await page.evaluate(() => {
+    const box = document.getElementById("rtBox"); box.focus();
+    const dt = new DataTransfer(); dt.setData("text/html", '<img src=x onerror="window.__xss=2"><b>Bold</b>'); dt.setData("text/plain", "Pasted text");
+    box.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
+    return [box.innerHTML.indexOf("<img") < 0, /Pasted text/.test(box.textContent)];
+  }), [true, true]);
+  await page.evaluate(() => { OPF.store.db.notes = OPF.store.db.notes.filter((n) => n.id != "nX"); OPF.store.save(); });
+
+  section("Rough Notes: edit, search, delete, Excel");
+  await go("notes");
+  await act("record.edit", { coll: "notes", id: n1.id });
+  check("editing loads the text, the sketch and the colour", await page.evaluate(() => [/blue denim/.test(document.getElementById("rtBox").innerHTML), !!document.getElementById("skCanvas"), document.querySelector("#ncPick .on").dataset.color]), [true, true, "green"]);
+  await page.click('[data-act="notes.removeSketch"]'); await submit();
+  check("Remove sketch takes the sketch off the note; the colour is kept", await db((d) => { const n = d.notes.find((x) => x.subject == "Next idea"); return [n.sketch, n.color]; }), [null, "green"]);
+  await page.evaluate(() => { const s = document.querySelector('[data-change="notes.search"]'); s.value = "DENIM"; s.dispatchEvent(new Event("change", { bubbles: true })); });
+  check("search finds a note (any case)", await page.$$eval("#app .note-card", (r) => r.length), 1);
+  await page.evaluate(() => { const s = document.querySelector('[data-change="notes.search"]'); s.value = ""; s.dispatchEvent(new Event("change", { bubbles: true })); });
+  await act("record.delete", { coll: "notes", id: await db((d) => d.notes.find((n) => !n.subject).id) });
+  check("a note can be deleted", await db((d) => d.notes.map((n) => n.subject)), ["Next idea"]);
+  check("notes are in the Excel backup as plain text", await page.evaluate(() => OPF.sheets.byName("Rough Notes").rows), [[await db((d) => d.notes[0].date), "Next idea", "Try a new blue denim\n• Ask Rahim for price", "", "green"]]);
 
   section("Previously untested - Save costing to product");
   await go("costing");
