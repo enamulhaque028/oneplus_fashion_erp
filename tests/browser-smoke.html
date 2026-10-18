@@ -1,0 +1,189 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ERP browser self-test (running...)</title>
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <style>
+    #report { font: 14px Arial, sans-serif; padding: 16px; background: #fff }
+    #report h1 { margin: 0 0 8px }
+    #report .ok { color: #28734a } #report .no { color: #a23a3a; font-weight: bold }
+    #report table { border-collapse: collapse; margin-top: 10px }
+    #report td { border-bottom: 1px solid #e5eaf0; padding: 4px 10px }
+    #erp { display: none }
+  </style>
+</head>
+
+<body>
+  <!-- Browser self-test. Double-click this file on the computer that will run the ERP.
+       It loads the real ERP code and runs the main features with TEMPORARY in-memory data:
+       your saved ERP data is never read or changed. -->
+  <div id="report"><h1>ERP browser self-test</h1><p>Running...</p></div>
+
+  <!-- The ERP's page skeleton (hidden) -->
+  <div id="erp">
+    <input id="gsearch"><div id="gresults"></div><span id="clock"></span><button id="lockBtn"></button>
+    <nav id="nav"></nav><main id="app"></main><div id="modal"></div>
+  </div>
+
+  <script src="../js/boot-check.js"></script>
+  <script src="../js/core/config.js"></script>
+  <script src="../js/core/util.js"></script>
+  <script src="../js/core/sha256.js"></script>
+  <script src="../js/core/migrate.js"></script>
+  <script src="../js/core/store.js"></script>
+  <script src="../js/domain/calc.js"></script>
+  <script src="../js/domain/ledger.js"></script>
+  <script src="../js/domain/stock.js"></script>
+  <script src="../js/domain/audit.js"></script>
+  <script src="../js/ui/actions.js"></script>
+  <script src="../js/ui/html.js"></script>
+  <script src="../js/ui/modal.js"></script>
+  <script src="../js/ui/router.js"></script>
+  <script src="../js/ui/lists.js"></script>
+  <script src="../js/ui/forms.js"></script>
+  <script src="../js/ui/records.js"></script>
+  <script src="../js/ui/search.js"></script>
+  <script src="../js/services/auth.js"></script>
+  <script src="../js/services/print.js"></script>
+  <script src="../js/services/xlsx.js"></script>
+  <script src="../js/services/sheets.js"></script>
+  <script src="../js/services/backup.js"></script>
+  <script src="../js/pages/dashboard.js"></script>
+  <script src="../js/pages/suppliers.js"></script>
+  <script src="../js/pages/purchase.js"></script>
+  <script src="../js/pages/materials.js"></script>
+  <script src="../js/pages/productionOrder.js"></script>
+  <script src="../js/pages/issue.js"></script>
+  <script src="../js/pages/production.js"></script>
+  <script src="../js/pages/factories.js"></script>
+  <script src="../js/pages/products.js"></script>
+  <script src="../js/pages/transfer.js"></script>
+  <script src="../js/pages/showroom.js"></script>
+  <script src="../js/pages/customers.js"></script>
+  <script src="../js/pages/partyViews.js"></script>
+  <script src="../js/pages/sales.js"></script>
+  <script src="../js/pages/returns.js"></script>
+  <script src="../js/pages/payments.js"></script>
+  <script src="../js/pages/expenses.js"></script>
+  <script src="../js/pages/courier.js"></script>
+  <script src="../js/pages/costing.js"></script>
+  <script src="../js/pages/reports.js"></script>
+  <script src="../js/pages/ledger.js"></script>
+  <script src="../js/pages/users.js"></script>
+  <script src="../js/pages/settings.js"></script>
+  <!-- js/app.js is deliberately NOT loaded: it would open the real saved data. -->
+
+  <script>
+    (function () {
+      var results = [];
+      function check(name, got, want) { results.push([name, JSON.stringify(got) === JSON.stringify(want), JSON.stringify(got)]); }
+
+      function report(fatal) {
+        var failed = results.filter(function (r) { return !r[1]; }).length;
+        var ok = !fatal && failed == 0 && results.length > 0;
+        var ua = navigator.userAgent.match(/(Chrome|Firefox)\/[\d.]+/);
+        document.title = (ok ? "SELF-TEST PASS " : "SELF-TEST FAIL ") + (results.length - failed) + "/" + results.length;
+        document.getElementById("report").innerHTML =
+          "<h1 class=\"" + (ok ? "ok" : "no") + "\">" + (ok ? "PASS - this browser runs the ERP correctly" : "FAIL - see the red lines below") + "</h1>" +
+          "<p>Browser: " + (ua ? ua[0] : navigator.userAgent) + " &nbsp; Checks passed: " + (results.length - failed) + " / " + results.length + "</p>" +
+          (fatal ? "<p class=\"no\">Stopped with an error: " + fatal + "</p>" : "") +
+          "<p>Your saved ERP data was not touched. You can close this window.</p>" +
+          "<table>" + results.map(function (r) { return "<tr><td class=\"" + (r[1] ? "ok" : "no") + "\">" + (r[1] ? "PASS" : "FAIL") + "</td><td>" + r[0] + "</td>" + (r[1] ? "" : "<td>got " + r[2] + "</td>") + "</tr>"; }).join("") + "</table>";
+      }
+
+      window.onerror = function (msg, src, line) { report(msg + " (" + String(src).split("/").pop() + " line " + line + ")"); };
+      if (!window.OPF_BROWSER_OK) { report("browser too old (needs Chrome 73+ or current Firefox)"); return; }
+
+      /* ---- isolate: in-memory data, no real storage, no real pop-ups or dialogs ---- */
+      var S = OPF.store, H = OPF.html, printed = "";
+      S.db = OPF.migrate.fresh();
+      S.save = function () { return true; };
+      S.load = function () { };
+      window.alert = function () { };
+      window.confirm = function () { return true; };
+      window.open = function () { return { document: { write: function (h) { printed = h; }, close: function () { } } }; };
+      OPF.actions.bind(document);
+
+      function form(id) { return document.getElementById(id || "mainForm"); }
+      function fill(values, id) {
+        var f = form(id);
+        Object.keys(values).forEach(function (k) { var el = f.elements.namedItem(k); el.value = values[k]; el.dispatchEvent(new Event("change", { bubbles: true })); });
+      }
+      function submit(id) { form(id).dispatchEvent(new Event("submit", { bubbles: true, cancelable: true })); }
+      function calcText() { return document.getElementById("calc").textContent.replace(/\s+/g, " "); }
+      var K = OPF.calc, L = OPF.ledger, db = function () { return S.db; };
+
+      /* ---- core ---- */
+      check("SHA-256 password hashing", OPF.sha256("abc"), "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+      check("money formatting", OPF.util.money(1234567.5), (1234567.5).toLocaleString("en-BD", { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+      check("amount in words", OPF.util.amountWords(60250.5), "Sixty Thousand Two Hundred Fifty Taka and Fifty Paisa Only");
+      check("paisa rounding (1.005 -> 1.01)", OPF.util.r2(1.005), 1.01);
+
+      /* ---- purchase / stock / production / transfer ---- */
+      OPF.router.go("suppliers"); fill({ name: "Rahim Fabrics" }); submit();
+      OPF.router.go("purchase");
+      fill({ supplier: db().suppliers[0].id, material: "Cotton", color: "Black", qty: 1000, unit: "Yard", rate: 12.5, transport: 500, loading: 250, other: 100, discount: 350, paid: 10000 });
+      check("purchase live total 13,000 / due 3,000", /Total Purchase Cost\s*13,000\.00/.test(calcText()) && /Due to Supplier\s*3,000\.00/.test(calcText()), true);
+      submit();
+      OPF.router.go("issue"); fill({ style: "OPF-101", material: "Cotton", color: "Black", qty: 300, unit: "Yard" }); submit();
+      check("raw stock 700 yd", OPF.stock.raw()[0].yards, 700);
+      OPF.router.go("factories"); fill({ name: "Star Garments", rate: 25 }); submit();
+      OPF.router.go("productionOrder"); fill({ style: "OPF-101", color: "Black", size: "M", planned: 1500, factory: db().factories[0].id }); submit();
+      OPF.router.go("production"); fill({ order: db().productionOrders[0].id }); fill({ accepted: 1210 }); submit();
+      check("order actual 1,210 / difference 290", [K.orderActual(db().productionOrders[0]), 1500 - K.orderActual(db().productionOrders[0])], [1210, 290]);
+      OPF.router.go("transfer"); fill({ from: db().factories[0].id, style: "OPF-101", color: "Black", size: "M", dispatched: 1210, received: 1205 }); submit();
+      check("transfer shortage 5", db().transfers[0].dispatched - db().transfers[0].received, 5);
+      OPF.router.go("products"); fill({ style: "OPF-101", name: "Men Polo", cost: 220, price: 300 }); submit();
+
+      /* ---- sales / payment / receipt ---- */
+      OPF.router.go("customers"); fill({ name: "Karim Store", mobile: "01711111111", previousDue: 50000 }); submit();
+      var cid = db().customers[0].id;
+      OPF.router.go("sales"); fill({ customer: cid, discount: 500 });
+      var rows = document.querySelectorAll("#items tr.item");
+      [[20, 300], [15, 300]].forEach(function (q, i) {
+        ["style", "color", "size", "qty", "rate"].forEach(function (k, j) { var el = rows[i].querySelector('[data-k="' + k + '"]'); el.value = ["OPF-101", "Black", "M", q[0], q[1]][j]; el.dispatchEvent(new Event("change", { bubbles: true })); });
+      });
+      check("invoice total 10,000 / balance after 60,000", /Total Amount\s*10,000\.00/.test(calcText()) && /After This Invoice\s*60,000\.00/.test(calcText()), true);
+      submit();
+      check("invoice saved", [db().sales.length, K.saleTotal(db().sales[0])], [1, 10000]);
+      OPF.pages.payments.collect("Customer", cid); fill({ amount: 20000 });
+      check("payment breakdown 50,000 + 10,000 - 20,000 = 40,000", /Previous Due\s*50,000\.00/.test(calcText()) && /Total Due\s*60,000\.00/.test(calcText()) && /Remaining Due\s*40,000\.00/.test(calcText()), true);
+      submit();
+      check("receipt generated automatically", /Money Receipt/.test(printed) && /Twenty Thousand Taka Only/.test(printed), true);
+      OPF.print.invoice(db().sales[0].id);
+      check("cash memo print built", /Cash Memo/.test(printed) && /Total Due Now: <b>60,000\.00/.test(printed), true);
+
+      /* ---- courier / costing / ledger / export ---- */
+      OPF.router.go("courier"); fill({ customer: cid, cod: 15000, advance: 1000, charge: 150, status: "Sent" });
+      check("courier net COD 14,000", form().elements.namedItem("netCod").value, "14000");
+      submit();
+      OPF.router.go("costing"); fill({ fabricYd: 1.5, fabricRate: 100, accessories: 20, factory: 25, packaging: 5, transport: 3, other: 2, margin: 20 }, "costForm");
+      check("costing 205 -> selling price 246", /Selling Price \/ PC\s*246\.00/.test(document.getElementById("costout").textContent.replace(/\s+/g, " ")), true);
+      check("stock summary 1,170 PCS in showroom", OPF.stock.byStyle()[0].shop, 1170);
+      check("ledgers reconcile", OPF.audit.run().checks.map(function (c) { return c.ok; }), [true, true, true]);
+      var blob = OPF.xlsx.build(OPF.sheets.all());
+      check("Excel file builds (21 sheets)", [blob.size > 5000, OPF.sheets.all().length], [true, 21]);
+      check("customer search", OPF.search.results("0171").map(function (r) { return r.c.name; }), ["Karim Store"]);
+
+      /* ---- admin password + edit ---- */
+      OPF.records.edit("customers", cid);
+      document.getElementById("pw1").value = "secret1"; document.getElementById("pw2").value = "secret1";
+      document.querySelector("#modal form").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      check("admin password created, edit form opened", [!!db().auth.hash, form().classList.contains("editing")], [true, true]);
+      fill({ mobile: "01799999999" }); submit();
+      check("record edited", [db().customers.length, db().customers[0].mobile], [1, "01799999999"]);
+
+      /* ---- every page renders ---- */
+      var broken = OPF.config.MENU.filter(function (m) { try { OPF.router.go(m[0]); return !document.getElementById("app").innerHTML; } catch (e) { return true; } }).map(function (m) { return m[0]; });
+      check("all " + OPF.config.MENU.length + " pages render", broken, []);
+      OPF.views.customer(cid);
+      check("customer profile renders", /Ledger Statement/.test(document.getElementById("app").textContent), true);
+
+      report();
+    })();
+  </script>
+</body>
+
+</html>
