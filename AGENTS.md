@@ -96,7 +96,7 @@ reports.
 
 ```bash
 cd tests && npm install                 # once; only puppeteer-core
-npm test                                # e2e + edge + uat + smoke on installed Chrome
+npm test                                # e2e + edge + uat + regression + smoke on installed Chrome
 node e2e.test.js | edge.test.js | uat.test.js   # one suite
 node smoke.js [browser-exe]             # self-test page, headless; also checks the script list
 node --check <file>.js                  # quick syntax check
@@ -140,7 +140,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42 checks, all passing;
+  - current Chrome and Chromium 109: e2e 86, edge 65, uat 42, regression 62 checks, all passing;
   - self-test 24 / 24 on Chrome 73, 109, current and Firefox 115.
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).

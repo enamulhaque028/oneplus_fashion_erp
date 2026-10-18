@@ -133,6 +133,11 @@
     const d = F.numify(F.data(form), ["discount", "paid"]), items = readItems(), editId = F.editingId("sales");
     if (!items.length || items.some((i) => !i.style || !i.qty)) { alert("Every item row needs a Style Code and Quantity. Remove empty rows with x."); return; }
     if (S.db.sales.some((s) => lc(s.invoice) == lc(d.invoice) && s.id != editId)) { alert(`Invoice No. ${d.invoice} already exists.`); return; }
+    const old = editId && S.byId("sales", editId);
+    if (old && lc(old.invoice) != lc(d.invoice) && R.isReferenced("sales", old)) {
+      alert(`Invoice No. ${old.invoice} is used by a sales return or courier parcel, so it cannot be changed.`);
+      return;
+    }
     d.items = items;
     if (d.discount > K.saleSubtotal(d)) { alert("Discount cannot be more than the subtotal."); return; }
     const short = OPF.stock.shopShortages(d.location, items, skipSelf());

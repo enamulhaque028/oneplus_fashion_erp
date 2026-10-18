@@ -60,7 +60,7 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 | **Sidebar** (left) | The shop name and logo at the top, then the pages in groups: Purchase, Production, Product & Stock, Sales, Accounts, Admin. Click a group to open or close it; the group of the page you are on opens by itself, and that page is highlighted in green. **Search menu...** finds a page by name. The shop hotline is at the bottom. |
 | **Menu button** (☰, top left) | Shrinks the sidebar to icons only, for more room; click again to bring the names back. On a phone-sized window it slides the menu in and out. |
 | **Page title** (top left) | The group and the page you are on. |
-| **Search bar** (top) | Type a customer's name or at least 3 digits of their mobile. Click a result, or press Enter for the first result, to open the customer's full history. |
+| **Search bar** (top) | Type a customer's name or at least 3 digits of their mobile (with or without +880). Click a result, or press Enter for the first result, to open the customer's full history. |
 | **Sun / moon** (top) | Light or dark colours. The choice is remembered on this computer. |
 | **Admin: Locked / Unlocked** (top right) | Shows whether editing is allowed. Click it to lock again when you are done. See [section 6](#6-editing-deleting-and-the-admin-password). |
 | **Sale** (green, top right) | Opens a new sale / invoice. |
@@ -76,6 +76,9 @@ e.g. `OnePlusFashion_ERP.html#/suppliers` or `#/customer/...` for a customer's p
   **Open link in new tab**, or Ctrl-click it (Cmd-click on a Mac), to work in two pages at once.
   All tabs use the same saved data; after saving in one tab, press F5 in the other to see the change;
 - you can bookmark a page, and **F5** reloads the page you are on.
+
+If the ERP is left open overnight, at midnight any date box still showing yesterday moves to the new
+day and the Dashboard refreshes, so the first entry of the morning gets today's date.
 
 Many fields suggest earlier entries as you type (style codes, materials, shops, invoice numbers,
 courier companies). Pick a suggestion to avoid spelling differences. "OPF-101" and "OPF 101"
@@ -309,7 +312,10 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 - **Edit** opens the record in the form with an orange border. Click **Update** to save or **Cancel Edit**.
   Totals, dues and stock recalculate everywhere.
 - **Delete** asks for confirmation. A record that other records depend on cannot be deleted; for
-  example, a customer with invoices, or a production order with production entries. Edit it instead.
+  example, a customer with invoices, a production order with production entries, or a sale that has
+  a sales return or courier parcel against its invoice. Edit it instead.
+- The **invoice number** of a sale that has a return or courier parcel cannot be changed either,
+  because those records point at that number.
 - Every edit and delete is recorded in **Users / Activity**.
 
 ## 7. Printing invoices and receipts

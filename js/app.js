@@ -9,9 +9,23 @@
     if (app) app.insertAdjacentHTML("afterbegin", `<div class="alert"><b>ERP error:</b> ${OPF.util.esc(message)}${line ? ` (line ${line})` : ""}</div>`);
   }
 
+  let day = OPF.util.today();
+
+  // Midnight while the ERP is open: date fields still showing the old day move to the new day
+  // (so the first sale of the morning is not dated yesterday) and an open dashboard redraws.
+  // Fields the user changed and records being edited are left alone.
+  function rollover(oldDay, newDay) {
+    Array.prototype.forEach.call(document.querySelectorAll('#app input[type="date"]'), (el) => {
+      if (el.value == oldDay && !el.closest("form.editing")) el.value = newDay;
+    });
+    if (OPF.router.current == "dashboard" && !document.querySelector("#modal .overlay")) OPF.router.refresh();
+  }
+
   function tick() {
     OPF.html.$("clock").textContent = new Date().toLocaleString();
     OPF.auth.refreshButton();
+    const now = OPF.util.today();
+    if (now != day) { rollover(day, now); day = now; }
   }
 
   function start() {
@@ -26,5 +40,6 @@
     OPF.router.start(); // opens the page in the address (#/...), else the dashboard
   }
 
+  OPF.app = { rollover };
   document.addEventListener("DOMContentLoaded", start);
 })(window.OPF = window.OPF || {});

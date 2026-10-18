@@ -5,12 +5,15 @@
   const { lc, esc, dueText } = OPF.util;
   const H = OPF.html;
 
+  // Mobile digits in local form: "+880 1711-000000" and "01711000000" both become "01711000000".
+  const mobileDigits = (v) => String(v || "").replace(/\D/g, "").replace(/^880/, "0");
+
   function results(query) {
-    const q = lc(query), digits = String(query).replace(/\D/g, "");
+    const q = lc(query), digits = mobileDigits(query);
     if (!q) return null;
     const bm = OPF.ledger.balances("Customer");
     return OPF.store.db.customers
-      .filter((c) => lc(c.name).includes(q) || (digits.length >= 3 && String(c.mobile || "").replace(/\D/g, "").includes(digits)))
+      .filter((c) => lc(c.name).includes(q) || (digits.length >= 3 && mobileDigits(c.mobile).includes(digits)))
       .slice(0, 15)
       .map((c) => ({ c, due: bm[c.id].bal }));
   }
