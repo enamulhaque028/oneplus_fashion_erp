@@ -39,7 +39,13 @@ as "non-sensitive", so the app does not need a Google review.
 
 ## 5. Let any Google account sign in
 
-1. Google Auth Platform → **Audience** → **Publish app** → **Confirm**. The status becomes
+1. Google Auth Platform → **Branding**. Fill in (no logo: a logo needs Google's review):
+   - App home page: `https://enamulhaque028.github.io/oneplus_fashion_erp/`
+   - Privacy policy: `https://enamulhaque028.github.io/oneplus_fashion_erp/privacy.html`
+   - Terms of service: `https://enamulhaque028.github.io/oneplus_fashion_erp/terms.html`
+   - Authorized domains: `enamulhaque028.github.io`
+   → **Save**. (Both pages are in the repository: `privacy.html`, `terms.html`.)
+2. Google Auth Platform → **Audience** → **Publish app** → **Confirm**. The status becomes
    "In production".
 
 If you'd rather not publish, leave it in "Testing" and add the shop's Gmail address under **Test users**

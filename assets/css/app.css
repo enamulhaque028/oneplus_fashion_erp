@@ -619,6 +619,7 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 .gate-tick { width: 68px; height: 68px; margin: 4px auto 14px; border-radius: 50%; background: #22c55e; display: flex; align-items: center; justify-content: center; animation: gpop .5s ease-out both, gping 1.6s .5s infinite }
 .gate-tick svg { width: 34px; stroke: #fff; stroke-width: 4; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 40; stroke-dashoffset: 40; animation: gdraw .6s .35s ease-out forwards }
 .gate-foot { position: absolute; bottom: 16px; left: 0; right: 0; text-align: center; color: rgba(255, 255, 255, .8); font-size: 12px }
+.gate-foot a { color: #fff }
 @keyframes gdrift { to { transform: translate(50px, 40px) scale(1.15) } }
 @keyframes grise { from { opacity: 0; transform: translateY(26px) } }
 @keyframes grise2 { from { opacity: 0; transform: translateY(12px) } }

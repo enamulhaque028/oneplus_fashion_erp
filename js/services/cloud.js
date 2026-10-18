@@ -229,7 +229,7 @@
   function gate(inner) {
     let g = $("cloudGate");
     if (!g) { g = document.createElement("div"); g.id = "cloudGate"; document.body.appendChild(g); }
-    g.innerHTML = BLOBS + `<div class="gate-card">${inner}</div><div class="gate-foot">Your data is saved only in your own Google Drive</div>`;
+    g.innerHTML = BLOBS + `<div class="gate-card">${inner}</div><div class="gate-foot">Your data is saved only in your own Google Drive · <a href="privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="terms.html" target="_blank" rel="noopener">Terms</a></div>`;
   }
   const logoTile = () => { const co = OPF.store.db.company; return `<div class="gate-logo">${co.logo ? `<img src="${co.logo}" alt="">` : OPF.print.brandMark(true)}</div>`; };
 
