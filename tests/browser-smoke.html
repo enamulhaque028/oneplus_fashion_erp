@@ -174,6 +174,18 @@
       submit();
       check("rough note saved, formatting cleaned", db().notes.map(function (n) { return [n.text, n.html]; }), [["line 1\nbold", "line 1<br><b>bold</b>"]]);
       document.querySelector('[data-act="notes.new"]').click();
+      var hbox = document.getElementById("rtBox"), hr = document.createRange(), hs = getSelection();
+      hbox.innerHTML = "<span style=\"background-color:#fde68a\">marked</span>"; hbox.focus();
+      hr.selectNodeContents(hbox); hs.removeAllRanges(); hs.addRange(hr);
+      document.querySelector('[data-cmd="hiliteColor"]').click();
+      check("highlight can be taken off", OPF.richtext.clean(hbox.innerHTML), "marked");
+      hbox.innerHTML = "<span style=\"background-color:#fde68a\">marked</span>"; hbox.focus();
+      hr = document.createRange(); hr.setStart(hbox.firstChild.firstChild, 6); hr.collapse(true); hs.removeAllRanges(); hs.addRange(hr);
+      document.querySelector('[data-cmd="hiliteColor"]').click();
+      document.execCommand("insertText", false, " plain");
+      check("typing after turning highlight off is plain", OPF.richtext.clean(hbox.innerHTML), "<mark>marked</mark> plain");
+      document.querySelector('[data-act="notes.close"]').click();
+      document.querySelector('[data-act="notes.new"]').click();
       document.querySelector('[data-act="notes.addSketch"]').click();
       var cv = document.getElementById("skCanvas"), r = cv.getBoundingClientRect();
       [["pointerdown", 0.2], ["pointermove", 0.5], ["pointermove", 0.8], ["pointerup", 0.8]].forEach(function (s) {

@@ -37,11 +37,13 @@
     let out = "";
     (function walk(node) {
       Array.prototype.forEach.call(node.childNodes, (n) => {
-        if (n.nodeType == 3) { out += esc(n.nodeValue); return; }
+        if (n.nodeType == 3) { out += esc(n.nodeValue.replace(/\u200B/g, "")); return; } // \u200B: cursor marker, see leaveHighlight
         if (n.nodeType != 1 || DROP.test(n.tagName)) return;
         if (n.tagName == "BR") { out += "<br>"; return; }
         const open = [], st = n.style || {};
-        const tag = KEEP[n.tagName];
+        let tag = KEEP[n.tagName];
+        // A <mark> whose highlight was taken off (another background) is no longer a highlight.
+        if (tag == "mark" && st.backgroundColor && hex(st.backgroundColor) != HIGHLIGHT) tag = null;
         if (tag) open.push(tag);
         const w = st.fontWeight;
         if (tag != "b" && tag != "h3" && (w == "bold" || Number(w) >= 600)) open.push("b");
@@ -80,6 +82,59 @@
   // Plain text from older notes -> HTML with the same line breaks.
   const fromText = (t) => esc(String(t || "")).replace(/\r?\n/g, "<br>");
 
+  // Saved highlights are <mark>; the editor's commands can only change inline background colours,
+  // so while editing they become spans (clean() turns them back into <mark> on save).
+  const forEditing = (html) => clean(html).replace(/<mark>/g, `<span style="background-color:${HIGHLIGHT}">`).replace(/<\/mark>/g, "</span>");
+
+  // The highlighted element around node n (inside the editor box), or null.
+  function highlightOf(n, box) {
+    for (; n && n != box; n = n.parentNode) {
+      if (n.nodeType == 1 && (n.tagName == "MARK" || hex(n.style.backgroundColor) == HIGHLIGHT)) return n;
+    }
+    return null;
+  }
+
+  /* Turning Highlight off with no text selected: browsers keep typing inside the yellow element
+     (a "transparent" style nested in it still shows yellow). So split the element at the cursor and
+     put the cursor between the halves, on a zero-width marker that clean() removes. */
+  function leaveHighlight() {
+    const box = document.getElementById("rtBox"), s = document.getSelection();
+    const r = s.getRangeAt(0), h = highlightOf(r.startContainer, box);
+    if (!h) return;
+    const tail = document.createRange();
+    tail.setStart(r.startContainer, r.startOffset);
+    tail.setEnd(h, h.childNodes.length);
+    const rest = tail.extractContents();
+    const marker = document.createTextNode("\u200B");
+    h.parentNode.insertBefore(marker, h.nextSibling);
+    if (rest.textContent) {
+      const again = h.cloneNode(false);
+      again.appendChild(rest);
+      marker.parentNode.insertBefore(again, marker.nextSibling);
+    }
+    if (!h.textContent) h.parentNode.removeChild(h);
+    const at = document.createRange();
+    at.setStart(marker, 1);
+    at.collapse(true);
+    s.removeAllRanges();
+    s.addRange(at);
+  }
+
+  // Is the first selected text highlighted? (With "select all" the range starts at the box itself,
+  // so step down to the first text inside it.)
+  function inHighlight() {
+    const box = document.getElementById("rtBox"), s = document.getSelection();
+    if (!box || !s.rangeCount) return false;
+    const r = s.getRangeAt(0);
+    let n = r.startContainer;
+    if (n.nodeType == 1) n = n.childNodes[r.startOffset] || n;
+    while (n.nodeType == 1 && n.firstChild) n = n.firstChild;
+    for (; n && n != box; n = n.parentNode) {
+      if (n.nodeType == 1 && (n.tagName == "MARK" || hex(n.style.backgroundColor) == HIGHLIGHT)) return true;
+    }
+    return false;
+  }
+
   // Toolbar icons (24 x 24 line drawings, like OPF.icon).
   const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   const ICON = {
@@ -108,7 +163,7 @@
         `<span class="rt-pal" id="rtPal" hidden>${palette}</span></span>`) +
       '<span class="grow"></span>' +
       group(btn("removeFormat", ICON.clear, "Clear formatting")) +
-      `</div><div class="rt-box" id="rtBox" contenteditable="true" data-placeholder="Write anything: an idea, a reminder, a rough calculation...">${clean(html)}</div></div>`;
+      `</div><div class="rt-box" id="rtBox" contenteditable="true" data-placeholder="Write anything: an idea, a reminder, a rough calculation...">${forEditing(html)}</div></div>`;
   }
 
   // Light up the buttons for the formatting where the cursor is (so staff can see Bold is on).
@@ -120,7 +175,9 @@
       const cmd = b.dataset.cmd;
       let on = false;
       try {
-        on = STATE.indexOf(cmd) >= 0 ? document.queryCommandState(cmd) : cmd == "formatBlock" && /h3/i.test(document.queryCommandValue("formatBlock"));
+        on = STATE.indexOf(cmd) >= 0 ? document.queryCommandState(cmd)
+          : cmd == "hiliteColor" ? inHighlight()
+          : cmd == "formatBlock" && /h3/i.test(document.queryCommandValue("formatBlock"));
       } catch (e) { /* not supported here */ }
       b.classList.toggle("on", !!on);
     });
@@ -147,7 +204,12 @@
     box.focus();
     const cmd = el.dataset.cmd;
     // Clicking Heading again turns the line back into normal text.
-    const val = cmd == "formatBlock" && document.queryCommandValue("formatBlock").toLowerCase() == "h3" ? "<div>" : el.dataset.val;
+    let val = cmd == "formatBlock" && document.queryCommandValue("formatBlock").toLowerCase() == "h3" ? "<div>" : el.dataset.val;
+    // Highlight works like Bold: clicking it on highlighted text takes the highlight off.
+    if (cmd == "hiliteColor" && inHighlight()) {
+      if (document.getSelection().isCollapsed) { leaveHighlight(); showState(); return; }
+      val = "transparent";
+    }
     if (cmd == "hiliteColor" && !document.queryCommandSupported("hiliteColor")) document.execCommand("backColor", false, val);
     else document.execCommand(cmd, false, val || null);
     if (cmd == "removeFormat") document.execCommand("hiliteColor", false, "transparent");

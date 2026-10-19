@@ -263,7 +263,8 @@ A notepad for ideas, reminders or anything to note: a title, a date, the note, a
 - **Search notes** filters as you type. When notes have different colours, the colour chips
   (All / Yellow / Pink ...) show only that colour.
 - **Formatting:** select text and use the toolbar: **B** bold, *I* italic, U underline, **H** heading,
-  bullet or numbered list, **ab** highlight, five text colours, and **Clear** to remove formatting.
+  bullet or numbered list, the highlighter (click it again to take the highlight off), **A** for
+  text colour, and **Clear** to remove formatting.
   Ctrl+B / Ctrl+I / Ctrl+U also work. Pasted text comes in plain (no formatting from other programs).
 - **Sketch:** click **Add sketch** and draw with the mouse, a finger or a pen. Pick a colour and a
   line thickness; **Eraser** rubs out, **Undo** removes the last line, **Clear** empties the sketch.

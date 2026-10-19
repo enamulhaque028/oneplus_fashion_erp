@@ -673,6 +673,8 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 .rt-btn.on { background: var(--primary-soft); color: var(--primary-ink) }
 .rt-btn.rt-mark svg { stroke: #b45309 }
 .rt-btn.rt-mark:hover { background: #fef3c7 }
+.rt-btn.rt-mark.on { background: #fde68a; color: #92400e }
+.rt-btn.rt-mark.on svg { stroke: #92400e }
 .rt-color { flex-direction: column; padding: 0 9px }
 .rt-color b { font-size: 15px; line-height: 15px; font-weight: 800 }
 .rt-color i { display: block; width: 16px; height: 4px; margin-top: 2px; border-radius: 2px }
