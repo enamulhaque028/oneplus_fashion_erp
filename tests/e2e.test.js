@@ -7,7 +7,7 @@ const { start, sleep, ROOT } = require("./lib");
 
 (async () => {
   const T = await start("e2e");
-  const { browser, page, errors, alerts, OUT, check, section, go, db, text, fill, submit, act, modalOpen, password, printed, setItems } = T;
+  const { browser, page, errors, alerts, OUT, APP, check, section, go, db, text, fill, submit, act, modalOpen, password, printed, setItems } = T;
 
   await T.open();
   check("app booted from file:// without special flags", await page.evaluate(() => !!(window.OPF && OPF.store.db)), true);
@@ -482,6 +482,40 @@ const { start, sleep, ROOT } = require("./lib");
     if (["dashboard", "sales", "payments", "courier", "costing", "ledger", "transfer", "productionOrder", "purchase"].includes(id)) await page.screenshot({ path: path.join(OUT, id + ".png"), fullPage: true });
   }
   check("no ERP error banners", await page.$$eval(".alert b", (b) => b.filter((x) => /ERP error/.test(x.innerText)).length), 0);
+
+  section("Phones (iPhone 12): printing and every page fits the screen");
+  {
+    const ph = await browser.newPage();
+    const phoneErrors = [];
+    ph.on("pageerror", (e) => phoneErrors.push(e.message));
+    await ph.emulate({ viewport: { width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true }, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0 Mobile/15E148 Safari/604.1" });
+    await ph.goto(APP); await sleep(400); // same browser profile: the data saved above
+    await ph.evaluate(() => { window.__prints = 0; window.print = () => { window.__prints++; }; });
+    const saleId = await ph.evaluate(() => OPF.store.db.sales[0].id);
+    await ph.evaluate((id) => OPF.print.invoice(id), saleId);
+    check("phone: the cash memo prints from the page itself (iPhone ignores a hidden frame)", await ph.evaluate(() => [window.__prints, !!document.getElementById("printFrame"), /Cash Memo/.test(document.getElementById("printDoc").innerHTML), document.body.classList.contains("print-doc"), document.getElementById("printCss").media]), [1, false, true, true, "print"]);
+    await ph.emulateMediaType("print");
+    check("phone: while printing only the memo shows, with its own styles", await ph.evaluate(() => [getComputedStyle(document.getElementById("app").closest("body > *")).display, getComputedStyle(document.getElementById("printDoc")).display, getComputedStyle(document.querySelector("#printDoc .memo")).fontFamily.indexOf("Times") >= 0]), ["none", "block", true]);
+    await ph.emulateMediaType("screen");
+    check("phone: the memo is never visible on screen, and print styles never touch the screen", await ph.evaluate(() => [getComputedStyle(document.getElementById("printDoc")).display, getComputedStyle(document.body).fontFamily.indexOf("Times") < 0]), ["none", true]);
+    await ph.touchscreen.tap(200, 400);
+    check("phone: the next tap switches the memo styles off again", await ph.evaluate(() => [document.body.classList.contains("print-doc"), document.getElementById("printCss").media]), [false, "not all"]);
+    const tooWide = [];
+    for (const id of await ph.evaluate(() => OPF.config.MENU.map((m) => m[0]))) {
+      await ph.evaluate((id) => OPF.router.go(id), id); await sleep(60);
+      const w = await ph.evaluate(() => [document.documentElement.scrollWidth, Array.prototype.filter.call(document.querySelectorAll("#app *"), (e) => e.getBoundingClientRect().right > innerWidth + 1 && !e.closest("#noteDlg")).length]);
+      if (w[0] > 390 || w[1]) tooWide.push(id + " " + w.join("/"));
+    }
+    check("phone: no page is wider than the screen (tables show as cards)", tooWide, []);
+    await ph.evaluate(() => OPF.router.go("customers")); await sleep(60);
+    check("phone: wide tables become cards with column names", await ph.evaluate(() => { const t = document.querySelector(".table.stack"); const td = t && t.querySelector("tbody td"); return [!!t, td && td.getAttribute("data-label"), getComputedStyle(t.querySelector("thead")).display]; }), [true, "Customer", "none"]);
+    await ph.evaluate(() => OPF.router.go("sales")); await sleep(60);
+    await ph.evaluate(() => document.querySelector('[data-act="sales.addItem"]').click()); await sleep(60);
+    check("phone: invoice item rows (also a new one) are labelled cards", await ph.evaluate(() => Array.prototype.map.call(document.querySelectorAll("#items tr.item"), (tr) => tr.querySelector('input[data-k="qty"]').parentNode.getAttribute("data-label"))), ["Qty (PCS)", "Qty (PCS)", "Qty (PCS)", "Qty (PCS)"]);
+    check("phone: no JavaScript errors", phoneErrors, []);
+    await ph.close();
+  }
+  check("computer: tables stay tables and the memo still prints from the hidden frame", await page.evaluate(() => [document.querySelectorAll(".table.stack").length, OPF.print.isMobile()]), [0, false]);
 
   section("Performance (thousands of records)");
   await page.evaluate(() => {

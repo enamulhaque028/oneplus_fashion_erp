@@ -83,7 +83,6 @@ body { margin: 0; font: 10.5pt "Times New Roman", Times, serif; color: #1c2150 }
 .quote .src { display: block; text-align: right }
 
 /* ---------- logo mark (inline SVG) ---------- */
-.mark .box { fill: url(#mboxg) }
 .mark .chev { fill: none; stroke: #fff; stroke-width: 9; stroke-linejoin: miter }
 .mark .op, .mark .wing { fill: #f08a24 }
 .mark .opline { fill: none; stroke: #f08a24; stroke-width: 11 }

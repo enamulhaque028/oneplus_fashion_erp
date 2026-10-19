@@ -69,6 +69,10 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 | **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
 | **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
 
+**On a phone** (the online link): the menu opens from the ☰ button at the top left. Wide tables show
+each row as a card with the column names on the left, so nothing is cut off. The search box takes the
+header; the page name is the heading under it.
+
 **Pages work like a website.** Every page has its own address, shown after `#` in the address bar,
 e.g. `OnePlusFashion_ERP.html#/suppliers` or `#/customer/...` for a customer's profile. So:
 - the browser's **Back** and **Forward** buttons move between the pages you visited;
@@ -352,6 +356,8 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 - **Receipts** print automatically after a payment is saved, or from the **Receipt** button.
 - The print dialog opens over the ERP page - no new tab. Choose the printer, or **Save as PDF**
   (the file name is suggested, e.g. "Cash Memo INV-00012"). Closing the dialog leaves you on the same page.
+- **On a phone or tablet** (iPhone, iPad, Android) the same memo or receipt prints. Tap the button, then
+  in the print sheet choose the printer, or share / save it as a PDF.
 - **Cash memo layout** (the same design as the shop's printed Cash Memo book):
   - the logo on the left, "Cash Memo" and the shop name, motto, business description, address,
     phone and e-mail in the middle, and the **HOTLINE** number on the right;

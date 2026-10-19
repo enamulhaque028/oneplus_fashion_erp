@@ -11,10 +11,16 @@
   // Item area height on an A4 memo; rows use about 8.2 mm each, the rest is blank lined space.
   const BODY_MM = 132, ROW_MM = 8.2;
 
+  // Phones and tablets: iPhone / iPad browsers (all WebKit) print the whole page instead of a
+  // hidden frame, so there the document is printed from the page itself (printInPage).
+  const isMobile = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+    (navigator.platform == "MacIntel" && navigator.maxTouchPoints > 1); // iPad asking for the desktop site
+
   // Print inside this page from a hidden frame - no new tab or window (and nothing for a
   // pop-up blocker to stop). The frame stays until the next print so tests can read it.
   let count = 0;
   function printWindow(title, body) {
+    if (isMobile()) { printInPage(title, body); return; }
     const old = document.getElementById("printFrame");
     if (old) old.remove();
     const frame = document.createElement("iframe");
@@ -35,6 +41,48 @@
     if (doc.readyState == "complete") ready(); else win.addEventListener("load", ready);
   }
 
+  /* Phones: the document goes into #printDoc (hidden on screen) and print.css is switched on only
+     while printing - it is preloaded as <link id="printCss" media="not all">, so the print dialog
+     opens at once, still inside the tap (iOS needs that), and its page-wide rules never touch the
+     ERP screen or the "Print this page" reports. */
+  function printInPage(title, body) {
+    let css = document.getElementById("printCss");
+    if (!css) { // normally preloaded in the page's <head>
+      css = document.createElement("link");
+      css.id = "printCss"; css.rel = "stylesheet"; css.media = "not all";
+      css.href = new URL("assets/css/print.css", document.baseURI).href;
+      document.head.appendChild(css);
+    }
+    let doc = document.getElementById("printDoc");
+    if (doc) doc.remove();
+    doc = document.createElement("div");
+    doc.id = "printDoc";
+    doc.innerHTML = body;
+    document.body.appendChild(doc);
+    count++;
+    OPF.print.outputPage(title);
+  }
+
+  // Switched back after printing, or at the next tap (iPhone's print sheet does not block the page,
+  // so no timer: the memo must stay "printable" until the sheet has made its preview). Leaving it
+  // on a little longer is harmless - it only applies to printing, never to the screen.
+  function outputPage(title) {
+    const css = document.getElementById("printCss"), old = document.title;
+    const done = () => {
+      document.body.classList.remove("print-doc");
+      css.media = "not all";
+      document.title = old;
+      window.removeEventListener("afterprint", done);
+      document.removeEventListener("pointerdown", done, true);
+    };
+    css.media = "print";
+    document.body.classList.add("print-doc");
+    document.title = title;
+    window.addEventListener("afterprint", done);
+    setTimeout(() => document.addEventListener("pointerdown", done, true), 0);
+    window.print();
+  }
+
   // Opens the browser's print dialog for the frame. The page title is borrowed so "Save as PDF"
   // suggests e.g. "Cash Memo INV-00012". The self-test page replaces this to stay silent.
   function output(win) {
@@ -48,11 +96,15 @@
 
   /* ---- brand mark: the One Plus "op" logo, drawn so no image file is needed ----
      boxed = dark tile for the header; otherwise the pale watermark version. */
+  // Each drawing gets its own gradient id: the sidebar logo and a memo printed inside the page
+  // (phones) share one document, and a duplicate id would borrow the hidden sidebar's gradient.
+  let markNo = 0;
   function brandMark(boxed) {
+    const gid = "mboxg" + ++markNo;
     const wings = [[14, 74, 58, 56, 18], [20, 88, 56, 54, 24], [26, 102, 54, 52, 30]]
       .map(([x1, y, x2, x3, x4]) => `<polygon class="wing" points="${x1},${y} ${x2},${y} ${x3},${y + 8} ${x4},${y + 8}"/><polygon class="wing" points="${200 - x1},${y} ${200 - x2},${y} ${200 - x3},${y + 8} ${200 - x4},${y + 8}"/>`).join("");
     return `<svg class="mark" viewBox="0 0 200 ${boxed ? 196 : 214}" xmlns="http://www.w3.org/2000/svg">` +
-      (boxed ? '<defs><linearGradient id="mboxg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3f37"/><stop offset="1" stop-color="#0d1411"/></linearGradient></defs><rect class="box" width="200" height="196" rx="18"/>' : "") +
+      (boxed ? `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3f37"/><stop offset="1" stop-color="#0d1411"/></linearGradient></defs><rect class="box" width="200" height="196" rx="18" style="fill:url(#${gid})"/>` : "") +
       '<polyline class="chev" points="42,70 100,34 158,70"/><polyline class="chev" points="42,118 100,154 158,118"/>' + wings +
       '<circle class="opline" cx="82" cy="94" r="14"/><circle class="opline" cx="120" cy="94" r="14"/><rect class="op" x="100.5" y="90" width="11" height="36"/>' +
       `<text class="word" x="100" y="${boxed ? 184 : 204}" text-anchor="middle">ONE PLUS</text></svg>`;
@@ -175,7 +227,7 @@
     printWindow("Cash Memo Preview", invoiceHtml(sample, { name: "Sample Fashion House", mobile: "01700000000", address: "Bongo Bazar", district: "Dhaka" }, 3000));
   }
 
-  OPF.print = { invoice, receipt, preview, snapshotRows, brandMark, output, get count() { return count; } };
+  OPF.print = { invoice, receipt, preview, snapshotRows, brandMark, output, outputPage, isMobile, get count() { return count; } };
   OPF.actions.register({
     "print.invoice": (el) => invoice(el.dataset.id),
     "print.receipt": (el) => receipt(el.dataset.id),

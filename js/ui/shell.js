@@ -72,7 +72,40 @@
     Array.prototype.forEach.call(document.querySelectorAll("[data-theme-set]"), (b) => b.classList.toggle("on", b.getAttribute("data-theme-set") == prefs.theme));
   }
 
+  /* ---------- phones: wide tables become cards ----------
+     On a narrow screen a table that does not fit shows each row as a card: every cell gets its
+     column name (data-label) and CSS (.table.stack) lays the cells out as "Name ... value" lines.
+     Only at phone width, so computers (and the 3,000-invoice speed check) are not affected. */
+  const phone = window.matchMedia ? window.matchMedia("(max-width: 640px)") : { matches: false };
+
+  function stackTables(root) {
+    if (!phone.matches) return;
+    Array.prototype.forEach.call((root || document).querySelectorAll(".table"), (wrap) => {
+      const table = wrap.querySelector("table");
+      if (!table) return;
+      // Rows can be added later (e.g. "+ Add Item"), so label every row not labelled yet.
+      const heads = Array.prototype.map.call(table.querySelectorAll("thead th"), (th) => th.textContent.trim());
+      Array.prototype.forEach.call(table.querySelectorAll("tbody tr, tfoot tr"), (tr) => {
+        if (tr.hasAttribute("data-labelled")) return;
+        let col = 0;
+        Array.prototype.forEach.call(tr.children, (td) => {
+          td.setAttribute("data-label", tr.children.length == 1 ? "" : heads[col] || "");
+          col += td.colSpan || 1;
+        });
+        tr.setAttribute("data-labelled", "");
+      });
+      wrap.classList.remove("stack");
+      if (table.offsetWidth > wrap.clientWidth + 1) wrap.classList.add("stack");
+    });
+  }
+
   function init() {
+    // Phones: re-check tables whenever a page draws, and when the screen turns.
+    let pending = false;
+    const later = () => { if (!pending) { pending = true; requestAnimationFrame(() => { pending = false; stackTables($("app")); }); } };
+    if (window.MutationObserver) new MutationObserver(later).observe($("app"), { childList: true, subtree: true });
+    if (phone.addListener) phone.addListener(() => { if (phone.matches) later(); else Array.prototype.forEach.call(document.querySelectorAll(".table.stack"), (w) => w.classList.remove("stack")); });
+    window.addEventListener("resize", later);
     // Static header markup marks icon spots with data-icon="name".
     Array.prototype.forEach.call(document.querySelectorAll("[data-icon]"), (el) => { el.outerHTML = OPF.icon(el.getAttribute("data-icon")); });
     try { prefs = Object.assign(prefs, JSON.parse(localStorage.getItem(UI_KEY) || "{}")); } catch (e) { /* use defaults */ }
@@ -85,7 +118,7 @@
     });
   }
 
-  OPF.shell = { render, init };
+  OPF.shell = { render, init, stackTables };
   OPF.actions.register({
     "nav.group": (el) => { const gi = el.dataset.group; open[gi] = !el.parentNode.classList.contains("open"); el.parentNode.classList.toggle("open", open[gi]); },
     "shell.theme": (el) => { prefs.theme = el.getAttribute("data-theme-set"); applyPrefs(); savePrefs(); },
