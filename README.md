@@ -57,6 +57,10 @@ Supplier → Purchase → Raw Stock → Material Issue → Production → Finish
 
 Open **https://enamulhaque028.github.io/oneplus_fashion_erp/** in Chrome or Firefox. Nothing to install.
 
+It **works offline too**: open it once with internet, and after that it opens without internet (in a
+normal window, not Incognito). Chrome can **install** it as an app (install icon in the address bar,
+or **Add to Home screen** on a phone).
+
 > [!NOTE]
 > The data is saved in **that browser on that computer**. The online link and the double-click version (option 2) keep separate data.
 

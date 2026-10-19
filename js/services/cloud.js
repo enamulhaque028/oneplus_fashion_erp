@@ -296,6 +296,8 @@
 
   function showGate(onDone) {
     gateDone = onDone || (() => OPF.router.reload());
+    // No internet (e.g. the saved offline copy opened): say so and offer to continue offline.
+    if (!online()) { gateOffline(); return; }
     gateSignIn();
     D.preload().catch((e) => gateOffline(e.message));
   }

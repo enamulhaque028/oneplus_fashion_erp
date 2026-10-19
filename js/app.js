@@ -31,6 +31,9 @@
 
   function start() {
     window.onerror = (message, src, line) => showError(message, line);
+    // Hosted link: keep a saved copy of the ERP's files so it opens without internet (sw.js).
+    // The double-click (file://) version is offline already and cannot use this.
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(() => { /* optional */ });
     OPF.store.load();
     OPF.store.save(); // persist any schema upgrade straight away
     OPF.actions.bind(document);

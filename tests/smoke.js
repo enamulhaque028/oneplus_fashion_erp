@@ -18,6 +18,11 @@ if (appList.join() != smokeList.join()) {
   console.log("   only in smoke:", smokeList.filter((s) => !appList.includes(s)).join(", ") || "-");
   process.exit(1);
 }
+// The offline copy (sw.js) must include every file the app page loads (scripts, styles, icons).
+const pageFiles = [...fs.readFileSync(path.join(__dirname, "..", "OnePlusFashion_ERP.html"), "utf8").matchAll(/(?:src|href)="((?:js|assets)\/[^"]+|manifest\.webmanifest)"/g)].map((m) => m[1]);
+const shell = fs.readFileSync(path.join(__dirname, "..", "sw.js"), "utf8");
+const missing = pageFiles.filter((f) => shell.indexOf(`"${f}"`) < 0);
+if (missing.length) { console.log("FAIL sw.js (offline copy) is missing: " + missing.join(", ")); process.exit(1); }
 const dom = execFileSync(chrome[0], chrome.slice(1).concat(["--headless", "--disable-gpu", "--virtual-time-budget=5000", "--dump-dom", url]), { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
 const unescape = (s) => s.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&amp;/g, "&");
 const title = (dom.match(/<title>(.*?)<\/title>/) || [])[1] || "NO RESULT";

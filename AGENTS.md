@@ -44,9 +44,10 @@ reports.
 4. **Script order matters.** It is `core → domain → ui → services → pages → app`. A new JS file
    must be added to **both**:
    - `OnePlusFashion_ERP.html`, before `js/app.js`;
-   - `tests/browser-smoke.html`, in the same position.
+   - `tests/browser-smoke.html`, in the same position;
+   - the `SHELL` list in `sw.js` (the hosted link's offline copy; also new CSS / image files).
 
-   `node tests/smoke.js` fails if the two lists differ.
+   `node tests/smoke.js` fails if the lists differ or `sw.js` misses a file the page loads.
 5. **Never rename `STORAGE_KEY`**, and never change the stored shape without a migration.
    - Add an **idempotent** upgrade to `upgrades` in `js/core/migrate.js`. If it compares *values*
      rather than shapes, gate it on `d.version` so it runs once only (see `memoBranding`).
@@ -144,7 +145,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 167, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
+  - current Chrome and Chromium 109: e2e 167, edge 64, uat 44, regression 62, cloud 40, offline 12 checks, all passing;
   - self-test 30 / 30 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
@@ -174,6 +175,11 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   string as shown; texts with numbers need a pattern). `util.num` accepts Bengali digits. Bengali
   letters use the local-font face "ERP Bangla" (unicode-range): without it a 3,000-invoice register
   laid out about twice as slowly.
+- **Offline on the hosted link (2026-10-19):** `sw.js` (service worker, registered in `js/app.js` on
+  http(s) only) saves every file in `SHELL` and serves network-first with the saved copy as fallback
+  (4 s timeout); Google sign-in / Drive are never cached. `manifest.webmanifest` + icons make it
+  installable. The sign-in screen shows "No internet" (Continue offline) when offline.
+  `tests/offline.test.js` serves the project over http and reloads offline.
 - **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.
