@@ -144,7 +144,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 146, edge 64, uat 44, regression 62, cloud 34 checks, all passing;
+  - current Chrome and Chromium 109: e2e 146, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
   - self-test 29 / 29 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
@@ -157,6 +157,9 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   `OPF.richtext.safeUrl` addresses (http/https/mailto/tel) and always open in a new tab with noopener. The page is a card board;
   writing and preview open in `#noteDlg` (z-index below the admin password `#modal`). This replaces the
   earlier COD-settlement option B, which the business dropped.
+- **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`): only `true` turns sign-in / sync on
+  (`OPF.drive.enabled()`). When `false`, a previously signed-in computer still counts local saves
+  (`countWhileSwitchedOff` in `cloud.js`) so they upload, or raise the conflict question, when it is back on.
 - **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in
   `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`. Client ID set in
   `CLOUD.GOOGLE_CLIENT_ID` on 2026-10-18 (project `one-plus-fashion-erp`, origin

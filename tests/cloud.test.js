@@ -96,8 +96,8 @@ class FakeDrive {
     page.on("dialog", (d) => d.accept());
     page.on("pageerror", (e) => T.errors.push(name + ": " + e.message));
     await page.exposeFunction("__drive", (req) => drive.handle(req));
-    await page.evaluateOnNewDocument((withGoogle) => {
-      window.OPF_CLOUD_TEST = { GOOGLE_CLIENT_ID: "test-client.apps.googleusercontent.com", UPLOAD_DELAY_MS: 300 };
+    await page.evaluateOnNewDocument((withGoogle, flags) => {
+      window.OPF_CLOUD_TEST = Object.assign({ ENABLE_GOOGLE_LOGIN: true, GOOGLE_CLIENT_ID: "test-client.apps.googleusercontent.com", UPLOAD_DELAY_MS: 300 }, flags);
       window.__gis = { calls: 0, opts: [], fail: null };
       if (withGoogle) {
         window.google = { accounts: { oauth2: { initTokenClient: (cfg) => ({ requestAccessToken: (o) => {
@@ -112,7 +112,7 @@ class FakeDrive {
         return window.__drive({ url: String(url), method: (o && o.method) || "GET", headers: (o && o.headers) || {}, body: (o && o.body) || null })
           .then((r) => new Response(r.body, { status: r.status, headers: { "content-type": r.type || "application/json" } }));
       };
-    }, opts.withGoogle !== false);
+    }, opts.withGoogle !== false, opts.flags || {});
     if (opts.blockGoogleScript) {
       await page.setRequestInterception(true);
       page.on("request", (r) => (/accounts\.google\.com/.test(r.url()) ? r.abort() : r.continue()));
@@ -243,6 +243,32 @@ class FakeDrive {
   await A.page.reload();
   await sleep(600);
   check("after reload A syncs straight away without a sign-in window", [await waitStatus(A, "synced"), await A.page.evaluate(() => window.__gis.calls)], ["synced", 0]);
+
+  section("Feature flag ENABLE_GOOGLE_LOGIN = false switches Google off without losing anything");
+  const setFlag = (pc, on) => pc.page.evaluateOnNewDocument((on) => { window.OPF_CLOUD_TEST.ENABLE_GOOGLE_LOGIN = on; }, on);
+  await B.page.evaluate(() => OPF.cloud.sync()); await waitStatus(B, "synced"); // B catches up with A first
+  await setFlag(B, false);
+  await B.page.reload(); await sleep(400);
+  const calls = drive.log.length, salesB = await count(B, "sales"), salesDrive = drive.data().sales.length;
+  check("flag off: no login screen, no sync badge, ERP opens", await B.page.evaluate(() => [!!document.getElementById("cloudGate"), document.getElementById("syncBadge").hidden, document.querySelector("#app h1").textContent]), [false, true, "Dashboard"]);
+  await sell(B, 1); await sleep(800);
+  check("flag off: saving works locally and nothing is sent to Google", [await count(B, "sales"), drive.log.length - calls, drive.data().sales.length], [salesB + 1, 0, salesDrive]);
+  await B.page.evaluate(() => OPF.router.go("settings"));
+  check("flag off: Settings says Google Drive backup is switched off", await B.page.$eval("#cloudBox", (b) => /Switched off/.test(b.textContent)), true);
+  check("flag off: the sign-in on this computer is kept (not signed out)", await B.page.evaluate(() => JSON.parse(localStorage.getItem("opf_erp_cloud")).account.email), "shop@gmail.com");
+  await setFlag(B, true);
+  await B.page.reload(); await sleep(400);
+  await B.page.mouse.click(600, 300);
+  check("flag back on: the change made while off is uploaded", [await waitStatus(B, "synced"), salesB == salesDrive, drive.data().sales.length], ["synced", true, salesB + 1]);
+  await A.page.evaluate(() => OPF.cloud.sync()); await waitStatus(A, "synced");
+  await setFlag(B, false); await B.page.reload(); await sleep(400);
+  await sell(B, 1);
+  await sell(A, 1); await waitStatus(A, "synced");
+  await setFlag(B, true); await B.page.reload(); await sleep(400);
+  await B.page.mouse.click(600, 300);
+  await B.page.waitForSelector("#cloudDialog", { timeout: 6000 }).catch(() => null);
+  check("flag back on after both computers changed: it asks which copy to keep (nothing overwritten)", !!(await B.page.$("#cloudDialog")), true);
+  if (await B.page.$("#cloudDialog")) { await B.page.click('#cloudDialog [data-pick="drive"]'); await waitStatus(B, "synced"); }
 
   section("Settings and sign-out");
   await A.page.evaluate(() => OPF.router.go("settings"));

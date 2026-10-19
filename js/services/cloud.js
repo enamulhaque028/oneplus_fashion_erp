@@ -319,6 +319,9 @@
   /* ---------- Settings section ---------- */
   function settingsHtml() {
     const H = OPF.html;
+    if (S().ENABLE_GOOGLE_LOGIN !== true) {
+      return '<div class="box" id="cloudBox"><h2 style="margin-top:0">Google Drive backup</h2><p class="muted">Switched off. Changes are saved on this computer only - use the backup buttons below to keep a copy.</p></div>';
+    }
     if (!D.enabled()) {
       return '<div class="box" id="cloudBox"><h2 style="margin-top:0">Google Drive backup</h2><p class="muted">Off. Automatic backup to Google Drive works when the ERP is opened from its web link and a Google sign-in key is set up (see docs/CLOUD_SETUP.md). Until then, use the backup buttons below.</p></div>';
     }
@@ -343,9 +346,28 @@
     location.reload();
   }
 
+  /* Flag ENABLE_GOOGLE_LOGIN = false on a computer that was signed in: nothing goes to Google, but local
+     saves are still counted, so they upload (or are offered in "Which data should be kept?") when the
+     flag is switched back on - instead of being overwritten by the Drive copy. */
+  function countWhileSwitchedOff() {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(META_KEY) || "null"); } catch (e) { /* none */ }
+    if (!saved || !saved.account) return;
+    meta = saved;
+    OPF.store.onSave(() => {
+      meta.rev = (meta.rev || 0) + 1;
+      meta.localChangedAt = new Date().toISOString();
+      saveMeta();
+    });
+  }
+
   /* ---------- start-up ---------- */
   function start(done) {
-    if (!D.enabled()) { done(); return; }
+    if (!D.enabled()) {
+      if (S().ENABLE_GOOGLE_LOGIN !== true) countWhileSwitchedOff();
+      done();
+      return;
+    }
     loadMeta();
     D.restoreToken();
     OPF.store.onSave(onLocalSave);

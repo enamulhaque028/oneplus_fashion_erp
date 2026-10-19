@@ -95,6 +95,25 @@ web link after restoring it there, or simpler:
 2. In the web version, use **Restore from .json**.
 3. Sign in. The data uploads.
 
+## Switching Google sign-in off and on (feature flag)
+
+In `js/core/config.js`, in the `CLOUD` section:
+
+```js
+      ENABLE_GOOGLE_LOGIN: true,   // false = Google sign-in and Drive backup switched off
+```
+
+Change it, then commit and push. GitHub Pages updates the site in about a minute; staff reload the page.
+
+- **`false`:** no sign-in screen and no sync badge. Google's script is not even loaded. The ERP opens
+  straight away and saves on the computer only. Settings / Backup says "Switched off".
+- **Nothing is lost:** computers that were signed in stay signed in, and the ERP keeps a note of
+  every change made while it was off.
+- **Back to `true`:** those changes upload at the next click. If another computer also changed the data
+  meanwhile, the usual "Which data should be kept?" question appears.
+
+Only the exact value `true` switches it on.
+
 ## If something goes wrong
 
 | Message | Fix |

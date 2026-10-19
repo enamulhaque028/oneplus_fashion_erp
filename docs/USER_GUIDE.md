@@ -408,6 +408,9 @@ every computer shows a sign-in screen the first time:
   **Sync now** and **Sign out**. Signing out keeps the data on the computer; the sign-in screen
   appears the next time the ERP opens.
 - The admin password travels with the data, so it is the same on every computer.
+- If **Settings / Backup** says Google Drive backup is "Switched off", the developer has turned it off.
+  Everything is still saved on the computer, and changes upload once it is switched back on. Use the
+  backup buttons meanwhile.
 
 ### Backup files (any version)
 

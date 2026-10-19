@@ -24,9 +24,11 @@
   const settings = () => Object.assign({}, OPF.config.CLOUD, window.OPF_CLOUD_TEST || {});
   const fail = (code, message, extra) => Object.assign(new Error(message || code), { code }, extra || {});
 
-  // On only when a Client ID is set and the page is served from a web address (or under test).
+  // On only when the ENABLE_GOOGLE_LOGIN flag is true, a Client ID is set, and the page is served
+  // from a web address (or under test).
   function enabled() {
-    return !!settings().GOOGLE_CLIENT_ID && (/^https?:$/.test(location.protocol) || !!window.OPF_CLOUD_TEST);
+    const s = settings();
+    return s.ENABLE_GOOGLE_LOGIN === true && !!s.GOOGLE_CLIENT_ID && (/^https?:$/.test(location.protocol) || !!window.OPF_CLOUD_TEST);
   }
 
   /* ---- sign-in (access token) ---- */
