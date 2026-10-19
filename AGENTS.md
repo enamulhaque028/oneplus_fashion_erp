@@ -157,7 +157,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   `OPF.richtext.safeUrl` addresses (http/https/mailto/tel) and always open in a new tab with noopener. The page is a card board;
   writing and preview open in `#noteDlg` (z-index below the admin password `#modal`). This replaces the
   earlier COD-settlement option B, which the business dropped.
-- **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`): only `true` turns sign-in / sync on
+- **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`, set to **false** on 2026-10-19 at the
+  user's request: Google sign-in is off on the live site): only `true` turns sign-in / sync on
   (`OPF.drive.enabled()`). When `false`, a previously signed-in computer still counts local saves
   (`countWhileSwitchedOff` in `cloud.js`) so they upload, or raise the conflict question, when it is back on.
 - **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in
