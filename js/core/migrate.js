@@ -110,6 +110,7 @@
         if (n.html == null) n.html = esc(String(n.text || "")).replace(/\r?\n/g, "<br>");
         if (n.sketch === undefined) n.sketch = null;
         if (n.color == null) n.color = "";
+        if (n.pinned == null) n.pinned = false;
       });
     }
   ];

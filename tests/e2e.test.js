@@ -27,7 +27,7 @@ const { start, sleep, ROOT } = require("./lib");
   check("balance 1000 + 2900 - 1000 - 300 - 500", mig.bal, 2100);
   check("schema version", mig.v, 6);
   check("upgraded data gets an empty Rough Notes list", await page.evaluate(() => OPF.store.db.notes), []);
-  check("a plain note from before rich text keeps its line breaks", await page.evaluate(() => OPF.migrate.normalize({ notes: [{ id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2" }] }).notes[0]), { id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2", html: "a &lt; b<br>line 2", sketch: null, color: "" });
+  check("a plain note from before rich text keeps its line breaks", await page.evaluate(() => OPF.migrate.normalize({ notes: [{ id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2" }] }).notes[0]), { id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2", html: "a &lt; b<br>line 2", sketch: null, color: "", pinned: false });
   check("old default branding replaced by the memo-book details", await db((d) => [d.company.phone, d.company.address, d.company.tagline, d.company.hotline, d.company.motto, d.company.memoNote]),
     ["01619-741055, 01621-346375", "Shop # 99 (1st Floor), Ashraf Setu Shopping Complex, Tongi, Gazipur.", "Manufacturer and Wholesaler of Readymade Garments.", "01878638475", "QUALITY OUR VISION", "Allah has Made Business Lawful, Usury is Forbidden."]);
   await page.evaluate(() => { OPF.store.db.company.address = ""; OPF.store.db.company.phone = "01999999999"; OPF.store.save(); });
@@ -231,7 +231,7 @@ const { start, sleep, ROOT } = require("./lib");
   check("status change saved", await db((d) => d.courier.map((c) => c.status).sort()), ["Delivered", "Delivered"]);
   check("status change does not change customer dues", await page.evaluate(() => OPF.ledger.totalDue("Customer")), dueBeforeStatus);
 
-  section("Rough Notes: rich text and sketch");
+  section("Rough Notes: writing window, rich text and sketch");
   await go("notes");
   const drawLine = async (pts) => {
     await page.$eval("#skCanvas", (c) => c.scrollIntoView({ block: "center" }));
@@ -240,10 +240,15 @@ const { start, sleep, ROOT } = require("./lib");
     for (const q of pts.slice(1)) await page.mouse.move(bb.x + q[0] * bb.width, bb.y + q[1] * bb.height, { steps: 6 });
     await page.mouse.up();
   };
-  check("a new note starts yellow, and the editor shows the colour", await page.evaluate(() => [document.querySelector('#mainForm [name="color"]').value, document.querySelector("#ncPick .on").dataset.color, document.querySelector("#mainForm .rt").classList.contains("nc-yellow")]), ["yellow", "yellow", true]);
+  const newNote = () => page.click(".notes-new");
+  const noteIds = () => page.$$eval("#noteGrid .n-card", (c) => c.map((x) => x.dataset.id));
+  check("an empty board invites the first note", /No notes yet/.test(await text("#noteGrid")), true);
+  await newNote();
+  check("New note opens the writing window; the title has the cursor", await page.evaluate(() => [!!document.querySelector("#noteDlg #mainForm"), document.activeElement.name]), [true, "subject"]);
+  check("a new note starts yellow, and the window shows the colour", await page.evaluate(() => [document.querySelector('#mainForm [name="color"]').value, document.querySelector("#ncPick .on").dataset.color, document.querySelector("#mainForm .rt").classList.contains("nc-yellow"), document.getElementById("ndTop").classList.contains("nc-yellow")]), ["yellow", "yellow", true, true]);
   await page.click('[data-act="notes.color"][data-color="green"]');
-  await sleep(350); // the editor fades to the new colour
-  check("choosing green marks it and tints the editor", await page.evaluate(() => [document.querySelector("#ncPick .on").dataset.color, getComputedStyle(document.getElementById("rtBox")).backgroundColor]), ["green", "rgb(230, 247, 234)"]);
+  // Read the colour the editor fades to (not the in-between colour while it fades).
+  check("choosing green marks it and tints the editor", await page.evaluate(() => [document.querySelector("#ncPick .on").dataset.color, getComputedStyle(document.querySelector("#mainForm .rt")).getPropertyValue("--nc-bg").trim()]), ["green", "#e6f7ea"]);
   await fill({ subject: "Next idea" });
   await page.click("#rtBox"); await page.keyboard.type("Try a new ");
   await page.click('[data-cmd="bold"]'); await page.keyboard.type("blue denim");
@@ -255,23 +260,59 @@ const { start, sleep, ROOT } = require("./lib");
   await drawLine([[0.2, 0.2], [0.5, 0.6], [0.8, 0.2]]);
   await page.click('[data-ink="#dc2626"]'); await page.click('[data-size="14"]'); await drawLine([[0.1, 0.9], [0.9, 0.9]]);
   await drawLine([[0.3, 0.5], [0.4, 0.5]]); await page.click('[data-act="sk.undo"]');
-  await submit();
+  await page.click("#rtBox"); await page.keyboard.down("Control"); await page.keyboard.press("Enter"); await page.keyboard.up("Control");
+  await sleep(100);
   const n1 = await db((d) => d.notes.find((n) => n.subject == "Next idea"));
+  check("Ctrl+Enter saves and closes the window", [!!n1, !!(await page.$("#noteDlg"))], [true, false]);
   check("formatted text saved as clean HTML", [/<b>blue denim<\/b>/.test(n1.html), /<ul><li>Ask Rahim for price<\/li><\/ul>/.test(n1.html)], [true, true]);
-  check("the colour is saved and the card is green", [n1.color, await page.evaluate(() => document.querySelector(".note-card").className)], ["green", "note-card nc-green"]);
+  check("the colour is saved, the card is green and flashes once", [n1.color, await page.evaluate((id) => document.querySelector(`.n-card[data-id="${id}"]`).className, n1.id)], ["green", "n-card nc-green has-sketch flash"]);
   check("a plain copy is kept for search and Excel", n1.text, "Try a new blue denim\n• Ask Rahim for price");
   check("sketch saved as strokes (Undo removed the last one): ink, red thick line", n1.sketch.strokes.map((s) => [s.c, s.s]), [["#1f2937", 3], ["#dc2626", 14]]);
   check("a sketch is small (under 2 KB)", JSON.stringify(n1.sketch).length < 2000, true);
   check("the card shows the formatting and draws the sketch", await page.evaluate(() => {
-    const c = document.querySelector(".note-card"), cv = c.querySelector("canvas.note-sketch");
+    const c = document.querySelector(".n-card"), cv = c.querySelector(".n-thumb canvas");
     const px = cv.getContext("2d").getImageData(0, 0, cv.width, cv.height).data;
     let ink = 0; for (let i = 3; i < px.length; i += 4) if (px[i] > 0) ink++;
-    return [!!c.querySelector(".note-body b"), !!c.querySelector(".note-body li"), ink > 100];
+    return [!!c.querySelector(".n-text b"), !!c.querySelector(".n-text li"), ink > 50];
   }), [true, true, true]);
+  await newNote();
+  check("the next new note starts empty (no text, no sketch)", await page.evaluate(() => [document.getElementById("rtBox").textContent, !!document.getElementById("skCanvas"), document.querySelector('#mainForm [name="subject"]').value]), ["", false, ""]);
   await page.click("#rtBox"); await page.keyboard.type("Call the courier on Monday"); await submit();
-  check("a note without a sketch has none", await db((d) => d.notes.find((n) => n.text == "Call the courier on Monday").sketch), null);
-  await submit();
-  check("an empty note is not saved", [await db((d) => d.notes.length), alerts.pop()], [2, "Write the note or draw a sketch first."]);
+  check("a note without a sketch has none; its card title is the first line", [await db((d) => d.notes.find((n) => n.text == "Call the courier on Monday").sketch), await page.evaluate(() => Array.from(document.querySelectorAll(".n-top b")).map((b) => b.textContent))], [null, ["Call the courier on Monday", "Next idea"]]);
+  await newNote(); await submit();
+  check("an empty note is not saved (the window stays open)", [await db((d) => d.notes.length), alerts.pop(), !!(await page.$("#noteDlg"))], [2, "Write the note or draw a sketch first.", true]);
+  await page.keyboard.press("Escape");
+  check("Esc closes the window", !!(await page.$("#noteDlg")), false);
+  await newNote(); await page.goBack(); await sleep(200);
+  check("Back to another page closes an open window", [!!(await page.$("#noteDlg")), await page.evaluate(() => location.hash)], [false, "#/courier"]);
+  await page.goForward(); await sleep(200);
+
+  section("Rough Notes: board, preview, pin, filter");
+  check("all cards are the same height", await page.$$eval(".n-card", (c) => [...new Set(c.map((x) => x.getBoundingClientRect().height))].length), 1);
+  await page.click(`.n-card[data-id="${n1.id}"] .n-text`);
+  check("clicking a card opens the preview with the full note and the sketch", await page.evaluate(() => {
+    const d = document.getElementById("noteDlg");
+    return [d.querySelector("h2").textContent, !!d.querySelector(".nd-text li"), !!d.querySelector(".nd-sketch canvas"), Array.from(d.querySelectorAll(".nd-foot button")).map((b) => b.textContent)];
+  }), ["Next idea", true, true, ["Copy text", "Delete", "Edit note"]]);
+  check("sketches sit on light paper (dark ink shows in dark mode too)", await page.evaluate(() => ["#noteDlg .nd-sketch canvas", ".n-thumb canvas"].map((q) => getComputedStyle(document.querySelector(q)).backgroundColor)), ["rgb(255, 253, 246)", "rgb(255, 253, 246)"]);
+  await page.click("#noteDlg .nd-x");
+  const n2 = await db((d) => d.notes.find((n) => n.text == "Call the courier on Monday").id);
+  check("same day: the newest note comes first", await noteIds(), [n2, n1.id]);
+  await act("notes.pin", { id: n1.id });
+  check("pinning moves the older note to the top and is saved", [await noteIds(), await db((d) => d.notes.find((n) => n.pinned).subject)], [[n1.id, n2], "Next idea"]);
+  check("the pin shows as on", await page.$eval(`.n-card[data-id="${n1.id}"] .n-pin`, (b) => b.classList.contains("on")), true);
+  await page.focus(`.n-card[data-id="${n1.id}"]`); await page.keyboard.press("Enter");
+  check("Enter on a focused card opens its preview", await page.$eval("#noteDlg h2", (h) => h.textContent), "Next idea");
+  await act("notes.pin", { id: n1.id });
+  check("unpinning from the preview keeps it open and reorders the board", [!!(await page.$("#noteDlg .nd-text")), await noteIds()], [true, [n2, n1.id]]);
+  await page.keyboard.press("Escape");
+  check("colour chips appear when notes have different colours", await page.$$eval("#noteChips .nchip", (b) => b.map((x) => x.textContent)), ["All", "Yellow", "Green"]);
+  await act("notes.filter", { color: "green" });
+  check("a colour chip shows only that colour", await noteIds(), [n1.id]);
+  await act("notes.filter", {});
+  await page.type("#noteSearch", "COURIER"); await sleep(250);
+  check("search filters as you type (any case)", await noteIds(), [n2]);
+  await page.$eval("#noteSearch", (s) => { s.value = ""; s.dispatchEvent(new Event("input")); }); await sleep(250);
 
   section("Rough Notes: only safe formatting is kept (notes also arrive from backups and Google Drive)");
   await page.evaluate(() => {
@@ -282,29 +323,35 @@ const { start, sleep, ROOT } = require("./lib");
     OPF.store.save();
   });
   await go("notes"); await sleep(200);
-  check("no script ran and no unsafe element or attribute is on the page", await page.evaluate(() => {
-    const c = Array.from(document.querySelectorAll(".note-card")).find((x) => /link/.test(x.textContent));
-    return [window.__xss, c.querySelectorAll("img,script,iframe,a,[onerror],[onclick],[onmouseover]").length, c.querySelector(".note-body").innerHTML];
+  await page.click('.n-card[data-id="nX"] .n-text'); await sleep(100);
+  check("no script ran and no unsafe element or attribute is on the board or in the preview", await page.evaluate(() => {
+    const c = document.querySelector('.n-card[data-id="nX"]'), d = document.getElementById("noteDlg");
+    return [window.__xss, c.querySelectorAll("img,script,iframe,a,[onerror],[onclick],[onmouseover]").length + d.querySelectorAll("img,script,iframe,a,[onerror],[onclick],[onmouseover]").length, c.querySelector(".n-text").innerHTML];
   }), [0, 0, 'link<b><span style="color:#dc2626">ok</span></b>odd']);
+  await page.keyboard.press("Escape");
   check("a damaged sketch is repaired to safe values", await page.evaluate(() => OPF.sketch.valid(OPF.store.byId("notes", "nX").sketch)), { w: 1000, h: 560, strokes: [{ c: "#1f2937", s: 40, e: 0, p: [1, 0, 3, 4] }] });
+  await newNote();
   check("pasting puts in plain text only", await page.evaluate(() => {
     const box = document.getElementById("rtBox"); box.focus();
     const dt = new DataTransfer(); dt.setData("text/html", '<img src=x onerror="window.__xss=2"><b>Bold</b>'); dt.setData("text/plain", "Pasted text");
     box.dispatchEvent(new ClipboardEvent("paste", { clipboardData: dt, bubbles: true, cancelable: true }));
     return [box.innerHTML.indexOf("<img") < 0, /Pasted text/.test(box.textContent)];
   }), [true, true]);
+  await page.keyboard.press("Escape");
   await page.evaluate(() => { OPF.store.db.notes = OPF.store.db.notes.filter((n) => n.id != "nX"); OPF.store.save(); });
 
-  section("Rough Notes: edit, search, delete, Excel");
+  section("Rough Notes: edit, delete, Excel");
   await go("notes");
-  await act("record.edit", { coll: "notes", id: n1.id });
-  check("editing loads the text, the sketch and the colour", await page.evaluate(() => [/blue denim/.test(document.getElementById("rtBox").innerHTML), !!document.getElementById("skCanvas"), document.querySelector("#ncPick .on").dataset.color]), [true, true, "green"]);
+  await page.click(`.n-card[data-id="${n1.id}"] .n-text`);
+  await act("notes.edit", { id: n1.id });
+  check("Edit note in the preview opens the writing window with the text, the sketch and the colour", await page.evaluate(() => [!!document.querySelector("#noteDlg #mainForm"), /blue denim/.test(document.getElementById("rtBox").innerHTML), !!document.getElementById("skCanvas"), document.querySelector("#ncPick .on").dataset.color, document.querySelector("#noteDlg .nd-foot button:last-child").textContent]), [true, true, true, "green", "Update"]);
   await page.click('[data-act="notes.removeSketch"]'); await submit();
-  check("Remove sketch takes the sketch off the note; the colour is kept", await db((d) => { const n = d.notes.find((x) => x.subject == "Next idea"); return [n.sketch, n.color]; }), [null, "green"]);
-  await page.evaluate(() => { const s = document.querySelector('[data-change="notes.search"]'); s.value = "DENIM"; s.dispatchEvent(new Event("change", { bubbles: true })); });
-  check("search finds a note (any case)", await page.$$eval("#app .note-card", (r) => r.length), 1);
-  await page.evaluate(() => { const s = document.querySelector('[data-change="notes.search"]'); s.value = ""; s.dispatchEvent(new Event("change", { bubbles: true })); });
-  await act("record.delete", { coll: "notes", id: await db((d) => d.notes.find((n) => !n.subject).id) });
+  check("Remove sketch takes the sketch off the note; the colour is kept; still one record", await db((d) => { const n = d.notes.filter((x) => x.subject == "Next idea"); return [n.length, n[0].sketch, n[0].color]; }), [1, null, "green"]);
+  await act("record.edit", { coll: "notes", id: n1.id }); await page.click('#noteDlg [data-act="notes.close"]');
+  await newNote();
+  check("closing an edit ends it: New note is empty again", await page.evaluate(() => document.getElementById("rtBox").textContent), "");
+  await page.keyboard.press("Escape");
+  await act("record.delete", { coll: "notes", id: n2 });
   check("a note can be deleted", await db((d) => d.notes.map((n) => n.subject)), ["Next idea"]);
   check("notes are in the Excel backup as plain text", await page.evaluate(() => OPF.sheets.byName("Rough Notes").rows), [[await db((d) => d.notes[0].date), "Next idea", "Try a new blue denim\n• Ask Rahim for price", "", "green"]]);
 

@@ -104,11 +104,12 @@ PART 3 - SALES, PAYMENT, COURIER (8 min)
          Expect: the parcel is in the list with its note, and "Pending Parcels 1" at the top.
          Expect: Customer Due on the Dashboard is the same as before (a parcel never changes dues).
 
-[ ] 3.7  Rough Notes (left menu): Subject = Idea. In Note type "Try a ", click B, type "blue denim",
-         click B again, type " style", press Enter, type "Ask the price".
-         Click "Add sketch" and draw a line with the mouse. Save.
-         Expect: a note card with "blue denim" in bold on the first line, "Ask the price" on the
-         second, and the drawing below. Type "denim" in Search notes and press Enter: only this note shows.
+[ ] 3.7  Rough Notes (left menu): click "New note". Title = Idea. In the note type "Try a ", click B,
+         type "blue denim", click B again, type " style", press Enter, type "Ask the price".
+         Click "Add sketch" and draw a line with the mouse. Click Save.
+         Expect: a yellow card with "blue denim" in bold, "Ask the price" on the next line, and the
+         drawing. Type "denim" in Search notes: only this note shows. Click the card: the preview
+         opens with the full note and the sketch. Press Esc to close it.
 
 
 PART 4 - REPORTS AND CONTROLS (5 min)

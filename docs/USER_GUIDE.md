@@ -252,7 +252,16 @@ A simple record of parcels sent. **It never changes any due.**
   The customer's due goes down only from that entry.
 
 ### Rough Notes
-A notepad for ideas, reminders or anything to note: a date, an optional subject, the note and a sketch.
+A notepad for ideas, reminders or anything to note: a title, a date, the note, a sketch and a colour.
+- Notes show as a board of cards, all the same height, pinned first and then newest first. A long
+  note fades out at the bottom of its card; **click the card** (or Preview) to read all of it.
+- **New note** opens the writing window. **Ctrl+Enter** saves, **Esc** or Cancel closes it.
+- **Preview** shows the full note and the sketch, with **Copy text** (paste it into a message),
+  **Delete** and **Edit note**.
+- **Pin** (the pin at the top right of a card) keeps a note at the top of the board. Pinning does not
+  need the admin password.
+- **Search notes** filters as you type. When notes have different colours, the colour chips
+  (All / Yellow / Pink ...) show only that colour.
 - **Formatting:** select text and use the toolbar: **B** bold, *I* italic, U underline, **H** heading,
   bullet or numbered list, **ab** highlight, five text colours, and **Clear** to remove formatting.
   Ctrl+B / Ctrl+I / Ctrl+U also work. Pasted text comes in plain (no formatting from other programs).
@@ -262,8 +271,6 @@ A notepad for ideas, reminders or anything to note: a date, an optional subject,
 - **Colour:** pick the note's colour (Plain, Yellow, Pink, Green, Blue, Purple, Orange) - for example
   one colour for design ideas and another for reminders. New notes start yellow; the editor shows
   the colour while you write.
-- Saved notes show as cards in their colour, newest first, with their formatting and sketch.
-  **Search notes** finds a word in the subject or the note.
 - Notes don't change any figure. They are included in backups (.json, and Google Drive). The Excel
   backup has the note text and says "Yes" where a note has a sketch (the drawing itself opens in the ERP).
 - Editing or deleting a note needs the admin password, like other records.

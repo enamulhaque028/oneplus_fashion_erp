@@ -144,16 +144,17 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 109, edge 64, uat 43, regression 62, cloud 34 checks, all passing;
+  - current Chrome and Chromium 109: e2e 126, edge 64, uat 44, regression 62, cloud 34 checks, all passing;
   - self-test 26 / 26 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
   Advance, Charge, Net COD or Settled, and it never changes dues: dues change only through Sales and
   Payment / Collection entries. Old parcels keep those stored fields, unused. "Rough Notes" (`notes`
   collection, `js/pages/notes.js`) is a free notepad that changes no figure: rich text (`ui/richtext.js`,
-  stored as cleaned `html` plus a plain `text` copy) and one sketch per note (`ui/sketch.js`, stored as
+  stored as cleaned `html` plus a plain `text` copy), colour, pin, and one sketch per note (`ui/sketch.js`, stored as
   strokes, never as images - localStorage is ~5 MB). Note HTML must go through `OPF.richtext.clean`
-  on save and on display (it also arrives from backups / Drive). This replaces the
+  on save and on display (it also arrives from backups / Drive). The page is a card board;
+  writing and preview open in `#noteDlg` (z-index below the admin password `#modal`). This replaces the
   earlier COD-settlement option B, which the business dropped.
 - **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in
   `docs/superpowers/specs/2026-10-18-google-drive-sync-design.md`. Client ID set in

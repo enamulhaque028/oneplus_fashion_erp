@@ -111,6 +111,7 @@ const { start, sleep } = require("./lib");
 
   section("Step 3.7  Rough Notes");
   await go("notes");
+  await page.click(".notes-new");
   await type({ subject: "Idea" });
   await page.click("#rtBox"); await page.keyboard.type("Try a ");
   await page.click('[data-cmd="bold"]'); await page.keyboard.type("blue denim"); await page.click('[data-cmd="bold"]'); await page.keyboard.type(" style");
@@ -122,11 +123,14 @@ const { start, sleep } = require("./lib");
   await page.mouse.move(bb.x + bb.width * 0.7, bb.y + bb.height * 0.7, { steps: 10 }); await page.mouse.up();
   await save();
   check("Expect: a card with 'blue denim' in bold, two lines, and the sketch", await page.evaluate(() => {
-    const c = document.querySelector(".note-card");
-    return [c.querySelector(".note-body b") && c.querySelector(".note-body b").textContent, c.querySelector(".note-body").innerText.trim().split("\n").length, !!c.querySelector("canvas.note-sketch")];
+    const c = document.querySelector(".n-card");
+    return [c.querySelector(".n-text b") && c.querySelector(".n-text b").textContent, c.querySelector(".n-text").innerText.trim().split("\n").length, !!c.querySelector(".n-thumb canvas")];
   }), ["blue denim", 2, true]);
-  await page.type('[data-change="notes.search"]', "denim"); await page.keyboard.press("Enter"); await page.keyboard.press("Tab");
-  check("Expect: Search notes 'denim' shows only this note", await page.$$eval("#app .note-card", (r) => r.length), 1);
+  await page.type("#noteSearch", "denim"); await new Promise((r) => setTimeout(r, 300));
+  check("Expect: typing 'denim' in Search notes shows only this note", await page.$$eval("#app .n-card", (r) => r.length), 1);
+  await page.click(".n-card .n-text");
+  check("Expect: clicking the card opens the preview with the sketch", await page.evaluate(() => [document.querySelector("#noteDlg h2").textContent, !!document.querySelector("#noteDlg .nd-sketch canvas")]), ["Idea", true]);
+  await page.keyboard.press("Escape");
 
   section("Step 12  Costing");
   await go("costing");

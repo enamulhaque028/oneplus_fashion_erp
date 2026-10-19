@@ -676,23 +676,14 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 .sk-size.on { background: var(--primary-soft); border-color: var(--primary-border) }
 .rt-box { min-height: 140px; max-height: 420px; overflow-y: auto; padding: 12px 14px; outline: none; line-height: 1.55; color: var(--text) }
 .rt-box:empty:before { content: attr(data-placeholder); color: var(--muted) }
-.rt-box h3, .note-body h3 { margin: 6px 0; font-size: 17px }
-.rt-box ul, .rt-box ol, .note-body ul, .note-body ol { margin: 4px 0; padding-left: 24px }
-.rt-box mark, .note-body mark { background: #fde68a; color: #1e293b; padding: 0 2px; border-radius: 3px }
+.rt-box h3, .n-text h3, .nd-text h3 { margin: 6px 0; font-size: 17px }
+.rt-box ul, .rt-box ol, .n-text ul, .n-text ol, .nd-text ul, .nd-text ol { margin: 4px 0; padding-left: 24px }
+.rt-box mark, .n-text mark, .nd-text mark { background: #fde68a; color: #1e293b; padding: 0 2px; border-radius: 3px }
 .sk { max-width: 900px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 10px }
 /* Sketches sit on light "paper" in both themes so dark ink always shows. */
-.sk-paper, .note-sketch { display: block; width: 100%; background: #fffdf6; background-image: radial-gradient(#e4e0d4 1px, transparent 1px); background-size: 22px 22px }
+.sk-paper, .n-thumb canvas, .nd-sketch canvas { display: block; width: 100%; background: #fffdf6; background-image: radial-gradient(#e4e0d4 1px, transparent 1px); background-size: 22px 22px }
 .sk-paper { cursor: crosshair; touch-action: none }
 .sk-paper.erasing { cursor: cell }
-.note-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); grid-gap: 16px; align-items: start; margin-bottom: 20px }
-.note-card { display: flex; flex-direction: column; background: var(--nc-bg); border: 1px solid var(--nc-line); border-top: 5px solid var(--nc-edge); border-radius: var(--radius); box-shadow: var(--shadow-1); padding: 14px 16px; min-width: 0 }
-.note-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 6px }
-.note-head b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-right: 10px }
-.note-head small { color: var(--muted); white-space: nowrap }
-.note-body { color: var(--text-2); line-height: 1.5; max-height: 220px; overflow: auto; word-wrap: break-word }
-.note-sketch { margin-top: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm) }
-.note-act { margin-top: auto; padding-top: 10px; text-align: right }
-.note-act .sm { margin-left: 6px }
 
 /* Note colours: background, border and top edge per colour; deeper tints in dark mode. */
 .nc-plain { --nc-bg: var(--surface); --nc-line: var(--border); --nc-edge: var(--border-strong) }
@@ -708,10 +699,108 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 :root[data-theme="dark"] .nc-blue { --nc-bg: #172840; --nc-line: #243c5c; --nc-edge: #4a86d6 }
 :root[data-theme="dark"] .nc-purple { --nc-bg: #251d3d; --nc-line: #372c5a; --nc-edge: #8467e0 }
 :root[data-theme="dark"] .nc-orange { --nc-bg: #33221a; --nc-line: #4d3324; --nc-edge: #d97a35 }
-.note-card .note-body { color: var(--text) }
 .rt[class*="nc-"] .rt-box { background: var(--nc-bg); transition: background .2s }
 .nc-pick { display: flex; flex-wrap: wrap; align-items: center }
 .nc-sw { width: 34px; height: 34px; margin: 0 8px 4px 0; padding: 0; border-radius: 10px; border: 2px solid var(--nc-line); background: var(--nc-bg); box-shadow: inset 0 5px 0 var(--nc-edge); cursor: pointer }
 .nc-sw:hover { transform: translateY(-1px) }
 .nc-sw.on { outline: 3px solid var(--primary); outline-offset: 2px }
 .nc-sw.nc-plain { background-image: linear-gradient(135deg, transparent 46%, var(--border-strong) 46%, var(--border-strong) 54%, transparent 54%) }
+
+/* Header tints per note colour (the card / window top strip) */
+.nc-plain { --nc-head: var(--surface-2) } .nc-yellow { --nc-head: #fdefb3 } .nc-pink { --nc-head: #fdd5e2 } .nc-green { --nc-head: #cdeed7 }
+.nc-blue { --nc-head: #d2e3fb } .nc-purple { --nc-head: #e2d7fd } .nc-orange { --nc-head: #fddcc0 }
+:root[data-theme="dark"] .nc-yellow { --nc-head: #3d3518 } :root[data-theme="dark"] .nc-pink { --nc-head: #42222f } :root[data-theme="dark"] .nc-green { --nc-head: #1b3d27 }
+:root[data-theme="dark"] .nc-blue { --nc-head: #1c3352 } :root[data-theme="dark"] .nc-purple { --nc-head: #2f2550 } :root[data-theme="dark"] .nc-orange { --nc-head: #432c1f }
+.nc-dot { display: inline-block; width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--nc-edge); box-shadow: 0 0 0 3px var(--nc-bg) }
+
+/* ---------- Rough Notes board ---------- */
+.notes-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px }
+.notes-head h1 { margin: 0 }
+.notes-new { display: inline-flex; align-items: center; padding: 10px 18px; border-radius: 12px; font-weight: 700; box-shadow: var(--shadow-2) }
+.notes-new .i, .notes-empty button .i { width: 18px; height: 18px; margin-right: 6px }
+.notes-bar { display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 18px }
+.notes-search { display: flex; align-items: center; flex: 1 1 260px; max-width: 420px; height: 42px; padding: 0 12px; margin: 0 14px 8px 0; border: 1px solid var(--border-strong); border-radius: 12px; background: var(--surface) }
+.notes-search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft) }
+.notes-search .i { width: 18px; height: 18px; color: var(--muted); flex: none; margin-right: 8px }
+.notes-search input { flex: 1; border: 0; outline: none; background: transparent; color: var(--text); font-size: 14px; height: 40px; padding: 0 }
+.notes-chips { display: flex; flex-wrap: wrap; align-items: center }
+.nchip { display: inline-flex; align-items: center; height: 32px; padding: 0 12px; margin: 0 6px 8px 0; border-radius: 99px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); font-size: 12.5px; font-weight: 600; box-shadow: none; cursor: pointer }
+.nchip .nc-dot { margin-right: 7px; box-shadow: none }
+.nchip:hover { border-color: var(--border-strong) }
+.nchip.on { background: var(--primary-soft); border-color: var(--primary-border); color: var(--primary-ink) }
+
+.note-board { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); grid-gap: 18px; margin-bottom: 24px }
+.n-card { display: flex; flex-direction: column; height: 290px; min-width: 0; background: var(--nc-bg); border: 1px solid var(--nc-line); border-radius: 16px; box-shadow: var(--shadow-1); overflow: hidden; cursor: pointer; outline: none; transition: transform .15s ease, box-shadow .15s ease }
+.n-card:hover, .n-card:focus { transform: translateY(-3px); box-shadow: var(--shadow-2) }
+.n-card:focus { border-color: var(--nc-edge) }
+.n-card.flash { animation: nflash 1.2s ease-out }
+@keyframes nflash { 0% { box-shadow: 0 0 0 0 var(--nc-edge) } 30% { box-shadow: 0 0 0 5px var(--nc-edge) } 100% { box-shadow: var(--shadow-1) } }
+.n-top { display: flex; align-items: center; height: 46px; padding: 0 8px 0 14px; background: var(--nc-head); border-bottom: 1px solid var(--nc-line); flex: none }
+.n-top b { flex: 1; min-width: 0; margin: 0 8px 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; color: var(--text) }
+.n-top time { font: 11.5px ui-monospace, Menlo, Consolas, monospace; color: var(--muted); white-space: nowrap }
+.n-pin { width: 30px; height: 30px; padding: 0; margin-left: 4px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); box-shadow: none; display: inline-flex; align-items: center; justify-content: center; opacity: .55; cursor: pointer }
+.n-pin .i { width: 16px; height: 16px }
+.n-pin:hover { opacity: 1; background: rgba(0, 0, 0, .06) }
+.n-pin.on { opacity: 1; color: var(--nc-edge) }
+.n-pin.on .i { fill: currentColor }
+.n-main { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 12px 16px 0; position: relative; overflow: hidden }
+.n-text { flex: 1; min-height: 0; overflow: hidden; font-size: 13.5px; line-height: 1.55; color: var(--text); word-wrap: break-word; position: relative }
+/* Long notes fade out at the bottom of the card (mask: works on any note colour, light or dark). */
+.n-text { -webkit-mask-image: linear-gradient(#000 calc(100% - 34px), transparent); mask-image: linear-gradient(#000 calc(100% - 34px), transparent) }
+.n-text h3 { font-size: 15px; margin: 0 0 4px }
+.n-text > :first-child { margin-top: 0 }
+.n-thumb { flex: none; height: 104px; margin: 6px 0 10px; display: flex; justify-content: center; border-radius: 10px; overflow: hidden; border: 1px solid var(--nc-line); background: #fffdf6 }
+.n-thumb canvas { width: 186px; height: 104px; border: 0 }
+.n-foot { display: flex; align-items: center; height: 46px; padding: 0 10px 0 8px; border-top: 1px solid var(--nc-line); flex: none }
+.n-foot .sm { margin-left: 6px }
+.n-link { display: inline-flex; align-items: center; height: 30px; padding: 0 8px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2); font-size: 12.5px; font-weight: 600; box-shadow: none; cursor: pointer }
+.n-link .i { width: 14px; height: 14px; margin-right: 5px }
+.n-link:hover { background: rgba(0, 0, 0, .06); color: var(--text) }
+:root[data-theme="dark"] .n-pin:hover, :root[data-theme="dark"] .n-link:hover { background: rgba(255, 255, 255, .08) }
+.notes-empty { display: flex; flex-direction: column; align-items: center; padding: 56px 20px; border: 2px dashed var(--border-strong); border-radius: 18px; color: var(--muted); text-align: center }
+.notes-empty > .i { width: 46px; height: 46px; color: var(--primary); margin-bottom: 10px }
+.notes-empty b { font-size: 17px; color: var(--text); margin-bottom: 4px }
+.notes-empty span { margin-bottom: 14px }
+.notes-empty button { display: inline-flex; align-items: center }
+.grow { flex: 1 }
+
+/* ---------- note windows (preview, writing): below the admin password dialog (#modal, z 50) ---------- */
+#noteDlg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; align-items: flex-start; justify-content: center; padding: 5vh 12px; overflow-y: auto; background: rgba(15, 23, 42, .5); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); box-sizing: border-box }
+body.nd-open { overflow: hidden }
+.nd-card { width: 620px; max-width: 100%; background: var(--surface); color: var(--text); border-radius: 20px; box-shadow: var(--shadow-3); overflow: hidden; animation: pop .18s ease-out }
+.nd-card.wide { width: 760px }
+.nd-top { display: flex; align-items: center; height: 54px; padding: 0 12px 0 20px; background: var(--nc-head); border-bottom: 1px solid var(--nc-line); font-weight: 600; color: var(--text-2) }
+.nd-top .nc-dot { margin-right: 10px }
+.nd-x { width: 34px; height: 34px; padding: 0; margin-left: 6px; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 24px; line-height: 1; box-shadow: none; cursor: pointer }
+.nd-x:hover { background: rgba(0, 0, 0, .07); color: var(--text) }
+.nd-body { padding: 18px 22px }
+.nd-body h2 { margin: 0 0 12px; font-size: 20px }
+.nd-text { padding: 14px 16px; border-radius: 12px; background: var(--nc-bg); border: 1px solid var(--nc-line); line-height: 1.6; max-height: 46vh; overflow: auto; word-wrap: break-word }
+.nd-text > :first-child { margin-top: 0 }
+.nd-label { margin: 16px 0 6px; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em }
+.nd-sketch { border: 1px solid var(--border); border-radius: 12px; overflow: hidden }
+.nd-sketch canvas { width: 100% }
+.nd-foot { display: flex; flex-wrap: wrap; align-items: center; padding: 12px 20px; border-top: 1px solid var(--border); background: var(--surface-2) }
+.nd-foot button { margin: 3px 0 3px 8px }
+.nd-foot button:first-child { margin-left: 0 }
+.nd-foot button .i { width: 16px; height: 16px; margin-right: 4px; vertical-align: -3px }
+.nd-hint { font-size: 12px; color: var(--muted); margin-right: 6px }
+.nd-title { width: 100%; box-sizing: border-box; border: 0; border-bottom: 2px solid var(--border); background: transparent; color: var(--text); font-size: 20px; font-weight: 700; padding: 6px 2px 10px; outline: none; margin-bottom: 12px }
+.nd-title:focus { border-bottom-color: var(--primary) }
+.nd-row { display: flex; flex-wrap: wrap; align-items: center; margin-bottom: 12px }
+.nd-date { display: inline-flex; align-items: center; height: 38px; padding: 0 10px; margin: 0 16px 6px 0; border: 1px solid var(--border-strong); border-radius: 10px; background: var(--surface) }
+.nd-date .i { width: 16px; height: 16px; color: var(--muted); margin-right: 6px }
+.nd-date input { border: 0; outline: none; background: transparent; color: var(--text); height: 36px; font-size: 13.5px }
+.nd-row .nc-pick { margin-bottom: 6px }
+.nd-row .nc-sw { width: 28px; height: 28px; border-radius: 50%; box-shadow: none; background: var(--nc-head); border: 2px solid var(--nc-edge) }
+.nd-row .nc-sw.nc-plain { border-color: var(--border-strong) }
+#noteDlg .rt { margin-bottom: 12px }
+#noteDlg .rt-box { min-height: 160px; max-height: 38vh }
+#noteDlg .sk { max-width: none; margin-bottom: 0 }
+@media (max-width: 640px) {
+  #noteDlg { padding: 0 }
+  .nd-card, .nd-card.wide { border-radius: 0; min-height: 100% }
+  .nd-hint { display: none }
+}
+.nd-foot .nd-rm { color: var(--danger) }
+.nd-foot .nd-main { padding-left: 20px; padding-right: 20px }

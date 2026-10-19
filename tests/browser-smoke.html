@@ -169,10 +169,11 @@
       OPF.router.go("courier"); fill({ customer: cid, cod: 15000, status: "Sent", remarks: "note" });
       submit();
       check("courier parcel saved, dues unchanged", [db().courier.length, OPF.ledger.totalDue("Customer")], [1, dueBefore]);
-      OPF.router.go("notes"); fill({ subject: "Idea" });
+      OPF.router.go("notes"); document.querySelector('[data-act="notes.new"]').click(); fill({ subject: "Idea" });
       document.getElementById("rtBox").innerHTML = "line 1<br><b>bold</b><script>x()<\/script>";
       submit();
       check("rough note saved, formatting cleaned", db().notes.map(function (n) { return [n.text, n.html]; }), [["line 1\nbold", "line 1<br><b>bold</b>"]]);
+      document.querySelector('[data-act="notes.new"]').click();
       document.querySelector('[data-act="notes.addSketch"]').click();
       var cv = document.getElementById("skCanvas"), r = cv.getBoundingClientRect();
       [["pointerdown", 0.2], ["pointermove", 0.5], ["pointermove", 0.8], ["pointerup", 0.8]].forEach(function (s) {
