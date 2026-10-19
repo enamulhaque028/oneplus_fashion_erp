@@ -184,6 +184,12 @@
       document.querySelector('[data-cmd="hiliteColor"]').click();
       document.execCommand("insertText", false, " plain");
       check("typing after turning highlight off is plain", OPF.richtext.clean(hbox.innerHTML), "<mark>marked</mark> plain");
+      hbox.innerHTML = "see site"; hbox.focus();
+      hr = document.createRange(); hr.setStart(hbox.firstChild, 4); hr.setEnd(hbox.firstChild, 8); hs.removeAllRanges(); hs.addRange(hr);
+      document.querySelector('[data-act="rt.link"]').click();
+      document.getElementById("rtLinkUrl").value = "www.rahim.com";
+      document.querySelector('[data-act="rt.linkApply"]').click();
+      check("link added (safe address only)", [OPF.richtext.clean(hbox.innerHTML), OPF.richtext.clean('<a href="javascript:x()">bad</a>')], ['see <a href="https://www.rahim.com" target="_blank" rel="noopener noreferrer">site</a>', "bad"]);
       document.querySelector('[data-act="notes.close"]').click();
       document.querySelector('[data-act="notes.new"]').click();
       document.querySelector('[data-act="notes.addSketch"]').click();

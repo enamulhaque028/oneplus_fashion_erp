@@ -821,3 +821,14 @@ body.nd-open { overflow: hidden }
 }
 .nd-foot .nd-rm { color: var(--danger) }
 .nd-foot .nd-main { padding-left: 20px; padding-right: 20px }
+
+/* Links in notes (editor, cards, preview) */
+.rt-box a, .n-text a, .nd-text a { color: var(--info); text-decoration: underline; text-underline-offset: 2px; word-break: break-all }
+.n-text a:hover, .nd-text a:hover { color: var(--primary-ink) }
+.rt-linkbox { flex-wrap: wrap; align-items: center; width: 380px; max-width: 80vw }
+.rt-linkbox input { flex: 1 1 200px; height: 34px; padding: 0 10px; margin: 0 6px 0 0; border: 1px solid var(--border-strong); border-radius: 8px; background: var(--surface); color: var(--text); font-size: 13px; outline: none }
+.rt-linkbox input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft) }
+.rt-linkbox input.bad { border-color: var(--danger) }
+.rt-linkbox button { margin: 0 0 0 4px }
+.rt-linkbox small { flex-basis: 100%; color: var(--danger); font-size: 12px; margin-top: 4px }
+.rt-linkbox small:empty, .rt-linkbox [hidden] { display: none }

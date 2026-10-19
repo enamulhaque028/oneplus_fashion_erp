@@ -264,7 +264,12 @@ A notepad for ideas, reminders or anything to note: a title, a date, the note, a
   (All / Yellow / Pink ...) show only that colour.
 - **Formatting:** select text and use the toolbar: **B** bold, *I* italic, U underline, **H** heading,
   bullet or numbered list, the highlighter (click it again to take the highlight off), **A** for
-  text colour, and **Clear** to remove formatting.
+  text colour, the **link** button, and **Clear** to remove formatting.
+- **Links:** select a word, click the link button (or press **Ctrl+K**), paste the address and press
+  Enter. With nothing selected, the address itself is put in as a link. Put the cursor in a link and
+  click the link button to change the address or **Remove link**. Only web addresses (https://...,
+  www...), email (mailto:...) and phone (tel:...) links are allowed. On a card or in the preview, a
+  link opens in a new tab.
   Ctrl+B / Ctrl+I / Ctrl+U also work. Pasted text comes in plain (no formatting from other programs).
 - **Sketch:** click **Add sketch** and draw with the mouse, a finger or a pen. Pick a colour and a
   line thickness; **Eraser** rubs out, **Undo** removes the last line, **Clear** empties the sketch.

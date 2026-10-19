@@ -75,7 +75,8 @@
   }
 
   const sketchOf = (id) => { const n = S.byId("notes", id); return n && n.sketch; };
-  const titleOf = (n) => n.subject || (n.text || "").split("\n")[0].slice(0, 60) || "Sketch";
+  // No title: the first line of the note, without the link addresses kept in the plain copy.
+  const titleOf = (n) => n.subject || (n.text || "").split("\n")[0].replace(/ \((https?:|mailto:|tel:)[^)]*\)/g, "").slice(0, 60) || "Sketch";
   const pinBtn = (n) => `<button type="button" class="n-pin${n.pinned ? " on" : ""}" data-act="notes.pin" data-id="${esc(n.id)}" title="${n.pinned ? "Unpin" : "Pin to the top"}" aria-label="${n.pinned ? "Unpin" : "Pin to the top"}">${OPF.icon("pin")}</button>`;
 
   function card(n) {
@@ -83,7 +84,7 @@
     return `<article class="n-card ${cls(n)}${sketch ? " has-sketch" : ""}" data-act="notes.preview" data-id="${esc(n.id)}" tabindex="0">` +
       `<header class="n-top"><i class="nc-dot"></i><b>${esc(titleOf(n))}</b><time>${esc(n.date)}</time>${pinBtn(n)}</header>` +
       `<div class="n-main"><div class="n-text">${RT.clean(n.html)}</div>${sketch}</div>` +
-      `<footer class="n-foot no-print"><button type="button" class="n-link" data-act="notes.preview" data-id="${esc(n.id)}">${OPF.icon("search")} Preview</button><span class="grow"></span>` +
+      `<footer class="n-foot no-print"><button type="button" class="n-link" data-act="notes.preview" data-id="${esc(n.id)}">${OPF.icon("expand")} Preview</button><span class="grow"></span>` +
       `${H.button("Edit", "record.edit", { coll: "notes", id: n.id }, "sm light")}${H.button("Delete", "record.delete", { coll: "notes", id: n.id }, "sm bad")}</footer></article>`;
   }
 
@@ -231,7 +232,8 @@
     "notes.save": save,
     "notes.edit": (el) => R.edit("notes", el.dataset.id),
     "notes.close": closeWindow,
-    "notes.preview": (el, e) => { if (!(e && e.target.closest && e.target.closest("button:not([data-act='notes.preview'])"))) preview(el.dataset.id); },
+    // A click on a link inside the card opens the link (new tab), not the preview.
+    "notes.preview": (el, e) => { if (!(e && e.target.closest && e.target.closest("a, button:not([data-act='notes.preview'])"))) preview(el.dataset.id); },
     "notes.filter": (el) => { colorFilter = el.dataset.color == null ? null : el.dataset.color; H.$("noteChips").innerHTML = chips(); grid(); },
     "notes.pin": pin,
     "notes.copy": copy,

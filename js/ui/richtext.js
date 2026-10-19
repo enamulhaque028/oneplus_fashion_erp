@@ -1,7 +1,8 @@
 /* Rich text for Rough Notes: a small formatting toolbar over a contenteditable box, and a cleaner
    that keeps only safe formatting. Notes can come back from a backup file or Google Drive, so the
    HTML is cleaned when saved AND when shown: only the tags below survive, every attribute is
-   dropped, and colours are kept only if they are in the palette. */
+   dropped, colours are kept only if they are in the palette, and links keep only a safe address
+   (http / https / mailto / tel). */
 (function (OPF) {
   "use strict";
 
@@ -21,6 +22,17 @@
     const m = /^rgba?\((\d+),\s*(\d+),\s*(\d+)/.exec(c);
     if (m) return "#" + [m[1], m[2], m[3]].map((n) => ("0" + Number(n).toString(16)).slice(-2)).join("");
     return /^#[0-9a-f]{6}$/.test(c) ? c : "";
+  }
+
+  /* A link address the notes may keep: http(s), mailto, tel. "www.x.com" / "x.com/page" get https://.
+     Anything else (javascript:, data:, file: ...) returns "" and the link is dropped (its text stays). */
+  function safeUrl(u) {
+    u = String(u || "").trim();
+    if (!u || u.length > 2000 || /[\s<>"'`\u0000-\u001f]/.test(u)) return "";
+    if (/^(https?:\/\/|mailto:|tel:)/i.test(u)) return u;
+    if (/^[a-z][a-z0-9+.-]*:/i.test(u)) return ""; // another scheme
+    if (/^(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+([/?#:].*)?$/i.test(u)) return "https://" + u;
+    return "";
   }
 
   // An inert document: nothing in it runs or loads (no scripts, no images, no event handlers).
@@ -52,13 +64,16 @@
         const color = hex(n.getAttribute("color") || st.color);
         if (PALETTE.indexOf(color) >= 0) open.push(`span style="color:${color}"`);
         if (tag != "mark" && hex(st.backgroundColor) == HIGHLIGHT) open.push("mark");
+        const url = n.tagName == "A" ? safeUrl(n.getAttribute("href")) : "";
+        if (url) open.unshift(`a href="${esc(url)}" target="_blank" rel="noopener noreferrer"`);
         out += open.map((t) => "<" + t + ">").join("");
         walk(n);
         out += open.slice().reverse().map((t) => "</" + t.split(" ")[0] + ">").join("");
       });
     })(parse(html));
-    // Drop empty trailing lines the editor leaves behind.
-    return out.replace(/(<div><br><\/div>|<br>)+$/g, "").slice(0, 200000);
+    // Drop empty trailing lines the editor leaves behind, and a <br> that only ends a line of text
+    // (some browsers add one after a link; it shows nothing). An empty line (<div><br></div>) stays.
+    return out.replace(/([^>]|<\/(?:a|b|i|u|span|mark)>)<br><\/div>/g, "$1</div>").replace(/(<div><br><\/div>|<br>)+$/g, "").slice(0, 200000);
   }
 
   // Plain text (for search, the Excel sheet and the activity log): line breaks at <br> and blocks.
@@ -73,6 +88,9 @@
         if (block && out && !/\n$/.test(out)) out += "\n";
         if (n.tagName == "LI") out += "• ";
         walk(n);
+        // Keep a link's address in the plain copy (search, Excel) unless the text is the address.
+        const href = n.tagName == "A" ? n.getAttribute("href") : "";
+        if (href && n.textContent.trim() != href && "https://" + n.textContent.trim() != href) out += " (" + href + ")";
         if (block && !/\n$/.test(out)) out += "\n";
       });
     })(parse(clean(html)));
@@ -145,6 +163,7 @@
     bullets: svg('<circle cx="5" cy="7" r="1.3"/><circle cx="5" cy="12" r="1.3"/><circle cx="5" cy="17" r="1.3"/><path d="M10 7h10M10 12h10M10 17h10"/>'),
     numbers: svg('<path d="M4 5.5l1.5-1v5M4 9.5h3M4 14.5a1.5 1.5 0 1 1 2.6 1L4 19h3"/><path d="M11 7h9M11 12h9M11 17h9"/>'),
     marker: svg('<path d="M14.5 4.5l5 5-8 8H6.5v-5z"/><path d="M4 21h16"/>'),
+    link: svg('<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/>'),
     clear: svg('<path d="M6 5h12M12 5l-3 14"/><path d="M15 14l5 5M20 14l-5 5"/>')
   };
 
@@ -161,6 +180,10 @@
       group(btn("hiliteColor", ICON.marker, "Highlight", HIGHLIGHT, "rt-mark") +
         `<span class="rt-pal-wrap"><button type="button" class="rt-btn rt-color" data-act="rt.palette" title="Text colour" aria-label="Text colour"><b>A</b><i id="rtColorBar" style="background:${COLORS.red}"></i></button>` +
         `<span class="rt-pal" id="rtPal" hidden>${palette}</span></span>`) +
+      group('<span class="rt-pal-wrap"><button type="button" class="rt-btn" data-act="rt.link" data-cmd="link" title="Link (Ctrl+K)" aria-label="Link">' + ICON.link + "</button>" +
+        '<span class="rt-pal rt-linkbox" id="rtLinkBox" hidden><input type="text" id="rtLinkUrl" placeholder="Paste a link: https://..." autocomplete="off" spellcheck="false">' +
+        '<button type="button" class="sm" data-act="rt.linkApply">Apply</button><button type="button" class="sm light" data-act="rt.unlink" id="rtUnlink">Remove link</button>' +
+        '<small id="rtLinkMsg"></small></span></span>') +
       '<span class="grow"></span>' +
       group(btn("removeFormat", ICON.clear, "Clear formatting")) +
       `</div><div class="rt-box" id="rtBox" contenteditable="true" data-placeholder="Write anything: an idea, a reminder, a rough calculation...">${forEditing(html)}</div></div>`;
@@ -177,6 +200,7 @@
       try {
         on = STATE.indexOf(cmd) >= 0 ? document.queryCommandState(cmd)
           : cmd == "hiliteColor" ? inHighlight()
+          : cmd == "link" ? !!linkAt()
           : cmd == "formatBlock" && /h3/i.test(document.queryCommandValue("formatBlock"));
       } catch (e) { /* not supported here */ }
       b.classList.toggle("on", !!on);
@@ -189,7 +213,17 @@
     if (!listening) { document.addEventListener("selectionchange", showState); listening = true; }
     const bar = document.getElementById("rtBar"), box = document.getElementById("rtBox");
     if (!bar || !box) return;
-    bar.addEventListener("mousedown", (e) => e.preventDefault());
+    // Keep the text selection while toolbar buttons are pressed (but let the link box's input take focus).
+    bar.addEventListener("mousedown", (e) => { if (e.target.tagName != "INPUT") e.preventDefault(); });
+    box.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key == "k" || e.key == "K")) { e.preventDefault(); openLink(); }
+    });
+    const url = document.getElementById("rtLinkUrl");
+    url.addEventListener("input", () => { url.classList.remove("bad"); document.getElementById("rtLinkMsg").textContent = ""; });
+    url.addEventListener("keydown", (e) => {
+      if (e.key == "Enter") { e.preventDefault(); applyLink(); }
+      if (e.key == "Escape") { e.preventDefault(); e.stopPropagation(); closeLink(true); }
+    });
     box.addEventListener("paste", (e) => {
       const t = e.clipboardData && e.clipboardData.getData("text/plain");
       if (t == null) return;
@@ -216,9 +250,10 @@
     showState();
   }
 
-  OPF.richtext = { clean, text, fromText, editor, wire, COLORS, HIGHLIGHT };
+  OPF.richtext = { clean, text, fromText, editor, wire, safeUrl, COLORS, HIGHLIGHT };
   // Text colour: the A button opens a small palette; picking a colour applies it and closes it.
   function togglePalette(force) {
+    if (force !== false) closeLink(false);
     const pal = document.getElementById("rtPal");
     if (pal) pal.hidden = force == null ? !pal.hidden : !force;
   }
@@ -231,9 +266,93 @@
     if (bar) bar.style.background = el.dataset.val;
     togglePalette(false);
   }
+  // A click outside a little popup (colours, link box) closes it.
   document.addEventListener("mousedown", (e) => {
-    if (!(e.target.closest && e.target.closest(".rt-pal-wrap"))) togglePalette(false);
+    const wrap = e.target.closest && e.target.closest(".rt-pal-wrap");
+    Array.prototype.forEach.call(document.querySelectorAll(".rt-pal"), (p) => { if (!wrap || !wrap.contains(p)) p.hidden = true; });
   });
 
-  OPF.actions.register({ "rt.cmd": command, "rt.palette": () => togglePalette(), "rt.color": color });
+  /* ---------- links ---------- */
+  let linkRange = null; // the text selection when the link box opened (the box's input takes focus)
+
+  // The link (<a>) at the start of the selection, or null.
+  function linkAt() {
+    const box = document.getElementById("rtBox"), s = document.getSelection();
+    if (!box || !s.rangeCount) return null;
+    for (let n = s.getRangeAt(0).startContainer; n && n != box; n = n.parentNode) if (n.tagName == "A") return n;
+    return null;
+  }
+
+  function openLink() {
+    const box = document.getElementById("rtBox"), lb = document.getElementById("rtLinkBox");
+    if (!box || !lb) return;
+    togglePalette(false);
+    const s = document.getSelection();
+    if (!s.rangeCount || !box.contains(s.getRangeAt(0).startContainer)) { box.focus(); }
+    linkRange = s.rangeCount ? s.getRangeAt(0).cloneRange() : null;
+    const a = linkAt();
+    const input = document.getElementById("rtLinkUrl");
+    input.value = a ? a.getAttribute("href") : "";
+    input.classList.remove("bad");
+    document.getElementById("rtLinkMsg").textContent = "";
+    document.getElementById("rtUnlink").hidden = !a;
+    lb.hidden = false;
+    input.focus();
+    input.select();
+  }
+
+  function closeLink(refocus) {
+    const lb = document.getElementById("rtLinkBox");
+    if (lb) lb.hidden = true;
+    if (refocus) restoreRange();
+  }
+
+  function restoreRange() {
+    const box = document.getElementById("rtBox");
+    if (!box) return;
+    box.focus();
+    if (linkRange && box.contains(linkRange.startContainer)) {
+      const s = document.getSelection();
+      s.removeAllRanges();
+      s.addRange(linkRange);
+    }
+  }
+
+  function applyLink() {
+    const input = document.getElementById("rtLinkUrl"), url = safeUrl(input.value);
+    if (!url) {
+      input.classList.add("bad");
+      document.getElementById("rtLinkMsg").textContent = "Use a web address (https://...), an email (mailto:...) or a phone (tel:...).";
+      input.focus();
+      return;
+    }
+    restoreRange();
+    const a = linkAt();
+    if (a) a.setAttribute("href", url); // change an existing link
+    else if (document.getSelection().isCollapsed) document.execCommand("insertHTML", false, `<a href="${esc(url)}">${esc(input.value.trim())}</a>&nbsp;`);
+    else document.execCommand("createLink", false, url);
+    closeLink(false);
+    showState();
+  }
+
+  function unlink() {
+    restoreRange();
+    const a = linkAt();
+    if (a) {
+      const r = document.createRange();
+      r.selectNodeContents(a);
+      const s = document.getSelection();
+      s.removeAllRanges();
+      s.addRange(r);
+      document.execCommand("unlink", false, null);
+    }
+    closeLink(false);
+    showState();
+  }
+
+  OPF.actions.register({
+    "rt.cmd": command, "rt.palette": () => togglePalette(), "rt.color": color,
+    "rt.link": () => { const lb = document.getElementById("rtLinkBox"); if (lb && !lb.hidden) closeLink(true); else openLink(); },
+    "rt.linkApply": applyLink, "rt.unlink": unlink
+  });
 })(window.OPF = window.OPF || {});

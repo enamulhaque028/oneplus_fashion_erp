@@ -325,6 +325,42 @@ const { start, sleep, ROOT } = require("./lib");
   check("the hidden cursor marker is not saved", await db((d) => d.notes.find((n) => /yel/.test(n.text)).text), "yel-low");
   await act("record.delete", { coll: "notes", id: await db((d) => d.notes.find((n) => /yel/.test(n.text)).id) });
 
+  section("Rough Notes: links");
+  check("only safe link addresses are kept; www. gets https://", await page.evaluate(() => ["https://a.com/x?y=1", "www.rahim.com", "rahim.com/p", "mailto:shop@gmail.com", "tel:01711111111", "javascript:alert(1)", "JaVaScRiPt:alert(1)", "data:text/html,x", "file:///C:/x", "not a link", "http://a b"].map(OPF.richtext.safeUrl)),
+    ["https://a.com/x?y=1", "https://www.rahim.com", "https://rahim.com/p", "mailto:shop@gmail.com", "tel:01711111111", "", "", "", "", "", ""]);
+  check("links from a backup keep only a safe address and get a new tab + noopener", await page.evaluate(() => OPF.richtext.clean('<a href="JaVaScRiPt:alert(1)">x</a><a href="https://ok.com" onclick="steal()" style="color:red" target="_self">y</a>')),
+    'x<a href="https://ok.com" target="_blank" rel="noopener noreferrer">y</a>');
+  await newNote(); await page.click("#rtBox"); await page.keyboard.type("Fabric supplier site");
+  await page.keyboard.down("Shift"); for (let i = 0; i < 4; i++) await page.keyboard.press("ArrowLeft"); await page.keyboard.up("Shift");
+  await page.keyboard.down("Control"); await page.keyboard.press("k"); await page.keyboard.up("Control"); await sleep(50);
+  check("Ctrl+K opens the link box with the cursor in it (no Remove for new links)", await page.evaluate(() => [document.getElementById("rtLinkBox").hidden, document.activeElement.id, getComputedStyle(document.getElementById("rtUnlink")).display]), [false, "rtLinkUrl", "none"]);
+  await page.keyboard.type("javascript:alert(1)"); await page.keyboard.press("Enter");
+  check("an unsafe address is refused with a message", await page.evaluate(() => [document.getElementById("rtLinkMsg").textContent != "", document.querySelectorAll("#rtBox a").length]), [true, 0]);
+  await page.$eval("#rtLinkUrl", (e) => e.select()); await page.keyboard.type("www.rahimfabrics.com"); await page.keyboard.press("Enter");
+  check("the selected word becomes the link and the box closes", await page.evaluate(() => [document.getElementById("rtBox").innerHTML, document.getElementById("rtLinkBox").hidden]), ['Fabric supplier <a href="https://www.rahimfabrics.com">site</a>', true]);
+  await page.evaluate(() => { const t = document.querySelector("#rtBox a").firstChild, r = document.createRange(); r.setStart(t, 2); r.collapse(true); const s = getSelection(); s.removeAllRanges(); s.addRange(r); document.dispatchEvent(new Event("selectionchange")); });
+  await sleep(50);
+  check("the link button lights up inside a link", await page.$eval('[data-cmd="link"]', (b) => b.classList.contains("on")), true);
+  await page.keyboard.press("End"); await page.keyboard.press("Enter");
+  await tap('[data-act="rt.link"]'); await page.keyboard.type("https://example.com/order"); await page.keyboard.press("Enter");
+  await submit();
+  const ln = await db((d) => d.notes.find((n) => /Fabric supplier/.test(n.text)));
+  check("links are saved safely; the plain copy keeps the addresses", [ln.html.replace(/&nbsp;|\s/g, ""), ln.text.replace(/\u00a0/g, "").trim()],
+    ['Fabric supplier <a href="https://www.rahimfabrics.com" target="_blank" rel="noopener noreferrer">site</a><div><a href="https://example.com/order" target="_blank" rel="noopener noreferrer">https://example.com/order</a></div>'.replace(/ /g, ""), "Fabric supplier site (https://www.rahimfabrics.com)\nhttps://example.com/order"]);
+  check("the card title leaves out the address", await page.$eval(`.n-card[data-id="${ln.id}"] .n-top b`, (b) => b.textContent), "Fabric supplier site");
+  const tab = new Promise((res) => browser.once("targetcreated", res));
+  await page.click(`.n-card[data-id="${ln.id}"] .n-text a`);
+  const opened = await Promise.race([tab, sleep(3000).then(() => null)]);
+  check("clicking a link on a card opens it in a new tab, not the preview", [!!opened && /rahimfabrics/.test(opened.url()), !!(await page.$("#noteDlg"))], [true, false]);
+  if (opened) { const pg = await opened.page(); if (pg) await pg.close(); }
+  await act("record.edit", { coll: "notes", id: ln.id }); await sleep(250);
+  await page.evaluate(() => { const t = document.querySelector("#rtBox a").firstChild, r = document.createRange(); r.setStart(t, 1); r.collapse(true); const s = getSelection(); s.removeAllRanges(); s.addRange(r); });
+  await tap('[data-act="rt.link"]');
+  check("opening the box on a link shows its address and Remove link", await page.evaluate(() => [document.getElementById("rtLinkUrl").value, getComputedStyle(document.getElementById("rtUnlink")).display != "none"]), ["https://www.rahimfabrics.com", true]);
+  await tap('[data-act="rt.unlink"]'); await submit();
+  check("Remove link keeps the text and drops the link", await db((d) => /Fabric supplier site<div>/.test(d.notes.find((n) => /Fabric supplier/.test(n.text)).html)), true);
+  await act("record.delete", { coll: "notes", id: ln.id });
+
   section("Rough Notes: board, preview, pin, filter");
   check("all cards are the same height", await page.$$eval(".n-card", (c) => [...new Set(c.map((x) => x.getBoundingClientRect().height))].length), 1);
   await page.click(`.n-card[data-id="${n1.id}"] .n-text`);
