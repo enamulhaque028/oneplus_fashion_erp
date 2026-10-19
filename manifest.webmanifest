@@ -23,5 +23,12 @@
       "sizes": "any",
       "type": "image/svg+xml"
     }
+  ],
+  "id": "./",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://enamulhaque028.github.io/oneplus_fashion_erp/manifest.webmanifest"
+    }
   ]
 }

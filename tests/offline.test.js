@@ -45,6 +45,24 @@ const BASE = "/oneplus_fashion_erp/";
   check("every ERP file is saved", await pg.evaluate(() => caches.open("opf-erp-v1").then((c) => c.keys()).then((k) => k.length)), shell);
   await pg.evaluate(() => { OPF.store.db.customers.push({ id: "offc1", name: "Offline Test Shop", mobile: "01700000999", previousDue: 0 }); OPF.store.save(); });
 
+  section("Install desktop app (hosted link)");
+  check("the side menu offers Install desktop app", await pg.evaluate(() => !!document.querySelector('#nav .get-app[data-act="app.install"]')), true);
+  await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(150);
+  check("without a browser install prompt: a how-to opens", await pg.evaluate(() => { const d = document.getElementById("appDialog"); return !!d && d.querySelectorAll(".app-steps li").length > 0; }), true);
+  await pg.evaluate(() => document.querySelector('[data-act="app.closeHow"]').click());
+  await pg.evaluate(() => { const e = new Event("beforeinstallprompt", { cancelable: true }); e.prompt = () => { window.__prompted = (window.__prompted || 0) + 1; }; e.userChoice = Promise.resolve({ outcome: "accepted" }); window.dispatchEvent(e); });
+  await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(200);
+  check("with Chrome's install prompt: the button opens it; once installed the card says Uninstall", await pg.evaluate(() => { const g = document.querySelector("#nav .get-app"); return [window.__prompted, g.getAttribute("data-act"), g.textContent.trim()]; }), [1, "app.uninstall", "Uninstall desktop appInstalled on this computer"]);
+  await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(150);
+  check("Uninstall shows the browser's steps (a web page cannot uninstall an app itself)", await pg.evaluate(() => { const d = document.getElementById("appDialog"); return [d.querySelector("h2").textContent, /chrome:\/\/apps/.test(d.textContent), /not deleted/.test(d.textContent)]; }), ["Uninstall the desktop app", true, true]);
+  await pg.evaluate(() => document.querySelector('[data-act="app.closeHow"]').click());
+  await pg.evaluate(() => OPF.router.go("settings"));
+  check("Settings / Backup says installed, with Uninstall", await pg.evaluate(() => { const b = document.getElementById("appBox"); return [/installed on this computer/.test(b.textContent), !!b.querySelector('[data-act="app.uninstall"]')]; }), [true, true]);
+  // After uninstalling, Chrome offers to install again: the card goes back to Install.
+  await pg.evaluate(() => { const e = new Event("beforeinstallprompt", { cancelable: true }); e.prompt = () => {}; e.userChoice = Promise.resolve({ outcome: "dismissed" }); window.dispatchEvent(e); });
+  check("after uninstalling (Chrome offers install again) it shows Install again", await pg.evaluate(() => document.querySelector("#nav .get-app").getAttribute("data-act")), "app.install");
+  await pg.evaluate(() => OPF.router.go("dashboard"));
+
   section("No internet: the ERP still opens, with its data");
   await pg.setOfflineMode(true);
   await pg.reload(); await sleep(900);

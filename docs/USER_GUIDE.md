@@ -82,8 +82,16 @@ changes the whole screen to Bengali, with Bengali digits. The choice is remember
 **Without internet (the online link):** after the ERP has been opened once with internet, it also
 opens with no internet, with all its data: the browser keeps a copy of the ERP's files. Google Drive
 backup waits until the internet is back. (Chrome forgets this copy when an Incognito window is
-closed - use a normal window.) Chrome can also **install** the ERP as an app: the install icon at the
-right of the address bar on a computer, or **Add to Home screen** on a phone.
+closed - use a normal window.)
+
+**Desktop app (the online link):** click **Install desktop app** at the bottom of the side menu (also in
+**Settings / Backup**). In Chrome or Edge it installs the ERP as an app: its own window, a Start menu /
+Dock icon, opens without internet, updates by itself, same data. Where the browser cannot install with
+one click (iPhone, Firefox), the button shows the steps (iPhone: Share → Add to Home Screen). The
+double-click version does not show the button: it is a desktop version already.
+When the app is installed the card says **Uninstall desktop app**. A web page is not allowed to remove an
+app itself, so it shows the browser's steps: in the app window, menu (⋮) → **Uninstall One Plus Fashion
+ERP**; in a browser tab, `chrome://apps` → right-click → **Remove from Chrome**. The ERP data is kept.
 
 **On a phone** (the online link): the menu opens from the ☰ button at the top left. At the bottom of
 the menu are the **Theme** switch (light / dark), **Admin login / Lock admin** and **Backup**. Wide tables show

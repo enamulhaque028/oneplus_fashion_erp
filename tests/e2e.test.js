@@ -536,6 +536,8 @@ const { start, sleep, ROOT } = require("./lib");
   }
   check("computer: tables stay tables, the memo still prints from the hidden frame, menu tools stay in the header", await page.evaluate(() => [document.querySelectorAll(".table.stack").length, OPF.print.isMobile(), getComputedStyle(document.querySelector(".phone-tools")).display, getComputedStyle(document.querySelector(".top .theme-switch")).display != "none"]), [0, false, "none", true]);
 
+  check("double-click version: no Install desktop app (it is a desktop version already)", await page.evaluate(() => { OPF.router.go("settings"); return [!!document.querySelector("#nav .get-app"), !!document.getElementById("appBox")]; }), [false, false]);
+
   section("Bengali screen language (English stays the default)");
   check("English by default; the header has the EN | বাং switch", await page.evaluate(() => [document.documentElement.lang, document.querySelector('.top [data-lang="en"]').classList.contains("on"), document.querySelector("#nav .menu").textContent.indexOf("Dashboard") >= 0]), ["en", true, true]);
   check("numbers typed with Bengali digits are understood", await page.evaluate(() => [OPF.util.num("১,২৫০.৫০"), OPF.util.num("1,250.50")]), [1250.5, 1250.5]);

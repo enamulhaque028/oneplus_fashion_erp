@@ -44,6 +44,100 @@
     return `<div class="brand"><div class="mk">${mark}</div><div class="tx"><b>${esc(co.name || "One Plus Fashion")}</b><small>Smart ERP</small></div></div>`;
   }
 
+  /* ---------- desktop app: install the hosted ERP as an app (Chrome / Edge "install", iPhone "Add to
+     Home Screen"). Not shown in the double-click (file://) version - it is a desktop version already -
+     nor inside the installed app. */
+  let installPrompt = null, justInstalled = false, foundInstalled = false;
+  const hosted = () => /^https?:$/.test(location.protocol);
+  const standalone = () => (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+  function appState() {
+    if (!hosted()) return "file";
+    if (standalone() || justInstalled || foundInstalled) return "installed";
+    return installPrompt ? "ready" : "manual";
+  }
+  // Chrome / Edge offer installing through this event (so the app is not installed); keep it for our button.
+  window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installPrompt = e; justInstalled = foundInstalled = false; refreshInstall(); });
+  window.addEventListener("appinstalled", () => { installPrompt = null; justInstalled = true; refreshInstall(); });
+  // In a normal tab, Chrome (Windows / Android) can say whether the app is installed (manifest
+  // related_applications names the app itself).
+  if (hosted() && navigator.getInstalledRelatedApps) {
+    navigator.getInstalledRelatedApps().then((apps) => { if (apps && apps.length) { foundInstalled = true; refreshInstall(); } }, () => {});
+  }
+
+  /* A web page cannot uninstall an app (browsers do not allow it), so "Uninstall" shows the browser's
+     own steps for this window / device. */
+  function installItem() {
+    const st = appState();
+    if (st == "file") return "";
+    if (st == "installed") return `<button type="button" class="get-app installed" data-act="app.uninstall" title="Uninstall desktop app">${OPF.icon("check")}<span class="tx"><b>Uninstall desktop app</b><small>Installed on this computer</small></span></button>`;
+    return `<button type="button" class="get-app" data-act="app.install" title="Install desktop app">${OPF.icon("download")}<span class="tx"><b>Install desktop app</b><small>Own window · works offline</small></span></button>`;
+  }
+
+  // The Settings / Backup section.
+  function installBox() {
+    const st = appState();
+    if (st == "file") return "";
+    const body = st == "installed"
+      ? `<p class="app-ok">${OPF.icon("check")}<span>The desktop app is installed on this computer.</span></p>` +
+        `<div class="actions">${OPF.html.button("Uninstall desktop app", "app.uninstall", null, "light")}</div>`
+      : '<p class="muted">Install the ERP as an app: it gets its own window and a Start menu / Dock icon (home screen on a phone), opens without internet and updates by itself. The data stays the same as in the browser.</p>' +
+        `<div class="actions">${OPF.html.button(OPF.icon("download") + "Install desktop app", "app.install", null, "good")}</div>`;
+    return `<div class="box" id="appBox"><h2 style="margin-top:0">Desktop app</h2>${body}</div>`;
+  }
+
+  function refreshInstall() {
+    const item = document.querySelector("#nav .get-app");
+    if (item) item.outerHTML = installItem() || "<i hidden></i>";
+    else if (installItem()) { const pt = document.querySelector("#nav .phone-tools"); if (pt) pt.insertAdjacentHTML("beforebegin", installItem()); }
+    const box = document.getElementById("appBox");
+    if (box) box.outerHTML = installBox() || "";
+  }
+
+  function install() {
+    if (installPrompt) {
+      const p = installPrompt;
+      installPrompt = null;
+      p.prompt();
+      p.userChoice.then((c) => { if (c && c.outcome == "accepted") justInstalled = true; refreshInstall(); }, () => refreshInstall());
+      return;
+    }
+    howTo();
+  }
+
+  // When the browser gives no install prompt: say where its own install option is.
+  function howTo() {
+    const ua = navigator.userAgent;
+    let steps;
+    if (/iPhone|iPad|iPod/.test(ua) || (navigator.platform == "MacIntel" && navigator.maxTouchPoints > 1)) steps = ["Tap the Share button (the square with an arrow).", "Choose Add to Home Screen, then Add."];
+    else if (/Firefox\//.test(ua)) steps = ["Firefox cannot install apps.", "Open this page in Google Chrome or Microsoft Edge and click Install desktop app there."];
+    else if (/Android/.test(ua)) steps = ["Open the browser menu (⋮).", "Choose Install app or Add to Home screen."];
+    else if (/Edg\//.test(ua)) steps = ["Open the menu (...) at the top right.", "Choose Apps, then Install this site as an app."];
+    else if (/Safari\//.test(ua) && !/Chrome\//.test(ua)) steps = ["In the menu bar, choose File.", "Choose Add to Dock."];
+    else steps = ["Click the install icon at the right end of the address bar,", "or open the menu (⋮) and choose Cast, save and share, then Install page as app."];
+    stepsDialog("Install the desktop app", "download", steps);
+  }
+
+  function uninstallHowTo() {
+    const ua = navigator.userAgent, edge = /Edg\//.test(ua);
+    let steps;
+    if (/iPhone|iPad|iPod/.test(ua) || (navigator.platform == "MacIntel" && navigator.maxTouchPoints > 1)) steps = ["Go to the Home Screen and press and hold the One Plus Fashion ERP icon.", "Choose Remove App, then Delete from Home Screen."];
+    else if (/Android/.test(ua)) steps = ["Press and hold the One Plus Fashion ERP icon.", "Choose Uninstall (or App info, then Uninstall)."];
+    else if (standalone()) steps = ["Click the menu (" + (edge ? "..." : "⋮") + ") at the top right of this app window.", "Choose Uninstall One Plus Fashion ERP, then Remove."];
+    else steps = ["Open " + (edge ? "edge://apps" : "chrome://apps") + " in a new tab (type it in the address bar).", "Right-click One Plus Fashion ERP and choose " + (edge ? "Uninstall" : "Remove from Chrome") + ", then Remove."];
+    stepsDialog("Uninstall the desktop app", "trash", steps, "Your ERP data is not deleted (unless you also tick \"clear data\"). The ERP still works in the browser.");
+  }
+
+  function stepsDialog(title, icon, steps, note) {
+    const d = document.createElement("div");
+    d.id = "appDialog";
+    d.innerHTML = `<div class="cd-card" role="dialog" aria-modal="true"><div class="dlg-ic">${OPF.icon(icon)}</div><h2>${OPF.util.esc(title)}</h2>` +
+      `<ol class="app-steps">${steps.map((s) => `<li>${OPF.util.esc(s)}</li>`).join("")}</ol>` +
+      (note ? `<p class="muted app-note">${OPF.util.esc(note)}</p>` : "") +
+      `<div class="actions" style="justify-content:center">${OPF.html.button("OK", "app.closeHow")}</div></div>`;
+    d.addEventListener("mousedown", (e) => { if (e.target == d) d.remove(); });
+    document.body.appendChild(d);
+  }
+
   // Phones: the header has no room for the theme switch, Lock and Backup, so the menu carries them.
   function phoneTools() {
     const admin = OPF.auth && OPF.auth.isAdmin();
@@ -67,6 +161,7 @@
     nav.innerHTML = brandHtml() +
       `<div class="navsearch">${OPF.icon("search")}<input id="navSearch" placeholder="Search menu..." autocomplete="off" value="${esc(filter)}"></div>` +
       `<div class="menu">${menuHtml(current)}</div>` +
+      installItem() +
       phoneTools() +
       (co.hotline ? `<div class="support" title="Hotline"><span class="ph">${OPF.icon("phone")}</span><span class="tx"><small>Hotline</small><b>${esc(co.hotline)}</b></span></div>` : "");
     if (hadFocus) { const s = $("navSearch"); s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
@@ -138,7 +233,7 @@
     });
   }
 
-  OPF.shell = { render, init, stackTables };
+  OPF.shell = { render, init, stackTables, installBox };
   OPF.actions.register({
     "nav.group": (el) => { const gi = el.dataset.group; open[gi] = !el.parentNode.classList.contains("open"); el.parentNode.classList.toggle("open", open[gi]); },
     // The whole screen is redrawn in the other language (see js/ui/i18n.js).
@@ -148,6 +243,9 @@
       savePrefs();
       location.reload();
     },
+    "app.install": install,
+    "app.uninstall": uninstallHowTo,
+    "app.closeHow": () => { const d = document.getElementById("appDialog"); if (d) d.remove(); },
     "shell.theme": (el) => {
       prefs.theme = el.getAttribute("data-theme-set");
       applyPrefs();
