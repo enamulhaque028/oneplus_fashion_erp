@@ -58,8 +58,8 @@ Supplier → Purchase → Raw Stock → Material Issue → Production → Finish
 Open **https://enamulhaque028.github.io/oneplus_fashion_erp/** in Chrome or Firefox. Nothing to install.
 
 It **works offline too**: open it once with internet, and after that it opens without internet (in a
-normal window, not Incognito). **Desktop app:** click **Install desktop app** at the bottom of the side
-menu (Chrome / Edge; on a phone, **Add to Home screen**) - its own window and icon, offline, auto-updates.
+normal window, not Incognito). **Desktop app:** click **Install desktop app** in **Settings / Backup**
+(Chrome / Edge; on a phone, **Add to Home screen**) - its own window and icon, offline, auto-updates.
 
 > [!NOTE]
 > The data is saved in **that browser on that computer**. The online link and the double-click version (option 2) keep separate data.

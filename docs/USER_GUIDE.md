@@ -84,16 +84,15 @@ opens with no internet, with all its data: the browser keeps a copy of the ERP's
 backup waits until the internet is back. (Chrome forgets this copy when an Incognito window is
 closed - use a normal window.)
 
-**Desktop app (the online link):** click **Install desktop app** at the bottom of the side menu (also in
-**Settings / Backup**). In Chrome or Edge it installs the ERP as an app: its own window, a Start menu /
+**Desktop app (the online link):** in **Settings / Backup**, click **Install desktop app**. In Chrome or Edge it installs the ERP as an app: its own window, a Start menu /
 Dock icon, opens without internet, updates by itself, same data. Where the browser cannot install with
 one click (iPhone, Firefox), the button shows the steps (iPhone: Share → Add to Home Screen). The
 double-click version does not show the button: it is a desktop version already.
-When the app is installed the card says **Uninstall desktop app**. A web page is not allowed to remove an
+When the app is installed the section says **Uninstall desktop app**. A web page is not allowed to remove an
 app itself, so it shows the browser's steps: in the app window, menu (⋮) → **Uninstall One Plus Fashion
 ERP**; in a browser tab, `chrome://apps` → right-click → **Remove from Chrome**. The ERP data is kept.
 Chrome does not tell a page whether the app is already installed. If Chrome makes no install offer a
-few seconds after the page opens, the app is already installed: the card says **Uninstall desktop app**,
+few seconds after the page opens, the app is already installed: the section says **Uninstall desktop app**,
 and **Install** shows **Already installed** with how to open it (**Open in app** at the right end of the
 address bar, or the app's icon).
 

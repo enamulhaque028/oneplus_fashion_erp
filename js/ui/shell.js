@@ -73,13 +73,6 @@
 
   /* A web page cannot uninstall an app (browsers do not allow it), so "Uninstall" shows the browser's
      own steps for this window / device. */
-  function installItem() {
-    const st = appState();
-    if (st == "file") return "";
-    if (st == "installed") return `<button type="button" class="get-app installed" data-act="app.uninstall" title="Uninstall desktop app">${OPF.icon("check")}<span class="tx"><b>Uninstall desktop app</b><small>Installed on this computer</small></span></button>`;
-    return `<button type="button" class="get-app" data-act="app.install" title="Install desktop app">${OPF.icon("download")}<span class="tx"><b>Install desktop app</b><small>Own window · works offline</small></span></button>`;
-  }
-
   // The Settings / Backup section.
   function installBox() {
     const st = appState();
@@ -93,9 +86,6 @@
   }
 
   function refreshInstall() {
-    const item = document.querySelector("#nav .get-app");
-    if (item) item.outerHTML = installItem() || "<i hidden></i>";
-    else if (installItem()) { const pt = document.querySelector("#nav .phone-tools"); if (pt) pt.insertAdjacentHTML("beforebegin", installItem()); }
     const box = document.getElementById("appBox");
     if (box) box.outerHTML = installBox() || "";
   }
@@ -125,7 +115,7 @@
     refreshInstall();
     stepsDialog("Already installed", "check", [
       "To open it, click Open in app at the right end of the address bar, or use its icon (Start menu / Dock / Launchpad).",
-      "To install it again, uninstall it first (Uninstall desktop app in the menu), then reload this page."
+      "To install it again, uninstall it first (Uninstall desktop app in Settings / Backup), then reload this page."
     ]);
   }
 
@@ -186,7 +176,6 @@
     nav.innerHTML = brandHtml() +
       `<div class="navsearch">${OPF.icon("search")}<input id="navSearch" placeholder="Search menu..." autocomplete="off" value="${esc(filter)}"></div>` +
       `<div class="menu">${menuHtml(current)}</div>` +
-      installItem() +
       phoneTools() +
       (co.hotline ? `<div class="support" title="Hotline"><span class="ph">${OPF.icon("phone")}</span><span class="tx"><small>Hotline</small><b>${esc(co.hotline)}</b></span></div>` : "");
     if (hadFocus) { const s = $("navSearch"); s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
