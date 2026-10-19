@@ -5,6 +5,14 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>One Plus Fashion ERP</title>
+  <!-- Hosted site: show the short address (.../oneplus_fashion_erp/#/page) instead of the file name.
+       That address opens index.html, which forwards here, so reload, bookmarks and shared links work.
+       The file itself keeps its name: Firefox stores the saved data of a double-clicked ERP per file. -->
+  <script>
+    if (/^https?:$/.test(location.protocol) && /\/OnePlusFashion_ERP\.html$/.test(location.pathname)) {
+      history.replaceState(null, "", location.pathname.replace(/OnePlusFashion_ERP\.html$/, "") + location.search + location.hash);
+    }
+  </script>
   <link rel="stylesheet" href="assets/css/app.css">
 </head>
 

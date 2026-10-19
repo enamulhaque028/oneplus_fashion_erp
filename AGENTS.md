@@ -157,6 +157,9 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   `OPF.richtext.safeUrl` addresses (http/https/mailto/tel) and always open in a new tab with noopener. The page is a card board;
   writing and preview open in `#noteDlg` (z-index below the admin password `#modal`). This replaces the
   earlier COD-settlement option B, which the business dropped.
+- **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
+  on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
+  Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.
 - **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`, set to **false** on 2026-10-19 at the
   user's request: Google sign-in is off on the live site): only `true` turns sign-in / sync on
   (`OPF.drive.enabled()`). When `false`, a previously signed-in computer still counts local saves
