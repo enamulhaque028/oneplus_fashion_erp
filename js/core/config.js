@@ -22,7 +22,7 @@
       // Feature flag: true = Google sign-in and Drive backup on the hosted link; false = switched off
       // (no sign-in screen, no sync badge, data stays on the computer). Nothing is deleted either
       // way: a computer that was signed in carries on syncing when this is set back to true.
-      ENABLE_GOOGLE_LOGIN: false,
+      ENABLE_GOOGLE_LOGIN: true,
       GOOGLE_CLIENT_ID: "221238920928-f7u2jtl9eve5aj4pgogbl9f5clee26qi.apps.googleusercontent.com",
       FOLDER: "One Plus Fashion ERP",
       DATA_FILE: "OnePlusFashion ERP Data.json",
