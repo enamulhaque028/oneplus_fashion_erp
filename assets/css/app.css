@@ -876,12 +876,19 @@ body.nd-open { overflow: hidden }
 /* ---------- phones: theme, Lock and Backup live in the menu (header has no room) ---------- */
 .phone-tools { display: none }
 @media (max-width: 640px) {
-  .phone-tools { display: block; margin: 6px 12px 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); flex: 0 0 auto }
-  .pt-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px }
+  /* The whole menu scrolls as one on short phone screens (browser bars take space), so the page list
+     is never squeezed by the tools below it; with room to spare the tools sit at the bottom. */
+  .side { overflow-y: auto; -webkit-overflow-scrolling: touch }
+  .side .menu { flex: 0 0 auto; overflow: visible }
+  .phone-tools { display: block; margin: auto 12px 6px; padding: 8px 10px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); flex: 0 0 auto }
+  .pt-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px }
+  .phone-tools .theme-switch button { height: 28px }
+  .side .support { margin: 0 12px 12px; padding: 7px 10px }
+  .side .support .ph { width: 30px; height: 30px; flex-basis: 30px }
   .pt-row > span { display: inline-flex; align-items: center; font-weight: 600; color: var(--text-2) }
   .pt-row > span .i { width: 18px; height: 18px; margin-right: 8px; color: var(--primary) }
   .pt-btns { display: flex }
-  .pt-btns button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 8px; font-size: 13px }
+  .pt-btns button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; height: 34px; padding: 0 8px; font-size: 13px }
   .pt-btns button + button { margin-left: 8px }
   .pt-btns .i { width: 16px; height: 16px; margin-right: 6px }
 }
