@@ -66,6 +66,8 @@ const BASE = "/oneplus_fashion_erp/";
   section("Never signed in, no internet: the sign-in screen offers to continue offline");
   const ctx2 = await newContext();
   const p2 = await ctx2.newPage();
+  // Google sign-in switched on for this page, whatever config.js says (tests switch it on this way).
+  await p2.evaluateOnNewDocument(() => { window.OPF_CLOUD_TEST = { ENABLE_GOOGLE_LOGIN: true }; });
   await p2.goto(site); await sleep(1200);
   await p2.evaluate(() => navigator.serviceWorker.ready);
   await p2.setOfflineMode(true);

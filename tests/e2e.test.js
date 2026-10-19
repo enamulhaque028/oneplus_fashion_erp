@@ -9,6 +9,13 @@ const { start, sleep, ROOT } = require("./lib");
   const T = await start("e2e");
   const { browser, page, errors, alerts, OUT, APP, check, section, go, db, text, fill, submit, act, modalOpen, password, printed, setItems } = T;
 
+  // The Bengali screen language is tested whatever its flag in config.js says: switch it on for these pages.
+  const bengaliOn = (pg) => pg.evaluateOnNewDocument(() => {
+    let cfg = null;
+    window.OPF = window.OPF || {};
+    Object.defineProperty(window.OPF, "config", { configurable: true, get: () => cfg, set: (v) => { cfg = Object.freeze(Object.assign({}, v, { ENABLE_BENGALI: true })); } });
+  });
+  await bengaliOn(page);
   await T.open();
   check("app booted from file:// without special flags", await page.evaluate(() => !!(window.OPF && OPF.store.db)), true);
 
@@ -486,6 +493,7 @@ const { start, sleep, ROOT } = require("./lib");
   section("Phones (iPhone 12): printing and every page fits the screen");
   {
     const ph = await browser.newPage();
+    await bengaliOn(ph);
     const phoneErrors = [];
     ph.on("pageerror", (e) => phoneErrors.push(e.message));
     await ph.emulate({ viewport: { width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true }, userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/120.0 Mobile/15E148 Safari/604.1" });
