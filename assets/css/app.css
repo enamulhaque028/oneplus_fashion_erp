@@ -663,17 +663,32 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 /* ---------- Rough Notes: rich text, sketch pad, note cards ---------- */
 .hide { display: none !important }
 .rt { border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); overflow: hidden }
-.rt-bar, .sk-bar { display: flex; flex-wrap: wrap; align-items: center; padding: 6px; background: var(--surface-2); border-bottom: 1px solid var(--border) }
+.rt-bar, .sk-bar { display: flex; flex-wrap: wrap; align-items: center; padding: 6px 8px; background: var(--surface-2); border-bottom: 1px solid var(--border); position: relative }
 .rt-bar > *, .sk-bar > * { margin: 2px }
-.rt-btn { min-width: 34px; height: 32px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; font-weight: 600; box-shadow: none; cursor: pointer }
-.rt-btn:hover, .rt-btn.on { background: var(--primary-soft); border-color: var(--primary-border); color: var(--primary-ink) }
-.rt-hl { background: #fde68a; color: #1e293b; padding: 0 3px; border-radius: 3px }
+/* Buttons sit in light pills (groups); no borders, soft hover, clear "on" state. */
+.rt-grp { display: inline-flex; align-items: center; padding: 2px; margin: 2px 6px 2px 0 !important; border-radius: 10px; background: var(--surface); box-shadow: 0 0 0 1px var(--border) }
+.rt-btn { display: inline-flex; align-items: center; justify-content: center; min-width: 32px; height: 30px; padding: 0 8px; margin: 0 1px; border: 0; border-radius: 8px; background: transparent; color: var(--text-2); font-size: 13px; font-weight: 600; box-shadow: none; cursor: pointer; transition: background .12s, color .12s }
+.rt-btn svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.rt-btn:hover { background: var(--surface-3); color: var(--text) }
+.rt-btn.on { background: var(--primary-soft); color: var(--primary-ink) }
+.rt-btn.rt-mark svg { stroke: #b45309 }
+.rt-btn.rt-mark:hover { background: #fef3c7 }
+.rt-color { flex-direction: column; padding: 0 9px }
+.rt-color b { font-size: 15px; line-height: 15px; font-weight: 800 }
+.rt-color i { display: block; width: 16px; height: 4px; margin-top: 2px; border-radius: 2px }
+.rt-pal-wrap { position: relative; display: inline-flex }
+.rt-pal { position: absolute; top: 36px; left: -6px; z-index: 5; display: flex; padding: 8px; border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-3), 0 0 0 1px var(--border); animation: pop .12s ease-out }
+.rt-pal[hidden] { display: none }
+.rt-swatch { width: 26px; height: 26px; margin: 0 3px; padding: 0; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer }
+.rt-swatch:hover { transform: scale(1.12) }
 .rt-sep { width: 1px; height: 22px; background: var(--border-strong); margin: 0 6px !important }
-.rt-dot, .sk-ink { width: 24px; height: 24px; padding: 0; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer }
+.sk-inks { padding: 3px 4px }
+.sk-ink { width: 22px; height: 22px; padding: 0; margin: 0 3px; border-radius: 50%; border: 2px solid var(--surface); box-shadow: 0 0 0 1px var(--border-strong); cursor: pointer }
 .sk-ink.on { box-shadow: 0 0 0 2px var(--primary) }
-.sk-size { width: 34px; height: 32px; padding: 0; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); box-shadow: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer }
+.sk-size { width: 32px; height: 30px; padding: 0; border-radius: 8px; border: 0; background: transparent; box-shadow: none; display: inline-flex; align-items: center; justify-content: center; cursor: pointer }
 .sk-size i { display: block; border-radius: 50%; background: var(--text) }
-.sk-size.on { background: var(--primary-soft); border-color: var(--primary-border) }
+.sk-size:hover { background: var(--surface-3) }
+.sk-size.on { background: var(--primary-soft) }
 .rt-box { min-height: 140px; max-height: 420px; overflow-y: auto; padding: 12px 14px; outline: none; line-height: 1.55; color: var(--text) }
 .rt-box:empty:before { content: attr(data-placeholder); color: var(--muted) }
 .rt-box h3, .n-text h3, .nd-text h3 { margin: 6px 0; font-size: 17px }

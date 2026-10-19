@@ -144,7 +144,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 126, edge 64, uat 44, regression 62, cloud 34 checks, all passing;
+  - current Chrome and Chromium 109: e2e 128, edge 64, uat 44, regression 62, cloud 34 checks, all passing;
   - self-test 26 / 26 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No

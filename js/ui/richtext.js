@@ -80,19 +80,34 @@
   // Plain text from older notes -> HTML with the same line breaks.
   const fromText = (t) => esc(String(t || "")).replace(/\r?\n/g, "<br>");
 
-  const TOOLS = [
-    ["bold", "<b>B</b>", "Bold (Ctrl+B)"], ["italic", "<i>I</i>", "Italic (Ctrl+I)"], ["underline", "<u>U</u>", "Underline (Ctrl+U)"],
-    ["formatBlock", "H", "Heading", "<h3>"], ["insertUnorderedList", "&bull; List", "Bullet list"], ["insertOrderedList", "1. List", "Numbered list"],
-    ["hiliteColor", '<span class="rt-hl">ab</span>', "Highlight", HIGHLIGHT]
-  ];
+  // Toolbar icons (24 x 24 line drawings, like OPF.icon).
+  const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  const ICON = {
+    bold: svg('<path d="M7 5h6a3.5 3.5 0 0 1 0 7H7z"/><path d="M7 12h7a3.5 3.5 0 0 1 0 7H7z"/>'),
+    italic: svg('<path d="M10 5h8M6 19h8M14.5 5l-5 14"/>'),
+    underline: svg('<path d="M7 4v7a5 5 0 0 0 10 0V4"/><path d="M5 20h14"/>'),
+    heading: svg('<path d="M5 5v14M15 5v14M5 12h10"/><path d="M18.5 12.5l2-1.5v8"/>'),
+    bullets: svg('<circle cx="5" cy="7" r="1.3"/><circle cx="5" cy="12" r="1.3"/><circle cx="5" cy="17" r="1.3"/><path d="M10 7h10M10 12h10M10 17h10"/>'),
+    numbers: svg('<path d="M4 5.5l1.5-1v5M4 9.5h3M4 14.5a1.5 1.5 0 1 1 2.6 1L4 19h3"/><path d="M11 7h9M11 12h9M11 17h9"/>'),
+    marker: svg('<path d="M14.5 4.5l5 5-8 8H6.5v-5z"/><path d="M4 21h16"/>'),
+    clear: svg('<path d="M6 5h12M12 5l-3 14"/><path d="M15 14l5 5M20 14l-5 5"/>')
+  };
+
+  // One toolbar button. Groups sit in pills; tooltips name the shortcut.
+  const btn = (cmd, icon, title, val, cls) => `<button type="button" class="rt-btn${cls ? " " + cls : ""}" data-act="rt.cmd" data-cmd="${cmd}"${val ? ` data-val="${esc(val)}"` : ""} title="${esc(title)}" aria-label="${esc(title)}">${icon}</button>`;
+  const group = (html) => `<div class="rt-grp">${html}</div>`;
 
   // Toolbar + editable box. Buttons carry the editor command; notes.js wires the clicks.
   function editor(html) {
-    const btn = (cmd, label, title, val) => `<button type="button" class="rt-btn" data-act="rt.cmd" data-cmd="${cmd}"${val ? ` data-val="${esc(val)}"` : ""} title="${esc(title)}">${label}</button>`;
+    const palette = Object.keys(COLORS).map((k) => `<button type="button" class="rt-swatch" style="background:${COLORS[k]}" data-act="rt.color" data-val="${COLORS[k]}" title="${k[0].toUpperCase() + k.slice(1)} text" aria-label="${k} text"></button>`).join("");
     return '<div class="rt"><div class="rt-bar" id="rtBar">' +
-      TOOLS.map((t) => btn(t[0], t[1], t[2], t[3])).join("") + '<span class="rt-sep"></span>' +
-      Object.keys(COLORS).map((k) => `<button type="button" class="rt-dot" style="background:${COLORS[k]}" data-act="rt.cmd" data-cmd="foreColor" data-val="${COLORS[k]}" title="${k} text"></button>`).join("") +
-      btn("removeFormat", "&#10005; Clear", "Clear formatting") +
+      group(btn("bold", ICON.bold, "Bold (Ctrl+B)") + btn("italic", ICON.italic, "Italic (Ctrl+I)") + btn("underline", ICON.underline, "Underline (Ctrl+U)")) +
+      group(btn("formatBlock", ICON.heading, "Heading", "<h3>") + btn("insertUnorderedList", ICON.bullets, "Bullet list") + btn("insertOrderedList", ICON.numbers, "Numbered list")) +
+      group(btn("hiliteColor", ICON.marker, "Highlight", HIGHLIGHT, "rt-mark") +
+        `<span class="rt-pal-wrap"><button type="button" class="rt-btn rt-color" data-act="rt.palette" title="Text colour" aria-label="Text colour"><b>A</b><i id="rtColorBar" style="background:${COLORS.red}"></i></button>` +
+        `<span class="rt-pal" id="rtPal" hidden>${palette}</span></span>`) +
+      '<span class="grow"></span>' +
+      group(btn("removeFormat", ICON.clear, "Clear formatting")) +
       `</div><div class="rt-box" id="rtBox" contenteditable="true" data-placeholder="Write anything: an idea, a reminder, a rough calculation...">${clean(html)}</div></div>`;
   }
 
@@ -140,5 +155,23 @@
   }
 
   OPF.richtext = { clean, text, fromText, editor, wire, COLORS, HIGHLIGHT };
-  OPF.actions.register({ "rt.cmd": command });
+  // Text colour: the A button opens a small palette; picking a colour applies it and closes it.
+  function togglePalette(force) {
+    const pal = document.getElementById("rtPal");
+    if (pal) pal.hidden = force == null ? !pal.hidden : !force;
+  }
+  function color(el) {
+    const box = document.getElementById("rtBox");
+    if (!box) return;
+    box.focus();
+    document.execCommand("foreColor", false, el.dataset.val);
+    const bar = document.getElementById("rtColorBar");
+    if (bar) bar.style.background = el.dataset.val;
+    togglePalette(false);
+  }
+  document.addEventListener("mousedown", (e) => {
+    if (!(e.target.closest && e.target.closest(".rt-pal-wrap"))) togglePalette(false);
+  });
+
+  OPF.actions.register({ "rt.cmd": command, "rt.palette": () => togglePalette(), "rt.color": color });
 })(window.OPF = window.OPF || {});

@@ -63,15 +63,17 @@
   /* ---------- the pad (one at a time, on the Rough Notes form) ---------- */
   let pad = null; // { canvas, sketch, ink, size, eraser, drawing }
 
+  const svg = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   function toolsHtml() {
     return '<div class="sk-bar" id="skBar">' +
-      INKS.map((c, i) => `<button type="button" class="sk-ink${i == 0 ? " on" : ""}" style="background:${c}" data-act="sk.ink" data-ink="${c}" title="Pen colour"></button>`).join("") +
-      '<span class="rt-sep"></span>' +
-      SIZES.map(([s, label], i) => `<button type="button" class="sk-size${i == 0 ? " on" : ""}" data-act="sk.size" data-size="${s}" title="${label} line"><i style="width:${s + 2}px;height:${s + 2}px"></i></button>`).join("") +
-      '<span class="rt-sep"></span>' +
-      '<button type="button" class="rt-btn" data-act="sk.eraser" id="skEraser" title="Eraser">Eraser</button>' +
-      '<button type="button" class="rt-btn" data-act="sk.undo" title="Undo the last line">Undo</button>' +
-      '<button type="button" class="rt-btn" data-act="sk.clear" title="Clear the sketch">Clear</button>' +
+      '<div class="rt-grp sk-inks">' + INKS.map((c, i) => `<button type="button" class="sk-ink${i == 0 ? " on" : ""}" style="background:${c}" data-act="sk.ink" data-ink="${c}" title="Pen colour" aria-label="Pen colour"></button>`).join("") + "</div>" +
+      '<div class="rt-grp">' + SIZES.map(([s, label], i) => `<button type="button" class="sk-size${i == 0 ? " on" : ""}" data-act="sk.size" data-size="${s}" title="${label} line" aria-label="${label} line"><i style="width:${s + 2}px;height:${s + 2}px"></i></button>`).join("") + "</div>" +
+      '<div class="rt-grp">' +
+      `<button type="button" class="rt-btn" data-act="sk.eraser" id="skEraser" title="Eraser" aria-label="Eraser">${svg('<path d="M16 4l4 4-9 9H7l-3-3z"/><path d="M11 17h9"/>')}</button>` +
+      `<button type="button" class="rt-btn" data-act="sk.undo" title="Undo the last line" aria-label="Undo">${svg('<path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/>')}</button>` +
+      "</div>" +
+      '<span class="grow"></span>' +
+      `<div class="rt-grp"><button type="button" class="rt-btn" data-act="sk.clear" title="Clear the sketch" aria-label="Clear the sketch">${svg('<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>')}</button></div>` +
       "</div>";
   }
 
