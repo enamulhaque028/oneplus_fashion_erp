@@ -26,7 +26,7 @@ reports.
 | `docs/ARCHITECTURE.md` | developers / agents | structure, layers, conventions, how to add a page |
 | `docs/USER_GUIDE.md` | shop staff and owner | **any user-visible change** (field, button, formula, rule) |
 | `docs/QA_CHECKLIST.md` | person testing on the shop laptop | a checklist step changes; update `tests/uat.test.js` in the same change |
-| `README.txt` | end user (plain text, Notepad) | start-up, files, requirements |
+| `README.md` | GitHub front page and end user | start-up (online link, ZIP + START_ERP.bat), files, updates, status |
 | `AGENTS.md` (this file) | agents | rules, commands, status |
 
 ## Hard constraints (breaking these breaks the product)
