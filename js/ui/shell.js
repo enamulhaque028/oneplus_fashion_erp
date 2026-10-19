@@ -13,7 +13,7 @@
   const LABELS = {};
   C.MENU.forEach(([id, label]) => { LABELS[id] = label; });
 
-  let prefs = { theme: "light", collapsed: false };
+  let prefs = { theme: "light", collapsed: false, lang: "en" };
   const open = {}; // group index -> expanded (user's choice); the active page's group always opens
   let filter = "";
 
@@ -51,6 +51,8 @@
       `<div class="pt-row"><span>${OPF.icon(prefs.theme == "dark" ? "moon" : "sun")}Theme</span><div class="theme-switch">` +
       `<button data-act="shell.theme" data-theme-set="light" title="Light" aria-label="Light theme"${prefs.theme != "dark" ? ' class="on"' : ""}>${OPF.icon("sun")}</button>` +
       `<button data-act="shell.theme" data-theme-set="dark" title="Dark" aria-label="Dark theme"${prefs.theme == "dark" ? ' class="on"' : ""}>${OPF.icon("moon")}</button></div></div>` +
+      (C.ENABLE_BENGALI === true ? `<div class="pt-row"><span>${OPF.icon("list")}Language</span><div class="lang-switch" data-no-i18n>` +
+        `<button data-act="shell.lang" data-lang="en"${prefs.lang != "bn" ? ' class="on"' : ""}>EN</button><button data-act="shell.lang" data-lang="bn"${prefs.lang == "bn" ? ' class="on"' : ""}>বাং</button></div></div>` : "") +
       `<div class="pt-btns"><button type="button" id="lockBtnSide" class="${admin ? "warn" : "light"}" data-act="auth.toggle">${OPF.icon("lock")}${admin ? "Lock admin" : "Admin login"}</button>` +
       `<button type="button" class="light" data-act="backup.excel">${OPF.icon("download")}Backup</button></div>` +
       "</div>";
@@ -83,6 +85,7 @@
     document.documentElement.setAttribute("data-theme", prefs.theme == "dark" ? "dark" : "light");
     document.body.classList.toggle("nav-collapsed", !!prefs.collapsed);
     Array.prototype.forEach.call(document.querySelectorAll("[data-theme-set]"), (b) => b.classList.toggle("on", b.getAttribute("data-theme-set") == prefs.theme));
+    Array.prototype.forEach.call(document.querySelectorAll("[data-lang]"), (b) => b.classList.toggle("on", b.getAttribute("data-lang") == (prefs.lang == "bn" ? "bn" : "en")));
   }
 
   /* ---------- phones: wide tables become cards ----------
@@ -113,6 +116,8 @@
   }
 
   function init() {
+    // Feature flag ENABLE_BENGALI off: no language switch in the header.
+    if (C.ENABLE_BENGALI !== true) { const ls = document.querySelector(".top .lang-switch"); if (ls) ls.remove(); }
     // Phones: re-check tables whenever a page draws, and when the screen turns.
     let pending = false;
     const later = () => { if (!pending) { pending = true; requestAnimationFrame(() => { pending = false; stackTables($("app")); }); } };
@@ -134,6 +139,13 @@
   OPF.shell = { render, init, stackTables };
   OPF.actions.register({
     "nav.group": (el) => { const gi = el.dataset.group; open[gi] = !el.parentNode.classList.contains("open"); el.parentNode.classList.toggle("open", open[gi]); },
+    // The whole screen is redrawn in the other language (see js/ui/i18n.js).
+    "shell.lang": (el) => {
+      if (el.getAttribute("data-lang") == (prefs.lang == "bn" ? "bn" : "en")) return;
+      prefs.lang = el.getAttribute("data-lang");
+      savePrefs();
+      location.reload();
+    },
     "shell.theme": (el) => {
       prefs.theme = el.getAttribute("data-theme-set");
       applyPrefs();

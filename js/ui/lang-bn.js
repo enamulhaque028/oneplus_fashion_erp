@@ -1,0 +1,283 @@
+/* Bengali screen text for js/ui/i18n.js.
+   words: English text exactly as the ERP shows it -> Bengali. Fix or add wording here; nothing else
+   needs to change. Texts with numbers in them are matched by the patterns at the end.
+   Kept in English on purpose: brand and mobile-wallet names (bKash, Nagad, Rocket, courier companies),
+   "PDF", "Excel", "CSV", ".json", "Ctrl+...". */
+(function (OPF) {
+  "use strict";
+
+  const W = {
+    /* ---------- menu, groups, page names ---------- */
+    "Dashboard": "ড্যাশবোর্ড", "Home": "হোম", "Purchase": "ক্রয়", "Production": "উৎপাদন", "Product & Stock": "পণ্য ও স্টক",
+    "Sales": "বিক্রয়", "Accounts": "হিসাব", "Admin": "অ্যাডমিন", "Rough Notes": "রাফ নোট",
+    "Suppliers": "সরবরাহকারী", "Fabric / Raw Purchase": "কাপড় / কাঁচামাল ক্রয়", "Raw Material Stock": "কাঁচামাল স্টক",
+    "Production Order": "উৎপাদন অর্ডার", "Material Issue": "কাঁচামাল ইস্যু", "Production / Finished": "উৎপাদন / তৈরি মাল",
+    "Factory / Worker": "কারখানা / কারিগর", "Style / Product": "স্টাইল / পণ্য", "Factory → Shop": "কারখানা → দোকান",
+    "Showroom Stock": "শোরুম স্টক", "Customers": "গ্রাহক", "Sales / Invoice": "বিক্রয় / ইনভয়েস", "Sales Return": "বিক্রয় ফেরত",
+    "Payment / Collection": "পেমেন্ট / আদায়", "Expenses": "খরচ", "Courier / Delivery": "কুরিয়ার / ডেলিভারি",
+    "Costing & Stock Summary": "খরচ হিসাব ও স্টক সারাংশ", "Reports": "রিপোর্ট", "Ledgers / Due": "খতিয়ান / বাকি",
+    "Users / Activity": "ব্যবহারকারী / কার্যকলাপ", "Settings / Backup": "সেটিংস / ব্যাকআপ",
+    "Search menu...": "মেনু খুঁজুন...", "Menu": "মেনু", "Smart ERP": "স্মার্ট ইআরপি", "Hotline": "হটলাইন",
+
+    /* ---------- header, phone menu ---------- */
+    "Search customer by name or mobile...": "নাম বা মোবাইল দিয়ে গ্রাহক খুঁজুন...", "Theme": "থিম", "Light": "লাইট", "Dark": "ডার্ক",
+    "Light theme": "লাইট থিম", "Dark theme": "ডার্ক থিম", "Sale": "বিক্রয়", "Backup": "ব্যাকআপ", "Download full Excel backup": "পূর্ণ এক্সেল ব্যাকআপ ডাউনলোড",
+    "Admin: Locked": "অ্যাডমিন: লক", "Admin: Unlocked (click to lock)": "অ্যাডমিন: খোলা (লক করতে ক্লিক করুন)", "Admin login": "অ্যাডমিন লগইন",
+    "Lock admin": "অ্যাডমিন লক", "Language": "ভাষা",
+
+    /* ---------- common words, buttons ---------- */
+    "Save": "সংরক্ষণ", "Update": "হালনাগাদ", "Clear": "খালি করুন", "Cancel": "বাতিল", "Cancel Edit": "সম্পাদনা বাতিল", "Edit": "সম্পাদনা",
+    "Delete": "মুছে ফেলুন", "Close": "বন্ধ", "OK": "ঠিক আছে", "Apply": "প্রয়োগ", "Back": "পেছনে", "View": "দেখুন", "View All": "সব দেখুন",
+    "Show": "দেখান", "Print": "প্রিন্ট", "Print / Save PDF": "প্রিন্ট / PDF সংরক্ষণ", "Preview": "প্রিভিউ", "Collect": "আদায়", "Pay": "পরিশোধ",
+    "Memo": "মেমো", "Invoice": "ইনভয়েস", "Receipt": "রসিদ", "Statement": "স্টেটমেন্ট", "Print Statement": "স্টেটমেন্ট প্রিন্ট",
+    "All": "সব", "Today": "আজ", "This Month": "এই মাস", "This Year": "এই বছর", "All Time": "সব সময়", "Last 7 Days": "শেষ ৭ দিন",
+    "Date": "তারিখ", "Name": "নাম", "Mobile": "মোবাইল", "Mobile:": "মোবাইল:", "Address": "ঠিকানা", "Address:": "ঠিকানা:", "District": "জেলা",
+    "District:": "জেলা:", "Address / District": "ঠিকানা / জেলা", "E-mail": "ই-মেইল", "Remarks": "মন্তব্য", "Note": "নোট", "Reason": "কারণ",
+    "Amount": "টাকা", "Total": "মোট", "Grand Total": "সর্বমোট", "Subtotal": "উপমোট", "Qty": "পরিমাণ", "Quantity": "পরিমাণ", "Qty (PCS)": "পরিমাণ (পিস)",
+    "Rate": "দর", "Rate / PCS": "দর / পিস", "Rate/PCS": "দর/পিস", "Rate per Unit": "প্রতি এককের দর", "Unit": "একক", "Type": "ধরন",
+    "Status": "অবস্থা", "Action": "কাজ", "Method": "মাধ্যম", "Reference": "রেফারেন্স", "Balance": "ব্যালেন্স", "Due": "বাকি", "Paid": "পরিশোধিত",
+    "Paid Now": "এখন পরিশোধ", "Discount": "ছাড়", "Discount / Less": "ছাড় / কম", "Location": "অবস্থান", "Category": "খাত", "Party": "পার্টি",
+    "Party Name": "পার্টির নাম", "Party Type": "পার্টির ধরন", "Customer": "গ্রাহক", "Supplier": "সরবরাহকারী", "Factory": "কারখানা",
+    "Company": "প্রতিষ্ঠান", "Product": "পণ্য", "Style": "স্টাইল", "Style Code": "স্টাইল কোড", "Color": "রং", "Size": "সাইজ", "Color / Size": "রং / সাইজ",
+    "Items": "আইটেম", "Item": "আইটেম", "Order": "অর্ডার", "Slip": "স্লিপ", "Material": "কাঁচামাল", "Main Fabric": "মূল কাপড়", "Width": "প্রস্থ",
+    "GSM": "জিএসএম", "Barcode": "বারকোড", "Retail": "খুচরা", "Wholesale": "পাইকারি", "From": "থেকে", "To": "পর্যন্ত", "Open": "চলমান",
+    "In Progress": "চলছে", "Completed": "সম্পন্ন", "Cancelled": "বাতিল", "Pending": "অপেক্ষমাণ", "Sent": "পাঠানো হয়েছে", "In Transit": "পথে",
+    "Delivered": "ডেলিভারি হয়েছে", "Returned": "ফেরত", "Accepted": "গৃহীত", "Rejected": "বাতিলকৃত", "Issued": "ইস্যু", "Received": "প্রাপ্ত",
+    "Dispatched": "পাঠানো", "Difference": "পার্থক্য", "Planned": "পরিকল্পিত", "Actual": "প্রকৃত", "Opening": "শুরুর বাকি", "Wastage": "অপচয়",
+    "No records found": "কোনো রেকর্ড নেই", "All records": "সব রেকর্ড", "Timestamp": "সময়", "Username": "ইউজারনেম", "Role": "ভূমিকা",
+    "Administrator": "প্রশাসক", "admin": "অ্যাডমিন",
+    "Yard": "গজ", "Meter": "মিটার", "Kg": "কেজি", "Pcs": "পিস", "PCS": "পিস",
+    "Cash": "নগদ", "Bank": "ব্যাংক", "Cheque": "চেক", "COD": "সিওডি",
+    "Salary": "বেতন", "Rent": "ভাড়া", "Electricity": "বিদ্যুৎ", "Transport": "পরিবহন", "Food": "খাবার", "Maintenance": "মেরামত", "Other": "অন্যান্য",
+
+    /* ---------- dashboard ---------- */
+    "Product List": "পণ্য তালিকা", "Sales List": "বিক্রয় তালিকা", "Purchase List": "ক্রয় তালিকা", "Payment": "পেমেন্ট", "Courier": "কুরিয়ার",
+    "SALES": "বিক্রয়", "PURCHASE": "ক্রয়", "CASH FLOW": "নগদ প্রবাহ", "OUTSTANDING": "বকেয়া", "Cash Flow": "নগদ প্রবাহ", "Outstanding": "বকেয়া",
+    "Received": "প্রাপ্ত", "Paid Out": "পরিশোধ", "Net = received − paid out": "নিট = প্রাপ্ত − পরিশোধ", "Customer Due": "গ্রাহকের বাকি",
+    "Supplier / Factory Payable": "সরবরাহকারী / কারখানা দেনা", "Today Sales": "আজকের বিক্রয়", "Today Collection": "আজকের আদায়",
+    "Finished Stock PCS": "তৈরি মালের স্টক (পিস)", "Pending Parcels": "অপেক্ষমাণ পার্সেল", "Cost Breakdown": "খরচের বিভাজন",
+    "Total cost": "মোট খরচ", "Purchases": "ক্রয়", "Factory Bill": "কারখানা বিল", "Last 30 Days Trend": "শেষ ৩০ দিনের প্রবণতা",
+    "Daily sales, purchases and expenses": "প্রতিদিনের বিক্রয়, ক্রয় ও খরচ", "Line": "লাইন", "Bar": "বার", "Table": "টেবিল",
+    "Total Sales": "মোট বিক্রয়", "Total Purchases": "মোট ক্রয়", "Total Expenses": "মোট খরচ", "Avg. Daily Sales": "গড় দৈনিক বিক্রয়",
+    "Trend chart": "প্রবণতা চার্ট", "Latest Invoices": "সর্বশেষ ইনভয়েস", "Newest six sales": "সর্বশেষ ছয়টি বিক্রয়",
+    "Recent Activity": "সাম্প্রতিক কার্যকলাপ", "End-to-End Workflow": "শুরু থেকে শেষ কাজের ধাপ", "Sales Returns": "বিক্রয় ফেরত",
+    "Supplier → Purchase → Raw Stock → Material Issue → Production → Finished Goods → Factory/Shop Transfer → Showroom → Sales → Customer Ledger → Payment → Courier → Invoice → P/L":
+      "সরবরাহকারী → ক্রয় → কাঁচামাল স্টক → কাঁচামাল ইস্যু → উৎপাদন → তৈরি মাল → কারখানা/দোকান ট্রান্সফার → শোরুম → বিক্রয় → গ্রাহক খতিয়ান → পেমেন্ট → কুরিয়ার → ইনভয়েস → লাভ/ক্ষতি",
+
+    /* ---------- suppliers, purchase, raw material ---------- */
+    "Supplier / Fabric Party": "সরবরাহকারী / কাপড়ের পার্টি", "Supplier Register": "সরবরাহকারীর তালিকা", "Payment Terms": "পেমেন্টের শর্ত",
+    "Previous Due (we owe)": "আগের দেনা (আমরা দেব)", "Previous Due": "আগের বাকি", "Previous Due (opening)": "আগের বাকি (শুরু)",
+    "Current Payable": "বর্তমান দেনা", "Supplier statement": "সরবরাহকারীর স্টেটমেন্ট", "Select Supplier": "সরবরাহকারী বাছাই করুন",
+    "Supplier formula: Previous Due + Purchases − Paid on Purchase − Payments = Current Payable.": "সরবরাহকারী সূত্র: আগের দেনা + ক্রয় − ক্রয়ে পরিশোধ − পেমেন্ট = বর্তমান দেনা।",
+    "Fabric / Raw Material Purchase": "কাপড় / কাঁচামাল ক্রয়", "Challan / Invoice No.": "চালান / ইনভয়েস নং", "Material / Fabric": "কাঁচামাল / কাপড়",
+    "Material Type": "কাঁচামালের ধরন", "Fabric Color": "কাপড়ের রং", "Transport Cost": "পরিবহন খরচ", "Loading / Unloading": "লোড / আনলোড",
+    "Other Cost": "অন্যান্য খরচ", "Paid on Purchase": "ক্রয়ে পরিশোধ", "Purchase Register": "ক্রয়ের তালিকা",
+    "+ Transport + Loading + Other": "+ পরিবহন + লোডিং + অন্যান্য", "- Discount": "- ছাড়", "- Discount / Less": "- ছাড় / কম", "- Paid Now": "- এখন পরিশোধ",
+    "= Total Purchase Cost": "= মোট ক্রয় খরচ", "= Due to Supplier": "= সরবরাহকারীর পাওনা", "Landed cost per Yard": "প্রতি গজের মোট খরচ",
+    "Raw Material / Fabric Stock": "কাঁচামাল / কাপড়ের স্টক", "Purchased (Yd)": "ক্রয় (গজ)", "Issued (Yd)": "ইস্যু (গজ)", "Returned (Yd)": "ফেরত (গজ)",
+    "Avg Cost / Yd": "গড় খরচ / গজ", "Stock Value": "স্টকের মূল্য", "Raw Fabric (Yard)": "কাঁচা কাপড় (গজ)", "Raw Material Value": "কাঁচামালের মূল্য", "Fabric in Stock (Yard)": "মজুদ কাপড় (গজ)", "Wastage / Adjustment": "অপচয় / সমন্বয়",
+    "Fabric Items": "কাপড়ের আইটেম", "Materials not measured in yards (Kg / Pcs)": "যে কাঁচামাল গজে মাপা হয় না (কেজি / পিস)",
+
+    /* ---------- production ---------- */
+    "Order No.": "অর্ডার নং", "Order Date": "অর্ডারের তারিখ", "Planned Quantity (PCS)": "পরিকল্পিত পরিমাণ (পিস)", "Planned PCS": "পরিকল্পিত পিস",
+    "Actual PCS": "প্রকৃত পিস", "Select Factory": "কারখানা বাছাই করুন", "Enter Planned PCS to see batch totals.": "ব্যাচের মোট দেখতে পরিকল্পিত পিস লিখুন।",
+    "Actual = accepted PCS from Production entries linked to the order. Difference = Planned − Actual (positive = still to produce, negative = produced more than planned).":
+      "প্রকৃত = এই অর্ডারের উৎপাদন এন্ট্রিতে গৃহীত পিস। পার্থক্য = পরিকল্পিত − প্রকৃত (ধনাত্মক = আরও তৈরি বাকি, ঋণাত্মক = পরিকল্পনার চেয়ে বেশি তৈরি)।",
+    "Raw Material / Fabric Issue to Production": "উৎপাদনে কাঁচামাল / কাপড় ইস্যু", "Issue Slip No.": "ইস্যু স্লিপ নং", "Issue Date": "ইস্যুর তারিখ",
+    "Issued Quantity": "ইস্যুর পরিমাণ", "-- New / not linked --": "-- নতুন / সংযুক্ত নয় --", "-- None --": "-- কোনোটি নয় --",
+    "Select a material to see available stock.": "মজুদ দেখতে কাঁচামাল বাছাই করুন।",
+    "Simplified Production Entry": "সহজ উৎপাদন এন্ট্রি", "Factory Name": "কারখানার নাম", "Factory Rate / PCS": "কারখানার দর / পিস",
+    "Produced / Accepted PCS": "তৈরি / গৃহীত পিস", "Rejected / Damaged PCS": "বাতিল / নষ্ট পিস", "Material Issued (Yd)": "ইস্যুকৃত কাঁচামাল (গজ)",
+    "Remaining Material Returned (Yd)": "বাকি কাঁচামাল ফেরত (গজ)", "Returned Material / Fabric": "ফেরত কাঁচামাল / কাপড়", "Production Bill": "উৎপাদন বিল",
+    "Production is intentionally simplified: Material Issue → Single Production Entry → Finished Goods. Accepted PCS go to godown (factory) stock. Returned material goes back to raw stock when a material name is given.":
+      "উৎপাদন ইচ্ছাকৃতভাবে সহজ রাখা হয়েছে: কাঁচামাল ইস্যু → একটি উৎপাদন এন্ট্রি → তৈরি মাল। গৃহীত পিস গোডাউনে (কারখানা) জমা হয়। কাঁচামালের নাম দিলে ফেরত কাঁচামাল আবার স্টকে যায়।",
+    "Factory / Worker Name": "কারখানা / কারিগরের নাম", "Default Rate / PCS": "সাধারণ দর / পিস", "Factories": "কারখানা", "Factory/Worker": "কারখানা/কারিগর",
+    "Factory statement": "কারখানার স্টেটমেন্ট", "Factorys": "কারখানা", "Bill (+)": "বিল (+)", "Paid (−)": "পরিশোধ (−)",
+
+    /* ---------- products, stock, transfer, showroom, costing ---------- */
+    "Style / Product Master": "স্টাইল / পণ্যের তালিকা", "Unique Style Code": "অনন্য স্টাইল কোড", "Product Name": "পণ্যের নাম",
+    "Style / Design": "স্টাইল / ডিজাইন", "Cost / Piece": "খরচ / পিস", "Cost / PC": "খরচ / পিস", "Cost/PC": "খরচ/পিস",
+    "Wholesale Price": "পাইকারি দাম", "Retail Price": "খুচরা দাম", "Image File Name": "ছবির ফাইলের নাম",
+    "Factory → Showroom / Shop Transfer": "কারখানা → শোরুম / দোকান ট্রান্সফার", "Transfer No.": "ট্রান্সফার নং", "From (Factory)": "থেকে (কারখানা)",
+    "From (Factory Name)": "থেকে (কারখানার নাম)", "To Showroom / Shop": "শোরুম / দোকানে", "Dispatched Qty (PCS)": "পাঠানো পরিমাণ (পিস)",
+    "Received Qty (PCS)": "প্রাপ্ত পরিমাণ (পিস)", "Dispatched PCS": "পাঠানো পিস", "Received PCS": "প্রাপ্ত পিস", "Due / Shortage": "ঘাটতি",
+    "Due / Shortage PCS": "ঘাটতি (পিস)", "Transfers": "ট্রান্সফার", "Transfers with Shortage": "ঘাটতিসহ ট্রান্সফার",
+    "Showroom / Shop Stock": "শোরুম / দোকানের স্টক", "Closing Qty": "শেষ মজুদ", "Godown (Factory) PCS": "গোডাউন (কারখানা) পিস",
+    "Showroom PCS": "শোরুম পিস", "Total PCS": "মোট পিস", "Total PCS in Stock": "মোট মজুদ পিস", "Godown PCS": "গোডাউন পিস",
+    "Finished Stock Value": "তৈরি মালের মূল্য",
+    "Closing Qty = Received from transfers − Sold + Returned, for each shop location.": "শেষ মজুদ = ট্রান্সফারে প্রাপ্ত − বিক্রি + ফেরত, প্রতিটি দোকানের জন্য।",
+    "Product Costing": "পণ্যের খরচ হিসাব", "Product Costing & Stock Summary": "পণ্যের খরচ হিসাব ও স্টক সারাংশ", "Product (to load / save costing)": "পণ্য (খরচ লোড / সংরক্ষণ)",
+    "Fabric Yards / PC": "কাপড় (গজ) / পিস", "Fabric Rate / Yard": "কাপড়ের দর / গজ", "Pick fabric (uses avg cost / yd)": "কাপড় বাছাই (গড় খরচ / গজ)",
+    "Accessories / PC": "এক্সেসরিজ / পিস", "Factory Bill / PC": "কারখানা বিল / পিস", "Packaging / PC": "প্যাকেজিং / পিস", "Transport / PC": "পরিবহন / পিস",
+    "Other Overhead / PC": "অন্যান্য খরচ / পিস", "Profit Margin %": "লাভের হার %", "Margin": "মার্জিন", "+ Accessories": "+ এক্সেসরিজ",
+    "+ Factory Bill": "+ কারখানা বিল", "+ Packaging": "+ প্যাকেজিং", "+ Transport": "+ পরিবহন", "+ Other Overhead": "+ অন্যান্য খরচ",
+    "= Total Cost / PC": "= মোট খরচ / পিস", "= Selling Price / PC": "= বিক্রয়মূল্য / পিস", "Save Cost & Selling Price to Product": "খরচ ও বিক্রয়মূল্য পণ্যে সংরক্ষণ",
+    "Stock Summary": "স্টক সারাংশ", "Extra Cost": "অতিরিক্ত খরচ",
+    "Godown = Accepted production − Dispatched to shops. Showroom = Received − Sold + Returned. Value = Total PCS x Cost / PC from Style / Product.":
+      "গোডাউন = গৃহীত উৎপাদন − দোকানে পাঠানো। শোরুম = প্রাপ্ত − বিক্রি + ফেরত। মূল্য = মোট পিস x খরচ / পিস (স্টাইল / পণ্য থেকে)।",
+
+    /* ---------- customers, sales, returns ---------- */
+    "Customer / Wholesale Party": "গ্রাহক / পাইকারি পার্টি", "Shop / Customer Name": "দোকান / গ্রাহকের নাম", "Credit Limit": "ক্রেডিট সীমা",
+    "Credit Limit:": "ক্রেডিট সীমা:", "Total Parties": "মোট পার্টি", "Due Parties": "বাকি থাকা পার্টি", "Total Due Amount": "মোট বাকি",
+    "Cash Parties (no due)": "নগদ পার্টি (বাকি নেই)", "Customer Advance": "গ্রাহকের অগ্রিম", "Highest Due": "সর্বোচ্চ বাকি",
+    "Date-wise Due List": "তারিখ অনুযায়ী বাকির তালিকা", "Due at the time of each invoice (Total − Paid on the invoice).": "প্রতিটি ইনভয়েসের সময়ের বাকি (মোট − ইনভয়েসে পরিশোধ)।",
+    "Full ledger balance on that date, after all payments and returns.": "ওই তারিখে সব পেমেন্ট ও ফেরতের পর পূর্ণ খতিয়ান ব্যালেন্স।",
+    "Back to Customers": "গ্রাহক তালিকায় ফিরুন", "Edit Profile": "প্রোফাইল সম্পাদনা", "Make Payment": "পেমেন্ট নিন", "Collect Payment": "পেমেন্ট আদায়",
+    "Ledger Statement": "খতিয়ান স্টেটমেন্ট", "Debit (Sale)": "ডেবিট (বিক্রয়)", "Credit (Received / Return)": "ক্রেডিট (প্রাপ্ত / ফেরত)",
+    "All Transactions": "সব লেনদেন", "Courier Parcels": "কুরিয়ার পার্সেল", "Invoices": "ইনভয়েস",
+    "Wholesale Sales / Invoice": "পাইকারি বিক্রয় / ইনভয়েস", "Invoice No.": "ইনভয়েস নং", "Stock Location": "স্টকের অবস্থান",
+    "Payment Method": "পেমেন্টের মাধ্যম", "Select Customer": "গ্রাহক বাছাই করুন", "+ Add Item": "+ আইটেম যোগ", "Paid in Full (Cash)": "পুরো নগদ পরিশোধ",
+    "Paid Amount (Cash received now)": "পরিশোধ (এখন নগদ পাওয়া)", "Total Amount": "মোট টাকা", "= Total Amount": "= মোট টাকা", "- Paid Amount": "- পরিশোধ",
+    "= Due Amount": "= বাকি টাকা", "Customer Previous Balance": "গ্রাহকের আগের ব্যালেন্স", "Balance After This Invoice": "এই ইনভয়েসের পর ব্যালেন্স",
+    "Save & Print Invoice": "সংরক্ষণ ও ইনভয়েস প্রিন্ট", "Preview Cash Memo": "ক্যাশ মেমো প্রিভিউ", "Sales Register": "বিক্রয়ের তালিকা",
+    "All Invoices": "সব ইনভয়েস", "Cash (fully paid)": "নগদ (পুরো পরিশোধিত)", "Due Invoices": "বাকি ইনভয়েস",
+    "Original Invoice": "মূল ইনভয়েস", "Return Quantity": "ফেরতের পরিমাণ", "Return Amount": "ফেরতের টাকা", "Return to Location": "যেখানে ফেরত",
+    "Enter the original invoice number to get the sold rate automatically.": "বিক্রির দর নিজে থেকে পেতে মূল ইনভয়েস নম্বর লিখুন।",
+    "Damaged piece": "নষ্ট পিস", "Size problem": "সাইজ সমস্যা", "Colour mismatch": "রং মেলেনি", "Stitching fault": "সেলাইয়ে ত্রুটি", "Returns": "ফেরত",
+
+    /* ---------- payments, expenses, courier, reports, ledgers ---------- */
+    "Receipt No.": "রসিদ নং", "Amount Paid Now": "এখন পরিশোধ", "Cash / Bank / bKash / Nagad": "নগদ / ব্যাংক / bKash / Nagad",
+    "Reference / Transaction No.": "রেফারেন্স / লেনদেন নং", "Print receipt after saving": "সংরক্ষণের পর রসিদ প্রিন্ট",
+    "Select a party to see Previous Due, Today's Purchase, Total Due and Remaining Balance.": "আগের বাকি, আজকের ক্রয়, মোট বাকি ও অবশিষ্ট ব্যালেন্স দেখতে পার্টি বাছাই করুন।",
+    "Due Parties - Detailed (as of today)": "বাকি থাকা পার্টি - বিস্তারিত (আজ পর্যন্ত)", "Today's Purchase": "আজকের ক্রয়",
+    "Paid / Returned Today": "আজ পরিশোধ / ফেরত", "Remaining Due": "অবশিষ্ট বাকি", "Payment Register": "পেমেন্টের তালিকা",
+    "Payments / Collections": "পেমেন্ট / আদায়", "Collection": "আদায়", "Paid on Invoice": "ইনভয়েসে পরিশোধ", "Total Paid": "মোট পরিশোধ",
+    "Total Received": "মোট প্রাপ্ত", "Expense Management": "খরচ ব্যবস্থাপনা", "Expense": "খরচ",
+    "Category (Salary / Rent / Electricity / Transport / Other)": "খাত (বেতন / ভাড়া / বিদ্যুৎ / পরিবহন / অন্যান্য)",
+    "Factory / Office / Shop": "কারখানা / অফিস / দোকান", "Destination / Address": "গন্তব্য / ঠিকানা", "Destination": "গন্তব্য",
+    "Courier Company": "কুরিয়ার কোম্পানি", "Tracking No.": "ট্র্যাকিং নং", "Tracking": "ট্র্যাকিং", "COD Amount (note only)": "সিওডি টাকা (শুধু নোট)",
+    "Parcels": "পার্সেল", "Parcels Sent": "পাঠানো পার্সেল",
+    "For your record only - it does not change any due. When the courier pays, enter the money on": "শুধু রেকর্ডের জন্য - এতে কোনো বাকি বদলায় না। কুরিয়ার টাকা দিলে টাকাটা লিখুন",
+    "P/L View": "লাভ/ক্ষতি", "P/L View = Sales − Returns − Purchases − Factory Bill − Expenses (simple cash-basis view).": "লাভ/ক্ষতি = বিক্রয় − ফেরত − ক্রয় − কারখানা বিল − খরচ (সহজ নগদ হিসাব)।",
+    "Export Everything to Excel (.xlsx)": "সবকিছু এক্সেলে (.xlsx) রপ্তানি", "Sales Invoices CSV": "বিক্রয় ইনভয়েস CSV", "Sales Items CSV": "বিক্রয় আইটেম CSV",
+    "Purchases CSV": "ক্রয় CSV", "Production CSV": "উৎপাদন CSV", "Expenses CSV": "খরচ CSV", "Payments CSV": "পেমেন্ট CSV", "Party Ledger CSV": "পার্টি খতিয়ান CSV",
+    "Ledger": "খতিয়ান", "Sales (+)": "বিক্রয় (+)", "Purchases (+)": "ক্রয় (+)", "Received / Returned (−)": "প্রাপ্ত / ফেরত (−)", "Current Due": "বর্তমান বাকি",
+    "Payable": "দেনা", "Payable to Suppliers / Factories": "সরবরাহকারী / কারখানার দেনা",
+    "Customer formula: Previous Due + Sales − Paid on Invoice − Returns − Collections = Current Due.": "গ্রাহক সূত্র: আগের বাকি + বিক্রয় − ইনভয়েসে পরিশোধ − ফেরত − আদায় = বর্তমান বাকি।",
+    "Reconciliation Check": "মিলকরণ যাচাই", "Reconciled": "মিলেছে", "Sum of Party Balances": "পার্টির ব্যালেন্সের যোগফল", "Items to review:": "যাচাই করার বিষয়:",
+    "Every due figure in the ERP (dashboard, customers, payments, invoices, receipts, statements) comes from the same ledger. This check compares the total of all transactions with the total of all party balances.":
+      "ইআরপির প্রতিটি বাকির হিসাব (ড্যাশবোর্ড, গ্রাহক, পেমেন্ট, ইনভয়েস, রসিদ, স্টেটমেন্ট) একই খতিয়ান থেকে আসে। এই যাচাই সব লেনদেনের মোটের সাথে সব পার্টির ব্যালেন্সের মোট মিলিয়ে দেখে।",
+
+    /* ---------- users, settings ---------- */
+    "Roles from proposal: Admin, Manager, Accountant, Salesman, Factory Manager. Editing and deleting any record needs the Admin password (set it in Settings / Backup). Every change is recorded below.":
+      "ভূমিকা: অ্যাডমিন, ম্যানেজার, হিসাবরক্ষক, বিক্রয়কর্মী, কারখানা ম্যানেজার। যেকোনো রেকর্ড সম্পাদনা বা মুছতে অ্যাডমিন পাসওয়ার্ড লাগে (সেটিংস / ব্যাকআপে সেট করুন)। প্রতিটি পরিবর্তন নিচে লেখা থাকে।",
+    "Shop Branding (printed on the cash memo & receipts)": "দোকানের পরিচিতি (ক্যাশ মেমো ও রসিদে ছাপা হয়)", "Shop / Company Name": "দোকান / প্রতিষ্ঠানের নাম",
+    "Motto (dark bar under the name)": "মূলমন্ত্র (নামের নিচের গাঢ় পট্টি)", "Business Description": "ব্যবসার বিবরণ", "Phone Numbers": "ফোন নম্বর",
+    "Hotline (top right)": "হটলাইন (উপরে ডানে)", "Footer Quote": "নিচের উক্তি", "Quote Source": "উক্তির উৎস", "Save Branding": "পরিচিতি সংরক্ষণ",
+    "Remove Logo": "লোগো সরান", "No shop logo uploaded.": "দোকানের লোগো আপলোড করা হয়নি।", "Admin Password": "অ্যাডমিন পাসওয়ার্ড",
+    "Data Safety": "ডেটার নিরাপত্তা", "Download Full Backup (Excel .xlsx)": "পূর্ণ ব্যাকআপ ডাউনলোড (এক্সেল .xlsx)",
+    "Download Restore File (.json)": "রিস্টোর ফাইল ডাউনলোড (.json)", "Restore from .json": ".json থেকে রিস্টোর", "Clear All Data": "সব ডেটা মুছুন",
+    "Google Drive backup": "গুগল ড্রাইভ ব্যাকআপ", "Demo data loaded": "ডেমো ডেটা লোড হয়েছে",
+    "Switched off. Changes are saved on this computer only - use the backup buttons below to keep a copy.": "বন্ধ আছে। পরিবর্তন শুধু এই কম্পিউটারে সংরক্ষিত হয় - কপি রাখতে নিচের ব্যাকআপ বাটন ব্যবহার করুন।",
+    "The Excel backup contains every register, ledger and stock report on separate sheets for reading and accounting. To move data back into the ERP, use the .json restore file. Save both to a pen drive / external drive regularly. Data is stored locally in this browser.":
+      "এক্সেল ব্যাকআপে প্রতিটি তালিকা, খতিয়ান ও স্টক রিপোর্ট আলাদা শিটে থাকে, পড়া ও হিসাবের জন্য। ইআরপিতে ডেটা ফেরত আনতে .json রিস্টোর ফাইল ব্যবহার করুন। দুটোই নিয়মিত পেনড্রাইভ / বাইরের ড্রাইভে রাখুন। ডেটা এই ব্রাউজারেই সংরক্ষিত থাকে।",
+    "No admin password yet. You will be asked to create one the first time you edit or delete a record.": "এখনো অ্যাডমিন পাসওয়ার্ড নেই। প্রথমবার রেকর্ড সম্পাদনা বা মুছতে গেলে একটি তৈরি করতে বলা হবে।",
+    "Create Admin Password": "অ্যাডমিন পাসওয়ার্ড তৈরি", "New password": "নতুন পাসওয়ার্ড", "Confirm new password": "নতুন পাসওয়ার্ড আবার লিখুন",
+    "No admin password exists yet. Create one now. It will be required to edit or delete records, change settings and restore backups.":
+      "এখনো কোনো অ্যাডমিন পাসওয়ার্ড নেই। এখনই একটি তৈরি করুন। রেকর্ড সম্পাদনা বা মোছা, সেটিংস বদলানো ও ব্যাকআপ রিস্টোর করতে এটি লাগবে।",
+    "Admin login required": "অ্যাডমিন লগইন প্রয়োজন", "Password": "পাসওয়ার্ড", "Change Admin Password": "অ্যাডমিন পাসওয়ার্ড বদলান",
+    "Editing an existing record (admin). Click": "আগের রেকর্ড সম্পাদনা হচ্ছে (অ্যাডমিন)। পরিবর্তন সংরক্ষণে ক্লিক করুন", "to save changes or": "অথবা",
+
+    /* ---------- rough notes ---------- */
+    "New note": "নতুন নোট", "Edit note": "নোট সম্পাদনা", "Search notes": "নোট খুঁজুন", "Title (optional)": "শিরোনাম (ঐচ্ছিক)",
+    "Write anything: an idea, a reminder, a rough calculation...": "যেকোনো কিছু লিখুন: একটি আইডিয়া, মনে রাখার কথা, একটি রাফ হিসাব...",
+    "Add sketch": "স্কেচ যোগ", "Remove sketch": "স্কেচ সরান", "Ctrl+Enter to save": "সংরক্ষণে Ctrl+Enter", "Copy text": "লেখা কপি",
+    "Pin to the top": "উপরে পিন করুন", "Unpin": "পিন সরান", "Sketch": "স্কেচ", "No text": "কোনো লেখা নেই", "No notes yet": "এখনো কোনো নোট নেই",
+    "Keep ideas, reminders and quick sketches here.": "আইডিয়া, মনে রাখার কথা ও ছোট স্কেচ এখানে রাখুন।", "Write the first note": "প্রথম নোট লিখুন",
+    "No note matches": "কোনো নোট মেলেনি", "Try another word or colour.": "অন্য শব্দ বা রং চেষ্টা করুন।",
+    "Plain": "সাধারণ", "Yellow": "হলুদ", "Pink": "গোলাপি", "Green": "সবুজ", "Blue": "নীল", "Purple": "বেগুনি", "Orange": "কমলা", "Red": "লাল",
+    "Bold (Ctrl+B)": "বোল্ড (Ctrl+B)", "Italic (Ctrl+I)": "ইটালিক (Ctrl+I)", "Underline (Ctrl+U)": "আন্ডারলাইন (Ctrl+U)", "Heading": "শিরোনাম",
+    "Bullet list": "বুলেট তালিকা", "Numbered list": "নম্বর তালিকা", "Highlight": "হাইলাইট", "Text colour": "লেখার রং", "Link": "লিংক",
+    "Link (Ctrl+K)": "লিংক (Ctrl+K)", "Clear formatting": "ফরম্যাটিং মুছুন", "Paste a link: https://...": "লিংক দিন: https://...",
+    "Remove link": "লিংক সরান", "Red text": "লাল লেখা", "Blue text": "নীল লেখা", "Green text": "সবুজ লেখা", "Orange text": "কমলা লেখা",
+    "Purple text": "বেগুনি লেখা", "red text": "লাল লেখা", "blue text": "নীল লেখা", "green text": "সবুজ লেখা", "orange text": "কমলা লেখা", "purple text": "বেগুনি লেখা",
+    "Pen colour": "কলমের রং", "Thin line": "চিকন দাগ", "Medium line": "মাঝারি দাগ", "Thick line": "মোটা দাগ", "Eraser": "রাবার", "Undo": "আগের অবস্থা",
+    "Undo the last line": "শেষ দাগ মুছুন", "Clear the sketch": "স্কেচ মুছুন",
+    "Use a web address (https://...), an email (mailto:...) or a phone (tel:...).": "ওয়েব ঠিকানা (https://...), ই-মেইল (mailto:...) বা ফোন (tel:...) দিন।",
+    "Note copied.": "নোট কপি হয়েছে।",
+
+    /* ---------- activity log actions ---------- */
+    "Sale / Invoice Created": "বিক্রয় / ইনভয়েস তৈরি", "Payment Created": "পেমেন্ট তৈরি", "Purchase Created": "ক্রয় তৈরি",
+    "Production Order Created": "উৎপাদন অর্ডার তৈরি", "Production Entry Created": "উৎপাদন এন্ট্রি তৈরি", "Stock Transfer Created": "স্টক ট্রান্সফার তৈরি",
+
+    /* ---------- Google Drive sync ---------- */
+    "Synced": "সিঙ্ক হয়েছে", "Saving…": "সংরক্ষণ হচ্ছে…", "Checking…": "যাচাই হচ্ছে…", "Changes waiting": "পরিবর্তন অপেক্ষায়",
+    "Offline – will sync later": "অফলাইন – পরে সিঙ্ক হবে", "Click to sync": "সিঙ্ক করতে ক্লিক করুন", "Sync problem": "সিঙ্ক সমস্যা",
+    "Not signed in": "সাইন ইন করা নেই", "Choose a copy": "একটি কপি বাছাই করুন", "Sign in with Google": "গুগল দিয়ে সাইন ইন",
+    "Sign in to keep your data safe in Google Drive": "ডেটা গুগল ড্রাইভে নিরাপদ রাখতে সাইন ইন করুন", "Sync now": "এখন সিঙ্ক", "Sign out": "সাইন আউট",
+    "Which data should be kept?": "কোন ডেটা রাখবেন?", "Google Drive copy": "গুগল ড্রাইভের কপি", "This computer's copy": "এই কম্পিউটারের কপি",
+    "Updated with the latest data from Google Drive.": "গুগল ড্রাইভের সর্বশেষ ডেটা দিয়ে হালনাগাদ হয়েছে।",
+
+    /* ---------- messages (alert / confirm) ---------- */
+    "Admin password saved.": "অ্যাডমিন পাসওয়ার্ড সংরক্ষিত হয়েছে।", "Backup restored.": "ব্যাকআপ রিস্টোর হয়েছে।",
+    "Could not copy. Select the text and press Ctrl+C.": "কপি করা যায়নি। লেখা বাছাই করে Ctrl+C চাপুন।",
+    "Could not save: browser storage is full. Download a backup now, and remove a large shop logo from Settings.": "সংরক্ষণ করা যায়নি: ব্রাউজারের জায়গা শেষ। এখনই ব্যাকআপ ডাউনলোড করুন, আর সেটিংস থেকে বড় লোগো সরান।",
+    "Discount cannot be more than the purchase amount.": "ছাড় ক্রয়ের টাকার চেয়ে বেশি হতে পারে না।", "Discount cannot be more than the subtotal.": "ছাড় উপমোটের চেয়ে বেশি হতে পারে না।",
+    "Enter the amount paid.": "পরিশোধের টাকা লিখুন।", "Every item row needs a Style Code and Quantity. Remove empty rows with x.": "প্রতিটি আইটেম সারিতে স্টাইল কোড ও পরিমাণ লাগবে। খালি সারি x দিয়ে সরান।",
+    "Invalid backup file. Choose a .json file created by Download Restore File.": "ভুল ব্যাকআপ ফাইল। \"রিস্টোর ফাইল ডাউনলোড\" দিয়ে তৈরি .json ফাইল বাছাই করুন।",
+    "No data available": "কোনো ডেটা নেই", "Received quantity cannot be more than dispatched quantity.": "প্রাপ্ত পরিমাণ পাঠানো পরিমাণের চেয়ে বেশি হতে পারে না।",
+    "Select a product first (add it in Style / Product if needed).": "আগে একটি পণ্য বাছাই করুন (দরকার হলে স্টাইল / পণ্যে যোগ করুন)।", "Shop branding saved.": "দোকানের পরিচিতি সংরক্ষিত হয়েছে।",
+    "This note is too large to save. Shorten the text or clear part of the sketch.": "নোটটি সংরক্ষণের জন্য খুব বড়। লেখা ছোট করুন বা স্কেচের কিছু অংশ মুছুন।",
+    "This record is linked to other transactions and cannot be deleted. Edit it instead, or delete the linked transactions first.": "এই রেকর্ড অন্য লেনদেনের সাথে যুক্ত, তাই মোছা যাবে না। বরং সম্পাদনা করুন, অথবা আগে যুক্ত লেনদেনগুলো মুছুন।",
+    "This sketch is full. Save it, and start another note for more drawing.": "স্কেচে আর জায়গা নেই। সংরক্ষণ করে আরও আঁকতে নতুন নোট শুরু করুন।",
+    "Write the note or draw a sketch first.": "আগে নোট লিখুন বা স্কেচ আঁকুন।", "Are you sure? This cannot be undone.": "আপনি কি নিশ্চিত? এটি আর ফেরানো যাবে না।",
+    "Clear the whole sketch?": "পুরো স্কেচ মুছবেন?", "Delete ALL ERP data? Make a backup first.": "ইআরপির সব ডেটা মুছবেন? আগে ব্যাকআপ নিন।",
+    "Delete this record permanently?": "এই রেকর্ড স্থায়ীভাবে মুছবেন?",
+    "Paid amount is more than the invoice total. The extra will be kept as customer advance. Continue?": "পরিশোধ ইনভয়েসের মোটের চেয়ে বেশি। বাড়তি টাকা গ্রাহকের অগ্রিম হিসেবে থাকবে। চালিয়ে যাবেন?",
+    "Remove the sketch from this note?": "এই নোট থেকে স্কেচ সরাবেন?", "Replace ALL current data with this backup?": "বর্তমান সব ডেটা এই ব্যাকআপ দিয়ে বদলাবেন?",
+    "Sign out of Google Drive backup on this computer?": "এই কম্পিউটারে গুগল ড্রাইভ ব্যাকআপ থেকে সাইন আউট করবেন?",
+    "Some changes are not in Google Drive yet. Sign out anyway? They stay on this computer only.": "কিছু পরিবর্তন এখনো গুগল ড্রাইভে যায়নি। তবুও সাইন আউট করবেন? সেগুলো শুধু এই কম্পিউটারে থাকবে।",
+    "Password must be at least 4 characters.": "পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে।", "Passwords do not match.": "পাসওয়ার্ড মেলেনি।", "Wrong password.": "ভুল পাসওয়ার্ড।",
+    "Save anyway?": "তবুও সংরক্ষণ করবেন?"
+  };
+
+  const t = (s) => OPF.i18n.tr(s);
+  const MONTHS = { Jan: "জানু", Feb: "ফেব্রু", Mar: "মার্চ", Apr: "এপ্রিল", May: "মে", Jun: "জুন", Jul: "জুলাই", Aug: "আগস্ট", Sep: "সেপ্টে", Oct: "অক্টো", Nov: "নভে", Dec: "ডিসে" };
+
+  // Texts with numbers or names in them. The first match wins.
+  const P = [
+    [/^(.+) · One Plus Fashion ERP$/, (m, a) => t(a) + " · One Plus Fashion ERP"],
+    [/^(\d+)% paid$/, "$1% পরিশোধিত"],
+    [/^(\d+)% collected$/, "$1% আদায়"],
+    [/^(.+) \(Advance\)$/, "$1 (অগ্রিম)"],
+    [/^\+ Profit Margin \((.+)\)$/, "+ লাভ ($1)"],
+    [/^(Expenses|Purchases|Factory Bill): (.+)$/, (m, a, b) => t(a) + ": " + b],
+    [/^Where the money went - (.+)$/, (m, a) => "টাকা কোথায় গেল - " + t(a)],
+    [/^Last (\d+) Days Trend$/, "শেষ $1 দিনের প্রবণতা"],
+    [/^Last (\d+) Days$/, "শেষ $1 দিন"],
+    [/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+)$/, (m, a, b) => MONTHS[a] + " " + b],
+    [/^(\d+) transfer\(s\) have short delivery totalling (.+) PCS\.$/, "$1টি ট্রান্সফারে মোট $2 পিস কম এসেছে।"],
+    [/^Due as on (.+)$/, "$1 পর্যন্ত বাকি"],
+    [/^Party due as on (.+)$/, "$1 পর্যন্ত পার্টির বাকি"],
+    [/^Invoices with due, (.+) to (.+)$/, "বাকি থাকা ইনভয়েস, $1 থেকে $2"],
+    [/^Fabric \((.+) yd x (.+)\)$/, "কাপড় ($1 গজ x $2)"],
+    [/^Factory Bill \((.+) PCS x (.+)\)$/, "কারখানা বিল ($1 পিস x $2)"],
+    [/^Subtotal \((.+) Yard x (.+)\)$/, "উপমোট ($1 গজ x $2)"],
+    [/^Subtotal \((\d+) items?, (.+) PCS\)$/, "উপমোট ($1টি আইটেম, $2 পিস)"],
+    [/^Shop Logo \(PNG \/ JPG, under (\d+) KB\)$/, "দোকানের লোগো (PNG / JPG, $1 KB-এর কম)"],
+    [/^Showroom breakdown: (.+)$/, (m, a) => "শোরুম অনুযায়ী: " + a.replace(/ PCS/g, " পিস")],
+    [/^(.+) PCS$/, "$1 পিস"],
+    [/^([\d.,]+) L$/, "$1 লাখ"],
+    [/^(.+) Yard$/, "$1 গজ"],
+    [/^([\d.,]+) Pcs$/, "$1 পিস"],
+    [/^([\d.,]+) Meter$/, "$1 মিটার"],
+    [/^([\d.,]+) Kg$/, "$1 কেজি"],
+    [/^(\d{4}-\d\d-\d\d) subtotal$/, "$1 উপমোট"],
+    [/^(.+), (\d+:\d+:\d+) (AM|PM)$/, (m, a, b, c) => a + ", " + b + (c == "AM" ? " পূর্বাহ্ণ" : " অপরাহ্ণ")],
+    [/^Formula: Purchase \+ Returned from Production − Issued = Stock \(Yard\)\. Purchases entered in Meter are converted automatically \((.+)\)\.$/,
+      "সূত্র: ক্রয় + উৎপাদন থেকে ফেরত − ইস্যু = স্টক (গজ)। মিটারে লেখা ক্রয় নিজে থেকে গজে বদলে যায় ($1)।"],
+    [/^This edition is optimized for your Windows 7 \/ 4 GB RAM laptop\./,
+      "এই সংস্করণ আপনার উইন্ডোজ ৭ / ৪ জিবি র‍্যাম ল্যাপটপের জন্য তৈরি। এটি অফলাইনে চলে, এক কম্পিউটারে ব্যবহারের জন্য পাইথন, মাইএসকিউএল, নোড.জেএস বা ভিপিএস লাগে না। যেকোনো গ্রাহকের পুরো ইতিহাস খুলতে উপরের সার্চ বার ব্যবহার করুন।"],
+    // messages with values
+    [/^Invoice No\. (.+) already exists\.$/, "ইনভয়েস নং $1 আগে থেকেই আছে।"],
+    [/^Invoice No\. (.+) is used by a sales return or courier parcel, so it cannot be changed\.$/, "ইনভয়েস নং $1 একটি বিক্রয় ফেরত বা কুরিয়ার পার্সেলে ব্যবহৃত, তাই বদলানো যাবে না।"],
+    [/^Style code (.+) already exists\.$/, "স্টাইল কোড $1 আগে থেকেই আছে।"],
+    [/^Saved: (.+) cost (.+), selling price (.+)$/, "সংরক্ষিত: $1 খরচ $2, বিক্রয়মূল্য $3"],
+    [/^Godown stock for (.+) is only (.+) PCS\. Save anyway\?$/, "$1-এর গোডাউন স্টক মাত্র $2 পিস। তবুও সংরক্ষণ করবেন?"],
+    [/^Not enough stock at (.+):$/, "$1-এ যথেষ্ট স্টক নেই:"],
+    [/^Only (.+) yd of (.+) is in stock\. Issue (.+) yd anyway\?$/, "$2 মাত্র $1 গজ মজুদ আছে। তবুও $3 গজ ইস্যু করবেন?"],
+    [/^This image is (\d+) KB\. Large logos use a lot of browser storage\. Continue\?$/, "ছবিটি $1 KB। বড় লোগো ব্রাউজারের অনেক জায়গা নেয়। চালিয়ে যাবেন?"]
+  ];
+
+  OPF.i18n.add("bn", W, P);
+})(window.OPF = window.OPF || {});

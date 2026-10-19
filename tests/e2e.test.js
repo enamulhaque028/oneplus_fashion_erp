@@ -516,12 +516,57 @@ const { start, sleep, ROOT } = require("./lib");
     await ph.evaluate(() => document.querySelector('[data-act="shell.menu"]').click()); await sleep(100);
     const toolsShown = await ph.evaluate(() => getComputedStyle(document.querySelector(".phone-tools")).display != "none" && getComputedStyle(document.querySelector(".phone-tools .theme-switch")).display != "none");
     await ph.evaluate(() => document.querySelector('.phone-tools [data-theme-set="dark"]').click());
-    check("phone: the menu has the theme switch (and Lock / Backup); dark mode switches on and the menu stays open", [toolsShown, await ph.evaluate(() => [document.documentElement.getAttribute("data-theme"), document.body.classList.contains("nav-open"), !!document.getElementById("lockBtnSide"), !!document.querySelector('.phone-tools [data-act="backup.excel"]')])], [true, ["dark", true, true, true]]);
+    check("phone: the menu has the theme switch (and Lock / Backup); dark mode switches on and the menu stays open", [toolsShown, await ph.evaluate(() => [document.documentElement.getAttribute("data-theme"), document.body.classList.contains("nav-open"), !!document.getElementById("lockBtnSide"), !!document.querySelector('.phone-tools [data-act="backup.excel"]'), !!document.querySelector('.phone-tools [data-lang="bn"]')])], [true, ["dark", true, true, true, true]]);
     await ph.evaluate(() => document.querySelector('.phone-tools [data-theme-set="light"]').click());
     check("phone: no JavaScript errors", phoneErrors, []);
     await ph.close();
   }
   check("computer: tables stay tables, the memo still prints from the hidden frame, menu tools stay in the header", await page.evaluate(() => [document.querySelectorAll(".table.stack").length, OPF.print.isMobile(), getComputedStyle(document.querySelector(".phone-tools")).display, getComputedStyle(document.querySelector(".top .theme-switch")).display != "none"]), [0, false, "none", true]);
+
+  section("Bengali screen language (English stays the default)");
+  check("English by default; the header has the EN | বাং switch", await page.evaluate(() => [document.documentElement.lang, document.querySelector('.top [data-lang="en"]').classList.contains("on"), document.querySelector("#nav .menu").textContent.indexOf("Dashboard") >= 0]), ["en", true, true]);
+  check("numbers typed with Bengali digits are understood", await page.evaluate(() => [OPF.util.num("১,২৫০.৫০"), OPF.util.num("1,250.50")]), [1250.5, 1250.5]);
+  await page.click('.top [data-lang="bn"]'); await page.waitForNavigation({ waitUntil: "load" }).catch(() => {}); await sleep(600);
+  await go("sales"); await sleep(150);
+  const bn = await page.evaluate(() => ({
+    lang: document.documentElement.lang, saved: JSON.parse(localStorage.getItem("opf_erp_ui")).lang,
+    menu: document.querySelector('#nav a.item[data-page="dashboard"]').textContent.trim(),
+    h1: document.querySelector("#app h1").textContent, search: document.getElementById("gsearch").placeholder,
+    th: document.querySelector("#app .table th").textContent, invoiceNo: document.querySelector('#mainForm [name="invoice"]').value,
+    regInvoice: Array.prototype.find.call(document.querySelectorAll("#app td"), (td) => /^INV-\d+$/.test(td.textContent.trim())) ? "English digits" : "changed",
+    money: Array.prototype.some.call(document.querySelectorAll("#app td.num"), (td) => /^[০-৯,]+\.[০-৯]{2}$/.test(td.textContent.trim())),
+    title: document.title
+  }));
+  check("বাং: menu, headings, placeholders and the page title in Bengali; amounts with Bengali digits", [bn.lang, bn.saved, bn.menu, bn.h1, bn.search, bn.money, /^বিক্রয় \/ ইনভয়েস/.test(bn.title)], ["bn", "bn", "ড্যাশবোর্ড", "পাইকারি বিক্রয় / ইনভয়েস", "নাম বা মোবাইল দিয়ে গ্রাহক খুঁজুন...", true, true]);
+  check("বাং: invoice numbers and typed values stay as they are (INV-..., form values)", [bn.regInvoice, /^INV-\d+$/.test(bn.invoiceNo)], ["English digits", true]);
+  await page.evaluate(() => { const f = document.getElementById("mainForm"); f.elements.namedItem("discount").value = "99999"; });
+  await setItems([{ style: "S1", color: "Blue", size: "L", qty: 1, rate: 300 }]);
+  await page.evaluate(() => { const f = document.getElementById("mainForm"); f.elements.namedItem("customer").selectedIndex = 1; f.requestSubmit(); });
+  check("বাং: messages are shown in Bengali", alerts.pop(), "ছাড় উপমোটের চেয়ে বেশি হতে পারে না।");
+  check("বাং: live totals still calculate (shown with Bengali digits)", /৩০০\.০০/.test(await text("#calc")), true);
+  await page.evaluate(() => { window.print = () => {}; OPF.print.output = () => {}; OPF.print.invoice(OPF.store.db.sales[0].id); }); await sleep(500);
+  check("বাং: the printed cash memo stays English", await page.evaluate(() => { const d = document.getElementById("printFrame").contentDocument.body.textContent; return [/Cash Memo/.test(d), /[০-৯]/.test(d)]; }), [true, false]);
+  await go("notes"); await sleep(100);
+  check("বাং: users' own notes are not translated", await page.evaluate(() => Array.prototype.some.call(document.querySelectorAll(".n-text"), (n) => /[A-Za-z]/.test(n.textContent))), true);
+  await page.click('.top [data-lang="en"]'); await page.waitForNavigation({ waitUntil: "load" }).catch(() => {}); await sleep(600);
+  check("EN switches back: English text and digits again", await page.evaluate(() => [document.documentElement.lang, document.querySelector('#nav a.item[data-page="dashboard"]').textContent.trim(), /[০-৯]/.test(document.getElementById("app").textContent)]), ["en", "Dashboard", false]);
+
+  section("Feature flag ENABLE_BENGALI = false: English only, no switch");
+  {
+    const off = await browser.newPage();
+    // Hand the ERP its settings with the flag off (config.js is frozen, so swap it as it is set).
+    await off.evaluateOnNewDocument(() => {
+      let cfg = null;
+      window.OPF = {};
+      Object.defineProperty(window.OPF, "config", { configurable: true, get: () => cfg, set: (v) => { cfg = Object.freeze(Object.assign({}, v, { ENABLE_BENGALI: false })); } });
+    });
+    await off.goto(APP); await sleep(400);
+    await off.evaluate(() => { localStorage.setItem("opf_erp_ui", JSON.stringify(Object.assign(JSON.parse(localStorage.getItem("opf_erp_ui") || "{}"), { lang: "bn" }))); });
+    await off.reload(); await sleep(500);
+    check("flag off: English even if Bengali was chosen; no switch in the header or phone menu; the choice is kept", await off.evaluate(() => [document.documentElement.lang, document.querySelector('#nav a.item[data-page="dashboard"]').textContent.trim(), !!document.querySelector(".top .lang-switch"), !!document.querySelector(".phone-tools [data-lang]"), JSON.parse(localStorage.getItem("opf_erp_ui")).lang]), ["en", "Dashboard", false, false, "bn"]);
+    await off.evaluate(() => { const p = JSON.parse(localStorage.getItem("opf_erp_ui")); p.lang = "en"; localStorage.setItem("opf_erp_ui", JSON.stringify(p)); });
+    await off.close();
+  }
 
   section("Performance (thousands of records)");
   await page.evaluate(() => {

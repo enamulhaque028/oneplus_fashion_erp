@@ -150,7 +150,9 @@ h2 { font-size: 16px; font-weight: 700; margin: 22px 0 10px }
 #gresults a { display: block; padding: 10px 14px; color: inherit; text-decoration: none; border-bottom: 1px solid var(--border) }
 #gresults a:last-child { border-bottom: 0 }
 #gresults a:hover { background: var(--primary-soft) }
-.theme-switch { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--border) }
+.theme-switch, .lang-switch { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface-3); border: 1px solid var(--border) }
+.lang-switch button { min-width: 36px; height: 30px; padding: 0 6px; border-radius: 8px; background: transparent; color: var(--muted); font-size: 12.5px; font-weight: 700; box-shadow: none }
+.lang-switch button.on { background: var(--surface); color: var(--primary-ink); box-shadow: var(--shadow-1) }
 .theme-switch button { width: 32px; height: 30px; padding: 0; border-radius: 8px; background: transparent; color: var(--muted); display: inline-flex; align-items: center; justify-content: center }
 .theme-switch button.on { background: var(--surface); color: var(--primary-ink); box-shadow: var(--shadow-1) }
 .chip {
@@ -556,7 +558,7 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 @media (max-width: 640px) {
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)) }
   .stats, .grid, .sumchips { grid-template-columns: minmax(0, 1fr) }
-  .top .theme-switch, #lockBtn, .top .backup { display: none }
+  .top .theme-switch, .top .lang-switch, #lockBtn, .top .backup { display: none }
   .donut { display: block }
   .donut .chart-wrap { margin: 0 auto 12px }
 }
@@ -892,3 +894,21 @@ body.nd-open { overflow: hidden }
   .pt-btns button + button { margin-left: 8px }
   .pt-btns .i { width: 16px; height: 16px; margin-right: 6px }
 }
+
+/* ---------- Bengali screen language (js/ui/i18n.js) ---------- */
+/* Bengali letters come from a Bengali font already on the computer (no download); English letters
+   keep Segoe UI. Naming the font for the Bengali range up front matters for speed: otherwise the
+   browser searches for a fallback font for every piece of text (a 3,000-invoice register took
+   twice as long to lay out). */
+@font-face { font-family: "ERP Bangla"; font-weight: 400; unicode-range: U+0980-09FF, U+200C-200D;
+  src: local("Nirmala UI"), local("NirmalaUI"), local("Shonar Bangla"), local("ShonarBangla"), local("Vrinda"),
+       local("Kohinoor Bangla"), local("KohinoorBangla-Regular"), local("Bangla MN"), local("BanglaMN"),
+       local("Bangla Sangam MN"), local("Noto Sans Bengali"), local("NotoSansBengali-Regular") }
+@font-face { font-family: "ERP Bangla"; font-weight: 600 900; unicode-range: U+0980-09FF, U+200C-200D;
+  src: local("Nirmala UI Bold"), local("NirmalaUI-Bold"), local("Shonar Bangla Bold"), local("ShonarBangla-Bold"), local("Vrinda Bold"),
+       local("Kohinoor Bangla Semibold"), local("KohinoorBangla-Semibold"), local("Bangla MN Bold"), local("BanglaMN-Bold"),
+       local("Bangla Sangam MN Bold"), local("Noto Sans Bengali Bold"), local("NotoSansBengali-Bold") }
+html[lang="bn"] body, html[lang="bn"] input, html[lang="bn"] select, html[lang="bn"] textarea, html[lang="bn"] button {
+  font-family: "ERP Bangla", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Nirmala UI", "Shonar Bangla", "Vrinda", sans-serif
+}
+html[lang="bn"] .table.stack table.items td.sl::before { content: "আইটেম" }

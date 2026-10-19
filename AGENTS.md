@@ -144,8 +144,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 157, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
-  - self-test 29 / 29 on Chrome 73, 109, current and Firefox 115.
+  - current Chrome and Chromium 109: e2e 167, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
+  - self-test 30 / 30 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
   Advance, Charge, Net COD or Settled, and it never changes dues: dues change only through Sales and
@@ -164,6 +164,16 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   desktop work is skipped. The e2e "Phones (iPhone 12)" section checks every page fits 390 px.
   Phone prints lay the memo out at 194 mm (not the 390 px screen, which made it two pages) with a
   24 mm shorter blank item area for iOS's bigger margins; checked on the iOS 26.5 Simulator.
+- **Bengali screen language (2026-10-19):** feature flag `ENABLE_BENGALI` in `js/core/config.js` (true now;
+  false = no switch, always English, saved choice kept). `js/ui/i18n.js` + `js/ui/lang-bn.js`; switch EN | বাং in the
+  header / phone menu, stored in `opf_erp_ui.lang` (English default; switching reloads). Pages stay
+  written in English: in Bengali mode a MutationObserver swaps known texts (exact words, then
+  patterns) and shows Bengali digits, except codes that mix letters and digits (INV-00012). Never
+  translated: inputs / typed values, users' notes, `#printFrame` / `#printDoc` (memo stays English),
+  Excel / CSV, stored data. **New user-visible English text needs an entry in lang-bn.js** (exact
+  string as shown; texts with numbers need a pattern). `util.num` accepts Bengali digits. Bengali
+  letters use the local-font face "ERP Bangla" (unicode-range): without it a 3,000-invoice register
+  laid out about twice as slowly.
 - **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.

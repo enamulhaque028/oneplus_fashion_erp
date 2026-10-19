@@ -34,6 +34,10 @@
       <button data-act="shell.theme" data-theme-set="light" title="Light"><span data-icon="sun"></span></button>
       <button data-act="shell.theme" data-theme-set="dark" title="Dark"><span data-icon="moon"></span></button>
     </div>
+    <div class="lang-switch" title="Language" data-no-i18n>
+      <button data-act="shell.lang" data-lang="en" title="English">EN</button>
+      <button data-act="shell.lang" data-lang="bn" title="বাংলা">বাং</button>
+    </div>
     <span class="chip hide-sm"><span data-icon="clock"></span><span id="clock"></span></span>
     <button id="syncBadge" class="chip sync" data-act="cloud.badge" hidden></button>
     <button id="lockBtn" class="light" data-act="auth.toggle">Admin: Locked</button>
@@ -64,6 +68,8 @@
 
   <!-- ui framework -->
   <script src="js/ui/actions.js"></script>
+  <script src="js/ui/i18n.js"></script>
+  <script src="js/ui/lang-bn.js"></script>
   <script src="js/ui/icons.js"></script>
   <script src="js/ui/html.js"></script>
   <script src="js/ui/modal.js"></script>

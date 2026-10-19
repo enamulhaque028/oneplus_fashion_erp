@@ -9,7 +9,8 @@
   const esc = (v) => str(v).replace(/[&<>"']/g, (m) => ENTITIES[m]);
 
   // Accepts "1,250.50" as well as numbers; anything unparsable is 0.
-  const num = (v) => parseFloat(str(v).replace(/,/g, "")) || 0;
+  // Accepts "1,250.50" and Bengali digits ("১,২৫০.৫০").
+  const num = (v) => parseFloat(str(v).replace(/[০-৯]/g, (d) => "০১২৩৪৫৬৭৮৯".indexOf(d)).replace(/,/g, "")) || 0;
 
   // Round to paisa, avoiding binary float artefacts such as 1.005 -> 1.00.
   function r2(v) {

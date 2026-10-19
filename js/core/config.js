@@ -11,6 +11,11 @@
     LOG_LIMIT: 3000,
     LOGO_WARN_KB: 300,
 
+    // Feature flag: true = the EN | বাং switch (header and phone menu) and the Bengali screen
+    // language are available; false = hidden, the ERP always shows English. A computer's saved
+    // choice is kept, so it comes back when this is set to true again. See js/ui/i18n.js.
+    ENABLE_BENGALI: true,
+
     // Google sign-in + Google Drive sync (see docs/CLOUD_SETUP.md). Leave GOOGLE_CLIENT_ID empty to
     // keep the ERP fully offline: no login screen, no network. Only works on the hosted (https) link.
     CLOUD: {

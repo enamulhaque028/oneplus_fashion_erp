@@ -39,6 +39,8 @@
   <script src="../js/domain/stock.js"></script>
   <script src="../js/domain/audit.js"></script>
   <script src="../js/ui/actions.js"></script>
+  <script src="../js/ui/i18n.js"></script>
+  <script src="../js/ui/lang-bn.js"></script>
   <script src="../js/ui/icons.js"></script>
   <script src="../js/ui/html.js"></script>
   <script src="../js/ui/modal.js"></script>
@@ -190,6 +192,7 @@
       document.querySelector('[data-act="rt.link"]').click();
       document.getElementById("rtLinkUrl").value = "www.rahim.com";
       document.querySelector('[data-act="rt.linkApply"]').click();
+      check("Bengali screen text (words, Bengali digits, codes kept)", [OPF.i18n.preview("bn", "Dashboard"), OPF.i18n.preview("bn", " 1,250.00 "), OPF.i18n.preview("bn", "INV-00012"), OPF.i18n.preview("bn", "37% paid"), OPF.util.num("১,২৫০")], ["ড্যাশবোর্ড", " ১,২৫০.০০ ", "INV-00012", "৩৭% পরিশোধিত", 1250]);
       check("link added (safe address only)", [OPF.richtext.clean(hbox.innerHTML), OPF.richtext.clean('<a href="javascript:x()">bad</a>')], ['see <a href="https://www.rahim.com" target="_blank" rel="noopener noreferrer">site</a>', "bad"]);
       document.querySelector('[data-act="notes.close"]').click();
       document.querySelector('[data-act="notes.new"]').click();

@@ -33,6 +33,7 @@
     OPF.store.load();
     OPF.store.save(); // persist any schema upgrade straight away
     OPF.actions.bind(document);
+    OPF.i18n.start(); // Bengali mode: translates the screen from here on
     OPF.shell.init();
     OPF.search.init();
     tick();

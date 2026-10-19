@@ -44,6 +44,8 @@ js/ui/                    UI framework
   records.js              Generic create / edit / delete with admin check + logging
   search.js               Global customer search
   charts.js               Dependency-free SVG charts (donut, line / bar / table trend)
+  i18n.js                 Screen language: Bengali mode translates text as it appears (MutationObserver), Bengali digits
+  lang-bn.js              Bengali word list (English text -> Bengali) + patterns for texts with numbers
   richtext.js             Rough Notes formatting toolbar + HTML cleaner (allow-list; runs on save AND display)
   sketch.js               Rough Notes sketch pad; sketches stored as strokes on a 1000 x 560 grid, not images
 js/services/              Cross-cutting features

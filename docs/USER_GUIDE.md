@@ -69,6 +69,16 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 | **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
 | **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
 
+**Language (English / বাংলা):** the **EN | বাং** switch in the header (on a phone, in the ☰ menu)
+changes the whole screen to Bengali, with Bengali digits. The choice is remembered on that computer.
+- English is the default. Switching reloads the page in the other language.
+- Stays as it is: what you type and your saved data (names, notes), document numbers such as
+  INV-00012 and MR-00031, the printed Cash Memo / Money Receipt (English, like the memo book) and
+  the Excel / CSV files. Typing Bengali digits in amount boxes also works.
+- Wording can be corrected in `js/ui/lang-bn.js` (English text → Bengali).
+- No **EN | বাং** switch? Bengali is switched off (`ENABLE_BENGALI: false` in `js/core/config.js`);
+  the ERP then shows English only.
+
 **On a phone** (the online link): the menu opens from the ☰ button at the top left. At the bottom of
 the menu are the **Theme** switch (light / dark), **Admin login / Lock admin** and **Backup**. Wide tables show
 each row as a card with the column names on the left, so nothing is cut off. The search box takes the
