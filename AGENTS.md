@@ -165,7 +165,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   desktop work is skipped. The e2e "Phones (iPhone 12)" section checks every page fits 390 px.
   Phone prints lay the memo out at 194 mm (not the 390 px screen, which made it two pages) with a
   24 mm shorter blank item area for iOS's bigger margins; checked on the iOS 26.5 Simulator.
-- **Bengali screen language (2026-10-19):** feature flag `ENABLE_BENGALI` in `js/core/config.js` (**false** since 2026-10-19 at the user's request;
+- **Bengali screen language (2026-10-19):** feature flag `ENABLE_BENGALI` in `js/core/config.js` (**true** again since 2026-10-19 at the user's request;
   false = no switch, always English, saved choice kept). Tests switch the feature on for their own pages
   (e2e: config swap; offline / cloud: `window.OPF_CLOUD_TEST`), so they pass with either setting. `js/ui/i18n.js` + `js/ui/lang-bn.js`; switch EN | বাং in the
   header / phone menu, stored in `opf_erp_ui.lang` (English default; switching reloads). Pages stay
@@ -190,8 +190,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
 - **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.
-- **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`, set to **false** again on 2026-10-19 at the
-  user's request: Google sign-in is off): only `true` turns sign-in / sync on
+- **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`, set to **true** again on 2026-10-19 at the
+  user's request: Google sign-in is on): only `true` turns sign-in / sync on
   (`OPF.drive.enabled()`). When `false`, a previously signed-in computer still counts local saves
   (`countWhileSwitchedOff` in `cloud.js`) so they upload, or raise the conflict question, when it is back on.
 - **Google Drive sync (2026-10-18):** built and tested with fakes (`tests/cloud.test.js`); design in

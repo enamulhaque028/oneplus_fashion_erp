@@ -101,11 +101,11 @@ Use it on a test computer or the online link, because it **replaces** the data a
 
 ---
 
-## ☁️ Google Drive backup (optional, currently switched off)
+## ☁️ Google Drive backup (optional, currently switched on)
 
 The ERP can sign in with Google and keep its data in the shop's own Google Drive, so every computer has the same data. A daily copy is kept for 30 days.
 
-It is **switched off** right now. To turn it on, set the flag in [`js/core/config.js`](js/core/config.js) and push:
+It is **switched on** right now. To switch it off, set the flag to `false` in [`js/core/config.js`](js/core/config.js) and push:
 
 ```js
 CLOUD: {
@@ -172,7 +172,7 @@ Data is one JSON document in `localStorage` (`opf_erp_smart_v3`). Changes to its
 
 ## 📌 Status
 
-- ✅ v4 is complete: all client issues are done, plus the cash memo, redesigned UI, page navigation, Excel backup, Rough Notes and Google Drive sync (switched off).
+- ✅ v4 is complete: all client issues are done, plus the cash memo, redesigned UI, page navigation, Excel backup, Rough Notes and Google Drive sync.
 - ✅ Automated tests pass on current Chrome, Chromium 109 and Chrome 73, and the self-test passes on Firefox 115.
 - ⏳ **To do on the real shop laptop:** the manual [QA checklist](docs/QA_CHECKLIST.md) (printer, Microsoft Excel, owner's sign-off on the business rules).
 - 🚫 **Not in this offline edition:** multi-user logins and roles, barcode scanning, multi-branch. Those need a server version.
