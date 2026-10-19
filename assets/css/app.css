@@ -567,6 +567,10 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
   /* Phones print the cash memo / receipt from #printDoc (see printInPage in js/services/print.js). */
   body.print-doc > :not(#printDoc) { display: none !important }
   body.print-doc #printDoc { display: block }
+  /* Lay the memo out at its A4 width, not the phone's screen width (which wrapped every line and
+     made it two pages tall); the phone then scales the page to the paper. */
+  body.print-doc #printDoc .memo { width: 194mm; max-width: none }
+  body.print-doc #printDoc .msign { margin-top: 7mm }
   body.print-doc .main { margin: 0 }
   .side, .top, .no-print, td.act, .scrim { display: none !important }
   body { background: #fff }

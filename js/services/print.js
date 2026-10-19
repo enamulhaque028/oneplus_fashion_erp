@@ -9,7 +9,8 @@
   const { esc, lc, num, r2, money, fmtQty, dueText, amountWords, today } = OPF.util;
 
   // Item area height on an A4 memo; rows use about 8.2 mm each, the rest is blank lined space.
-  const BODY_MM = 132, ROW_MM = 8.2;
+  // Phones print with bigger page margins (iOS adds its own), so their blank item area is shorter.
+  const BODY_MM = 132, ROW_MM = 8.2, PHONE_SHORTER_MM = 24;
 
   // Phones and tablets: iPhone / iPad browsers (all WebKit) print the whole page instead of a
   // hidden frame, so there the document is printed from the page itself (printInPage).
@@ -80,7 +81,10 @@
     document.title = title;
     window.addEventListener("afterprint", done);
     setTimeout(() => document.addEventListener("pointerdown", done, true), 0);
-    window.print();
+    // The memo styles normally loaded with the page; if not yet (printing right after opening),
+    // wait for them so the print is not laid out without them.
+    if (css.sheet) window.print();
+    else css.addEventListener("load", () => window.print());
   }
 
   // Opens the browser's print dialog for the frame. The page title is borrowed so "Save as PDF"
@@ -158,7 +162,7 @@
       return cells(n + 1, `<b>${esc(i.style)}</b>${detail ? ` <small>${esc(detail)}</small>` : ""}`, fmtQty(i.qty), money(i.rate), money(K.itemAmount(i)));
     });
     if (num(s.discount)) rows.push(cells("", "Less: Discount", "", "", "- " + money(s.discount), "less"));
-    const fillMm = Math.max(6, BODY_MM - rows.length * ROW_MM);
+    const fillMm = Math.max(6, BODY_MM - (isMobile() ? PHONE_SHORTER_MM : 0) - rows.length * ROW_MM);
 
     return `<div class="memo">${header("Cash Memo")}` +
       infoRows([

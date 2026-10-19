@@ -496,6 +496,7 @@ const { start, sleep, ROOT } = require("./lib");
     check("phone: the cash memo prints from the page itself (iPhone ignores a hidden frame)", await ph.evaluate(() => [window.__prints, !!document.getElementById("printFrame"), /Cash Memo/.test(document.getElementById("printDoc").innerHTML), document.body.classList.contains("print-doc"), document.getElementById("printCss").media]), [1, false, true, true, "print"]);
     await ph.emulateMediaType("print");
     check("phone: while printing only the memo shows, with its own styles", await ph.evaluate(() => [getComputedStyle(document.getElementById("app").closest("body > *")).display, getComputedStyle(document.getElementById("printDoc")).display, getComputedStyle(document.querySelector("#printDoc .memo")).fontFamily.indexOf("Times") >= 0]), ["none", "block", true]);
+    check("phone: the memo is laid out at its A4 width (not the phone's) and fits one page (<= 250 mm)", await ph.evaluate(() => { const px = 96 / 25.4, r = document.querySelector("#printDoc .memo").getBoundingClientRect(); return [Math.round(r.width / px), r.height / px <= 250]; }), [194, true]);
     await ph.emulateMediaType("screen");
     check("phone: the memo is never visible on screen, and print styles never touch the screen", await ph.evaluate(() => [getComputedStyle(document.getElementById("printDoc")).display, getComputedStyle(document.body).fontFamily.indexOf("Times") < 0]), ["none", true]);
     await ph.touchscreen.tap(200, 400);

@@ -144,7 +144,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 155, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
+  - current Chrome and Chromium 109: e2e 156, edge 64, uat 44, regression 62, cloud 40 checks, all passing;
   - self-test 29 / 29 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
@@ -162,6 +162,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   "not all") to print only while printing; computers keep the `#printFrame` path. At <= 640 px,
   `OPF.shell.stackTables` labels cells (data-label) and wide `.table`s become cards (`.table.stack`);
   desktop work is skipped. The e2e "Phones (iPhone 12)" section checks every page fits 390 px.
+  Phone prints lay the memo out at 194 mm (not the 390 px screen, which made it two pages) with a
+  24 mm shorter blank item area for iOS's bigger margins; checked on the iOS 26.5 Simulator.
 - **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.
