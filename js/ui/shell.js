@@ -50,10 +50,17 @@
   let installPrompt = null, justInstalled = false, foundInstalled = false;
   const hosted = () => /^https?:$/.test(location.protocol);
   const standalone = () => (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) || window.navigator.standalone === true;
+  // Chrome / Edge offer installing (beforeinstallprompt) about a second after the page loads - unless
+  // the app is already installed. No offer within OFFER_MS therefore means "installed" (Chrome on a Mac
+  // cannot tell the page so directly).
+  const chromium = "onbeforeinstallprompt" in window, OFFER_MS = 4000;
+  let offerWaitOver = false;
+  window.addEventListener("load", () => setTimeout(() => { offerWaitOver = true; refreshInstall(); }, OFFER_MS));
   function appState() {
     if (!hosted()) return "file";
     if (standalone() || justInstalled || foundInstalled) return "installed";
-    return installPrompt ? "ready" : "manual";
+    if (installPrompt) return "ready";
+    return chromium && offerWaitOver ? "installed" : "manual";
   }
   // Chrome / Edge offer installing through this event (so the app is not installed); keep it for our button.
   window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installPrompt = e; justInstalled = foundInstalled = false; refreshInstall(); });
@@ -93,15 +100,33 @@
     if (box) box.outerHTML = installBox() || "";
   }
 
+  function openPrompt() {
+    const p = installPrompt;
+    installPrompt = null;
+    p.prompt();
+    p.userChoice.then((c) => { if (c && c.outcome == "accepted") justInstalled = true; refreshInstall(); }, () => refreshInstall());
+  }
+
   function install() {
-    if (installPrompt) {
-      const p = installPrompt;
-      installPrompt = null;
-      p.prompt();
-      p.userChoice.then((c) => { if (c && c.outcome == "accepted") justInstalled = true; refreshInstall(); }, () => refreshInstall());
-      return;
-    }
-    howTo();
+    if (installPrompt) { openPrompt(); return; }
+    if (!chromium) { howTo(); return; }
+    // Clicked before Chrome made its offer: wait for it (up to 3 s, still within the click's grace time).
+    const started = Date.now();
+    (function wait() {
+      if (installPrompt) { openPrompt(); return; }
+      if (offerWaitOver || Date.now() - started > 3000) { alreadyInstalled(); return; }
+      setTimeout(wait, 150);
+    })();
+  }
+
+  // Chrome / Edge make no install offer when the app is already installed.
+  function alreadyInstalled() {
+    offerWaitOver = true;
+    refreshInstall();
+    stepsDialog("Already installed", "check", [
+      "To open it, click Open in app at the right end of the address bar, or use its icon (Start menu / Dock / Launchpad).",
+      "To install it again, uninstall it first (Uninstall desktop app in the menu), then reload this page."
+    ]);
   }
 
   // When the browser gives no install prompt: say where its own install option is.

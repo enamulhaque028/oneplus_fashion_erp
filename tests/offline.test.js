@@ -31,6 +31,8 @@ const BASE = "/oneplus_fashion_erp/";
   const pg = await ctx.newPage();
   const errors = [];
   pg.on("pageerror", (e) => errors.push(e.message));
+  // Chrome's real install offers are blocked (the tests send their own), so results do not depend on timing.
+  await pg.evaluateOnNewDocument(() => { window.addEventListener("beforeinstallprompt", (e) => { if (!e.__test) { e.preventDefault(); e.stopImmediatePropagation(); } }, true); });
   // No sign-in screen for this page: the Google sign-in flag is set off as config.js loads.
   await pg.evaluateOnNewDocument(() => {
     let cfg = null;
@@ -46,21 +48,24 @@ const BASE = "/oneplus_fashion_erp/";
   await pg.evaluate(() => { OPF.store.db.customers.push({ id: "offc1", name: "Offline Test Shop", mobile: "01700000999", previousDue: 0 }); OPF.store.save(); });
 
   section("Install desktop app (hosted link)");
-  check("the side menu offers Install desktop app", await pg.evaluate(() => !!document.querySelector('#nav .get-app[data-act="app.install"]')), true);
-  await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(150);
-  check("without a browser install prompt: a how-to opens", await pg.evaluate(() => { const d = document.getElementById("appDialog"); return !!d && d.querySelectorAll(".app-steps li").length > 0; }), true);
+  const offer = (outcome) => pg.evaluate((outcome) => { const e = new Event("beforeinstallprompt", { cancelable: true }); e.__test = true; e.prompt = () => { window.__prompted = (window.__prompted || 0) + 1; }; e.userChoice = Promise.resolve({ outcome }); window.dispatchEvent(e); }, outcome);
+  const card = () => pg.evaluate(() => { const g = document.querySelector("#nav .get-app"); return g && g.getAttribute("data-act"); });
+  await pg.reload(); await sleep(300);
+  check("the side menu offers Install desktop app", await card(), "app.install");
+  await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(3500);
+  check("no install offer from Chrome (already installed): 'Already installed', and the card says Uninstall", [await pg.evaluate(() => document.querySelector("#appDialog h2").textContent), await card()], ["Already installed", "app.uninstall"]);
   await pg.evaluate(() => document.querySelector('[data-act="app.closeHow"]').click());
-  await pg.evaluate(() => { const e = new Event("beforeinstallprompt", { cancelable: true }); e.prompt = () => { window.__prompted = (window.__prompted || 0) + 1; }; e.userChoice = Promise.resolve({ outcome: "accepted" }); window.dispatchEvent(e); });
+  await offer("accepted");
+  check("Chrome offers installing: the card says Install", await card(), "app.install");
   await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(200);
-  check("with Chrome's install prompt: the button opens it; once installed the card says Uninstall", await pg.evaluate(() => { const g = document.querySelector("#nav .get-app"); return [window.__prompted, g.getAttribute("data-act"), g.textContent.trim()]; }), [1, "app.uninstall", "Uninstall desktop appInstalled on this computer"]);
+  check("Install opens Chrome's install window directly; once installed the card says Uninstall", [await pg.evaluate(() => window.__prompted), await card(), await pg.evaluate(() => !!document.getElementById("appDialog"))], [1, "app.uninstall", false]);
   await pg.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(150);
   check("Uninstall shows the browser's steps (a web page cannot uninstall an app itself)", await pg.evaluate(() => { const d = document.getElementById("appDialog"); return [d.querySelector("h2").textContent, /chrome:\/\/apps/.test(d.textContent), /not deleted/.test(d.textContent)]; }), ["Uninstall the desktop app", true, true]);
   await pg.evaluate(() => document.querySelector('[data-act="app.closeHow"]').click());
   await pg.evaluate(() => OPF.router.go("settings"));
   check("Settings / Backup says installed, with Uninstall", await pg.evaluate(() => { const b = document.getElementById("appBox"); return [/installed on this computer/.test(b.textContent), !!b.querySelector('[data-act="app.uninstall"]')]; }), [true, true]);
-  // After uninstalling, Chrome offers to install again: the card goes back to Install.
-  await pg.evaluate(() => { const e = new Event("beforeinstallprompt", { cancelable: true }); e.prompt = () => {}; e.userChoice = Promise.resolve({ outcome: "dismissed" }); window.dispatchEvent(e); });
-  check("after uninstalling (Chrome offers install again) it shows Install again", await pg.evaluate(() => document.querySelector("#nav .get-app").getAttribute("data-act")), "app.install");
+  await offer("dismissed");
+  check("after uninstalling (Chrome offers install again) it shows Install again", await card(), "app.install");
   await pg.evaluate(() => OPF.router.go("dashboard"));
 
   section("No internet: the ERP still opens, with its data");
@@ -94,6 +99,15 @@ const BASE = "/oneplus_fashion_erp/";
   await p2.evaluate(() => document.querySelector('[data-act="cloud.skip"]').click()); await sleep(300);
   check("'Continue offline' opens the ERP", await p2.$eval("#app h1", (h) => h.textContent), "Dashboard");
   await ctx2.close();
+
+  section("A browser without one-click install (Firefox, iPhone): the button shows how");
+  const ctx3 = await newContext();
+  const p3 = await ctx3.newPage();
+  await p3.evaluateOnNewDocument(() => { delete Window.prototype.onbeforeinstallprompt; delete window.onbeforeinstallprompt; window.OPF_CLOUD_TEST = { ENABLE_GOOGLE_LOGIN: false }; });
+  await p3.goto(site); await sleep(800);
+  await p3.evaluate(() => document.querySelector("#nav .get-app").click()); await sleep(150);
+  check("the how-to opens", await p3.evaluate(() => [document.querySelector("#appDialog h2").textContent, document.querySelectorAll("#appDialog .app-steps li").length > 0]), ["Install the desktop app", true]);
+  await ctx3.close();
 
   server.close();
   await T.finish();

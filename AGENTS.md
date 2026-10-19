@@ -145,7 +145,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 168, edge 64, uat 44, regression 62, cloud 40, offline 18 checks, all passing;
+  - current Chrome and Chromium 109: e2e 168, edge 64, uat 44, regression 62, cloud 40, offline 20 checks, all passing;
   - self-test 30 / 30 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
@@ -185,6 +185,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   Chrome / Edge's `beforeinstallprompt`, else shows the browser's steps; hidden on file://. When installed
   (display-mode standalone, `appinstalled`, or `getInstalledRelatedApps` via manifest `related_applications`)
   it becomes **Uninstall** - web pages cannot uninstall apps, so it shows the browser's uninstall steps.
+  Chromium with no `beforeinstallprompt` within 4 s of load counts as installed (Mac Chrome has no
+  `getInstalledRelatedApps`); Install waits up to 3 s for the offer, then shows "Already installed".
 - **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.

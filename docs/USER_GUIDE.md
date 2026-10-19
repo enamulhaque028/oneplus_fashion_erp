@@ -92,6 +92,10 @@ double-click version does not show the button: it is a desktop version already.
 When the app is installed the card says **Uninstall desktop app**. A web page is not allowed to remove an
 app itself, so it shows the browser's steps: in the app window, menu (⋮) → **Uninstall One Plus Fashion
 ERP**; in a browser tab, `chrome://apps` → right-click → **Remove from Chrome**. The ERP data is kept.
+Chrome does not tell a page whether the app is already installed. If Chrome makes no install offer a
+few seconds after the page opens, the app is already installed: the card says **Uninstall desktop app**,
+and **Install** shows **Already installed** with how to open it (**Open in app** at the right end of the
+address bar, or the app's icon).
 
 **On a phone** (the online link): the menu opens from the ☰ button at the top left. At the bottom of
 the menu are the **Theme** switch (light / dark), **Admin login / Lock admin** and **Backup**. Wide tables show
