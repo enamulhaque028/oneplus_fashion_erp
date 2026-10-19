@@ -35,6 +35,14 @@
 
   function init() {
     const input = H.$("gsearch"), box = H.$("gresults");
+    // Ctrl+K (Cmd+K on a Mac) jumps to the search box, as the hint in it says.
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && (e.key == "k" || e.key == "K") && !e.defaultPrevented && !(e.target.closest && e.target.closest("[contenteditable], #noteDlg"))) {
+        e.preventDefault();
+        input.focus();
+        input.select();
+      }
+    });
     input.addEventListener("input", () => render(input.value));
     input.addEventListener("keydown", (e) => {
       if (e.key == "Enter") { const first = box.querySelector("a"); if (first) open(first.dataset.id); }

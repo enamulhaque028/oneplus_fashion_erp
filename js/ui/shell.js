@@ -74,7 +74,9 @@
     const title = $("pageTitle");
     if (title) {
       const g = C.NAV_GROUPS[groupOf(current)];
-      title.innerHTML = `<span class="ic">${OPF.icon(C.PAGE_ICONS[current])}</span><span class="tx"><small>${esc(g && g[3].length > 1 ? g[0] : "Home")}</small><b>${esc(LABELS[current] || "")}</b></span>`;
+      // "Home › Group" above the page name; each piece is its own element (translated separately).
+      const trail = g && g[3].length > 1 ? `<span>Home</span>${OPF.icon("chevron")}<span>${esc(g[0])}</span>` : "<span>Home</span>";
+      title.innerHTML = `<span class="tx"><small>${trail}</small><b>${esc(LABELS[current] || "")}</b></span>`;
     }
     document.body.classList.remove("nav-open");
   }

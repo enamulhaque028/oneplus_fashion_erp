@@ -23,7 +23,9 @@
     "Search customer by name or mobile...": "নাম বা মোবাইল দিয়ে গ্রাহক খুঁজুন...", "Theme": "থিম", "Light": "লাইট", "Dark": "ডার্ক",
     "Light theme": "লাইট থিম", "Dark theme": "ডার্ক থিম", "Sale": "বিক্রয়", "Backup": "ব্যাকআপ", "Download full Excel backup": "পূর্ণ এক্সেল ব্যাকআপ ডাউনলোড",
     "Admin: Locked": "অ্যাডমিন: লক", "Admin: Unlocked (click to lock)": "অ্যাডমিন: খোলা (লক করতে ক্লিক করুন)", "Admin login": "অ্যাডমিন লগইন",
-    "Lock admin": "অ্যাডমিন লক", "Language": "ভাষা",
+    "Lock admin": "অ্যাডমিন লক", "Language": "ভাষা", "New sale": "নতুন বিক্রয়", "Locked": "লক", "Unlocked": "খোলা",
+    "Admin locked - click to log in": "অ্যাডমিন লক - লগইন করতে ক্লিক করুন", "Admin unlocked - click to lock": "অ্যাডমিন খোলা - লক করতে ক্লিক করুন",
+    "Admin login / lock": "অ্যাডমিন লগইন / লক", "Press Ctrl+K to search": "খুঁজতে Ctrl+K চাপুন", "Ctrl K": "Ctrl K",
 
     /* ---------- common words, buttons ---------- */
     "Save": "সংরক্ষণ", "Update": "হালনাগাদ", "Clear": "খালি করুন", "Cancel": "বাতিল", "Cancel Edit": "সম্পাদনা বাতিল", "Edit": "সম্পাদনা",
@@ -232,6 +234,7 @@
   };
 
   const t = (s) => OPF.i18n.tr(s);
+  const DAYS = { Mon: "সোম", Tue: "মঙ্গল", Wed: "বুধ", Thu: "বৃহঃ", Fri: "শুক্র", Sat: "শনি", Sun: "রবি" };
   const MONTHS = { Jan: "জানু", Feb: "ফেব্রু", Mar: "মার্চ", Apr: "এপ্রিল", May: "মে", Jun: "জুন", Jul: "জুলাই", Aug: "আগস্ট", Sep: "সেপ্টে", Oct: "অক্টো", Nov: "নভে", Dec: "ডিসে" };
 
   // Texts with numbers or names in them. The first match wins.
@@ -245,6 +248,7 @@
     [/^Where the money went - (.+)$/, (m, a) => "টাকা কোথায় গেল - " + t(a)],
     [/^Last (\d+) Days Trend$/, "শেষ $1 দিনের প্রবণতা"],
     [/^Last (\d+) Days$/, "শেষ $1 দিন"],
+    [/^(\d+) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/, (m, d, mo, y) => d + " " + MONTHS[mo] + " " + y],
     [/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+)$/, (m, a, b) => MONTHS[a] + " " + b],
     [/^(\d+) transfer\(s\) have short delivery totalling (.+) PCS\.$/, "$1টি ট্রান্সফারে মোট $2 পিস কম এসেছে।"],
     [/^Due as on (.+)$/, "$1 পর্যন্ত বাকি"],
@@ -263,6 +267,8 @@
     [/^([\d.,]+) Meter$/, "$1 মিটার"],
     [/^([\d.,]+) Kg$/, "$1 কেজি"],
     [/^(\d{4}-\d\d-\d\d) subtotal$/, "$1 উপমোট"],
+    [/^(\d+:\d+:\d+) (AM|PM)$/, (m, a, b) => a + (b == "AM" ? " পূর্বাহ্ণ" : " অপরাহ্ণ")],
+    [/^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d+), (\d{4})$/, (m, w, mo, d, y) => DAYS[w] + ", " + d + " " + MONTHS[mo] + " " + y],
     [/^(.+), (\d+:\d+:\d+) (AM|PM)$/, (m, a, b, c) => a + ", " + b + (c == "AM" ? " পূর্বাহ্ণ" : " অপরাহ্ণ")],
     [/^Formula: Purchase \+ Returned from Production − Issued = Stock \(Yard\)\. Purchases entered in Meter are converted automatically \((.+)\)\.$/,
       "সূত্র: ক্রয় + উৎপাদন থেকে ফেরত − ইস্যু = স্টক (গজ)। মিটারে লেখা ক্রয় নিজে থেকে গজে বদলে যায় ($1)।"],

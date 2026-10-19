@@ -31,21 +31,25 @@
     <div class="gsearch">
       <span data-icon="search"></span>
       <input id="gsearch" placeholder="Search customer by name or mobile..." autocomplete="off">
+      <kbd class="kbd" title="Press Ctrl+K to search">Ctrl K</kbd>
       <div id="gresults"></div>
     </div>
-    <div class="theme-switch" title="Theme">
-      <button data-act="shell.theme" data-theme-set="light" title="Light"><span data-icon="sun"></span></button>
-      <button data-act="shell.theme" data-theme-set="dark" title="Dark"><span data-icon="moon"></span></button>
-    </div>
-    <div class="lang-switch" title="Language" data-no-i18n>
-      <button data-act="shell.lang" data-lang="en" title="English">EN</button>
-      <button data-act="shell.lang" data-lang="bn" title="বাংলা">বাং</button>
-    </div>
-    <span class="chip hide-sm"><span data-icon="clock"></span><span id="clock"></span></span>
+    <div class="spacer"></div>
+    <div class="tclock" id="clock"></div>
     <button id="syncBadge" class="chip sync" data-act="cloud.badge" hidden></button>
-    <button id="lockBtn" class="light" data-act="auth.toggle">Admin: Locked</button>
-    <a class="btn good addsale" href="#/sales"><span data-icon="cart"></span><span class="lb">Sale</span></a>
-    <button class="light backup" data-act="backup.excel" title="Download full Excel backup"><span data-icon="download"></span>Backup</button>
+    <div class="tools">
+      <div class="theme-switch" title="Theme">
+        <button data-act="shell.theme" data-theme-set="light" title="Light"><span data-icon="sun"></span></button>
+        <button data-act="shell.theme" data-theme-set="dark" title="Dark"><span data-icon="moon"></span></button>
+      </div>
+      <div class="lang-switch" title="Language" data-no-i18n>
+        <button data-act="shell.lang" data-lang="en" title="English">EN</button>
+        <button data-act="shell.lang" data-lang="bn" title="বাংলা">বাং</button>
+      </div>
+      <button class="tbtn backup" data-act="backup.excel" title="Download full Excel backup" aria-label="Backup"><span data-icon="download"></span></button>
+    </div>
+    <a class="btn good addsale" href="#/sales"><span data-icon="plus"></span><span class="lb">New sale</span></a>
+    <button id="lockBtn" class="user" data-act="auth.toggle" title="Admin login / lock">Admin: Locked</button>
   </header>
   <div class="shell">
     <main class="main" id="app"></main>

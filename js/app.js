@@ -22,10 +22,11 @@
   }
 
   function tick() {
-    OPF.html.$("clock").textContent = new Date().toLocaleString();
+    const now = new Date();
+    OPF.html.$("clock").innerHTML = `<b>${now.toLocaleTimeString("en-US")}</b><small>${now.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" })}</small>`;
     OPF.auth.refreshButton();
-    const now = OPF.util.today();
-    if (now != day) { rollover(day, now); day = now; }
+    const d = OPF.util.today();
+    if (d != day) { rollover(day, d); day = d; }
   }
 
   function start() {

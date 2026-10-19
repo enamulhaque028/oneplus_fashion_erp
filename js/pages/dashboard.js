@@ -11,6 +11,9 @@
     ["purchase", "bag", "Purchase List"], ["payments", "wallet", "Payment"], ["courier", "truck", "Courier"], ["reports", "bars", "Reports"]];
   const PERIODS = [["today", "Today"], ["7d", "Last 7 Days"], ["month", "This Month"], ["year", "This Year"], ["all", "All Time"]];
   const SERIES = [["Sales", "var(--series-1)"], ["Purchases", "var(--series-2)"], ["Expenses", "var(--series-3)"]];
+  // "2026-10-19" -> "19 Oct 2026" (read by people; the stored dates stay ISO).
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const niceDate = (iso) => { const p = String(iso).split("-"); return p.length == 3 ? `${Number(p[2])} ${MONTHS[Number(p[1]) - 1]} ${p[0]}` : iso; };
   let period = "today", chartType = "line";
 
   // Local calendar date `days` from today (negative = past).
@@ -77,8 +80,10 @@
     H.mount(
       "<h1>Dashboard</h1>" +
       `<div class="quick no-print">${QUICK.map(([page, icon, label]) => H.pageLink(OPF.icon(icon) + label, page, "btn")).join("")}</div>` +
-      `<div class="filterbar no-print"><span class="ic">${OPF.icon("calendar")}</span><select data-change="dashboard.period">${PERIODS.map(([v, l]) => `<option value="${v}"${v == period ? " selected" : ""}>${l}</option>`).join("")}</select>` +
-      `<span class="muted">${period == "all" ? "All records" : esc(from) + (from == to ? "" : " to " + esc(to))}</span></div>` +
+      // Period: all five choices visible as one row of segment buttons (one click, like the Ledger tabs).
+      `<div class="filterbar no-print"><span class="ic">${OPF.icon("calendar")}</span>` +
+      `<div class="tabs period">${PERIODS.map(([v, l]) => H.button(l, "dashboard.period", { period: v }, v == period ? "on" : "")).join("")}</div>` +
+      `<span class="grow"></span><span class="range">${period == "all" ? "<span>All records</span>" : `<span>${esc(niceDate(from))}</span>` + (from == to ? "" : `<i>–</i><span>${esc(niceDate(to))}</span>`)}</span></div>` +
       '<div class="stats">' +
       stat("green", "cart", "Sales", sales.length, money(sTotal), [["Paid", money(sPaid), "g"], ["Due", money(sDue), "r"]], pct(sPaid, sTotal), pct(sPaid, sTotal) + "% collected") +
       stat("blue", "bag", "Purchase", purchases.length, money(pTotal), [["Paid", money(pPaid), "g"], ["Due", money(pDue), "r"]], pct(pPaid, pTotal), pct(pPaid, pTotal) + "% paid") +
@@ -112,7 +117,7 @@
 
   OPF.pages.dashboard = { render };
   OPF.actions.register({
-    "dashboard.period": (el) => { period = el.value; render(); },
+    "dashboard.period": (el) => { period = el.getAttribute("data-period") || el.value; render(); },
     "dashboard.chart": (el) => { chartType = el.dataset.type; render(); }
   });
 })(window.OPF = window.OPF || {});

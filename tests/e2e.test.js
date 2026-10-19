@@ -175,7 +175,7 @@ const { start, sleep, ROOT } = require("./lib");
   await fill({ mobile: "01799999999" }); await submit();
   check("customer updated in place", await db((d) => [d.customers.length, d.customers[0].mobile, !!d.auth.hash]), [2, "01799999999", true]);
   await act("auth.toggle");
-  check("lock button locks admin", await page.evaluate(() => [OPF.auth.isAdmin(), document.getElementById("lockBtn").textContent]), [false, "Admin: Locked"]);
+  check("lock button locks admin (the header chip says Locked)", await page.evaluate(() => [OPF.auth.isAdmin(), document.getElementById("lockBtn").textContent, document.getElementById("lockBtn").className]), [false, "AAdminLocked", "user off"]);
   await go("sales"); await act("record.edit", { coll: "sales", id: await db((d) => d.sales[0].id) });
   await password("wrong");
   check("wrong password rejected", await text("#modalMsg"), "Wrong password.");
@@ -504,7 +504,12 @@ const { start, sleep, ROOT } = require("./lib");
     const tooWide = [];
     for (const id of await ph.evaluate(() => OPF.config.MENU.map((m) => m[0]))) {
       await ph.evaluate((id) => OPF.router.go(id), id); await sleep(60);
-      const w = await ph.evaluate(() => [document.documentElement.scrollWidth, Array.prototype.filter.call(document.querySelectorAll("#app *"), (e) => e.getBoundingClientRect().right > innerWidth + 1 && !e.closest("#noteDlg")).length]);
+      const w = await ph.evaluate(() => [document.documentElement.scrollWidth, Array.prototype.filter.call(document.querySelectorAll("#app *"), (e) => {
+        if (e.getBoundingClientRect().right <= innerWidth + 1 || e.closest("#noteDlg")) return false;
+        // Inside a row that scrolls sideways on purpose (e.g. the dashboard period buttons) is fine.
+        for (let a = e.parentElement; a && a != document.body; a = a.parentElement) if (/auto|scroll/.test(getComputedStyle(a).overflowX) && a.scrollWidth > a.clientWidth) return false;
+        return true;
+      }).length]);
       if (w[0] > 390 || w[1]) tooWide.push(id + " " + w.join("/"));
     }
     check("phone: no page is wider than the screen (tables show as cards)", tooWide, []);

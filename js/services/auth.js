@@ -25,8 +25,14 @@
     const b = OPF.html.$("lockBtn");
     if (!b) return;
     const on = isAdmin();
-    b.textContent = on ? "Admin: Unlocked (click to lock)" : "Admin: Locked";
-    b.className = on ? "warn" : "light";
+    // Header user chip: avatar, "Admin", and the lock state (click to lock / log in).
+    const state = on ? "Unlocked" : "Locked";
+    if (b.getAttribute("data-state") != state) {
+      b.innerHTML = `<span class="av">A</span><span class="tx"><b>Admin</b><small>${OPF.icon("lock")}<span>${state}</span></small></span>`;
+      b.setAttribute("data-state", state);
+      b.title = on ? "Admin unlocked - click to lock" : "Admin locked - click to log in";
+    }
+    b.className = "user " + (on ? "on" : "off");
     // Phones: the same button in the menu (js/ui/shell.js phoneTools).
     const side = OPF.html.$("lockBtnSide");
     if (side) { side.innerHTML = OPF.icon("lock") + (on ? "Lock admin" : "Admin login"); side.className = on ? "warn" : "light"; }

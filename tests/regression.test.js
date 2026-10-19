@@ -112,7 +112,7 @@ const money = (s) => n(String(s).replace(/[^\d.-]/g, "")) * (/Advance/.test(s) ?
   const periods = { today: [today, today], "7d": [dayShift(-6), today], month: [today.slice(0, 8) + "01", today], year: [today.slice(0, 4) + "-01-01", today], all: ["", "9999-12-31"] };
   await go("dashboard");
   for (const [p, [from, to]] of Object.entries(periods)) {
-    await page.select('select[data-change="dashboard.period"]', p);
+    await page.click(`[data-act="dashboard.period"][data-period="${p}"]`);
     const inR = (d) => d >= from && d <= to;
     const sl = data.sales.filter((s) => inR(s.date)), pu = data.purchases.filter((x) => inR(x.date)), py = data.payments.filter((x) => inR(x.date));
     const exp = data.expenses.filter((e) => inR(e.date)).reduce((t, e) => t + n(e.amount), 0);
@@ -196,10 +196,10 @@ const money = (s) => n(String(s).replace(/[^\d.-]/g, "")) * (/Advance/.test(s) ?
   section("Dates: future-dated entries, moving a sale between months, time zones");
   const future = dayShift(3);
   await go("sales"); await fill({ customer: c2.id, date: future }); await setItems([{ style, color: stockLine[2], size: stockLine[3], qty: 1, rate: 500 }]); await submit();
-  await go("dashboard"); await page.select('select[data-change="dashboard.period"]', "today");
+  await go("dashboard"); await page.click('[data-act="dashboard.period"][data-period="today"]');
   const todayCount = await page.$eval(".stat .cnt", (e) => +e.textContent);
   check("a future-dated sale is not counted in Today", todayCount, data.sales.filter((s) => s.date == today).length + 2);
-  await page.select('select[data-change="dashboard.period"]', "all");
+  await page.click('[data-act="dashboard.period"][data-period="all"]');
   check("but All Time includes it", await page.$eval(".stat .cnt", (e) => +e.textContent), data.sales.length + 3);
   const futureSale = await db((d) => d.sales[d.sales.length - 1].id);
   await go("sales"); await act("record.edit", { coll: "sales", id: futureSale });

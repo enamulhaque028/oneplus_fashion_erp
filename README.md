@@ -88,7 +88,7 @@ Use it on a test computer or the online link, because it **replaces** the data a
 | Task | How |
 |---|---|
 | **Daily backup** | **Settings / Backup → Download Restore File (.json)**. This is the file that can load everything back. Keep copies on another drive or a pen drive. |
-| **Excel copy** | The header **Backup** button, or **Settings / Backup → Download Full Backup (Excel .xlsx)**, gives every register and ledger in one workbook for reading or printing. |
+| **Excel copy** | The header **download** button (next to EN \| বাং), or **Settings / Backup → Download Full Backup (Excel .xlsx)**, gives every register and ledger in one workbook for reading or printing. |
 | **Move to another computer** | Download the `.json` restore file, then open the ERP on the new computer and use **Restore from .json**. |
 | **Update to a new version** | 1. Download a `.json` backup. 2. Download the new ZIP. 3. Extract it **over the same folder** (replace the files). 4. Open with `START_ERP.bat`. The data stays, and older data is upgraded automatically. |
 

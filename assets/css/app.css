@@ -161,9 +161,6 @@ h2 { font-size: 16px; font-weight: 700; margin: 22px 0 10px }
   background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border);
 }
 .chip .i { width: 15px; height: 15px; margin-right: 6px }
-#lockBtn { height: 34px; border-radius: 999px; padding: 0 14px; font-size: 12.5px; font-weight: 600 }
-#lockBtn.light { background: var(--surface-2); color: var(--text-2); border: 1px solid var(--border) }
-#lockBtn.warn { background: var(--warn-soft); color: var(--warn); border: 1px solid var(--warn) }
 
 /* ---------- sidebar ---------- */
 .side {
@@ -912,3 +909,98 @@ html[lang="bn"] body, html[lang="bn"] input, html[lang="bn"] select, html[lang="
   font-family: "ERP Bangla", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Nirmala UI", "Shonar Bangla", "Vrinda", sans-serif
 }
 html[lang="bn"] .table.stack table.items td.sl::before { content: "আইটেম" }
+
+/* ---------- header (top bar) ----------
+   One height (40px) and one corner radius (12px) for every control; the search sits centred between
+   the page title and the clock (spacers on both sides), so wide monitors have no lopsided gap. */
+.top { padding: 0 16px; --hh: 40px; --hr: 12px }
+.top .iconbtn { width: var(--hh); height: var(--hh); border-radius: var(--hr); flex: 0 0 auto }
+.top .crumb { flex: 0 0 auto }
+.crumb .tx { line-height: 1.25 }
+.crumb small { display: flex; align-items: center; font-size: 11.5px; color: var(--muted); white-space: nowrap }
+.crumb small .i { width: 12px; height: 12px; margin: 0 4px; color: var(--muted); opacity: .8 }
+.crumb b { font-size: 17px; font-weight: 700; color: var(--text); max-width: 240px }
+.top .spacer { flex: 1 1 0; min-width: 12px }
+.gsearch { flex: 0 1 560px; width: auto; min-width: 200px }
+.gsearch input { height: var(--hh); padding-right: 64px; border-radius: var(--hr) }
+.gsearch .i { top: 11px }
+#gresults { top: 46px }
+.gsearch .kbd { position: absolute; right: 9px; top: 9px; height: 22px; padding: 0 7px; display: inline-flex; align-items: center; border-radius: 6px;
+  border: 1px solid var(--border-strong); border-bottom-width: 2px; background: var(--surface); color: var(--muted); font: 600 11px "Segoe UI", Arial, sans-serif; pointer-events: none }
+.gsearch input:focus ~ .kbd { display: none }
+.tclock { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; height: var(--hh); padding-right: 14px; margin-right: 14px !important;
+  border-right: 1px solid var(--border); line-height: 1.2; white-space: nowrap; flex: 0 0 auto }
+.tclock b { font-size: 14.5px; font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums }
+.tclock small { font-size: 11.5px; color: var(--muted) }
+.tools { display: inline-flex; align-items: center; height: var(--hh); box-sizing: border-box; padding: 0 3px; border-radius: var(--hr); background: var(--surface-2); border: 1px solid var(--border); flex: 0 0 auto }
+.tools > * { margin: 0 2px }
+.tools .theme-switch, .tools .lang-switch { background: transparent; border: 0; padding: 0 }
+.tools .lang-switch { padding-left: 4px; margin-left: 2px; border-left: 1px solid var(--border); border-radius: 0 }
+.tools .theme-switch button, .tools .lang-switch button { height: 30px; border-radius: 9px }
+.tools .tbtn { width: 34px; height: 30px; padding: 0; margin-left: 4px; border-radius: 9px; border: 0; background: transparent; color: var(--text-2); box-shadow: none; display: inline-flex; align-items: center; justify-content: center }
+.tools .tbtn::before { content: ""; position: relative; left: -6px; width: 1px; height: 18px; background: var(--border) }
+.tools .tbtn:hover { background: var(--surface); color: var(--primary-ink) }
+.tools .tbtn .i { width: 17px; height: 17px; margin: 0 0 0 -1px }
+.top .addsale { height: var(--hh); padding: 0 16px; border-radius: var(--hr); display: inline-flex; align-items: center; font-weight: 700; box-shadow: 0 4px 12px rgba(22, 147, 90, .25) }
+.top .addsale .i { width: 18px; height: 18px; margin-right: 6px }
+#lockBtn.user { display: inline-flex; align-items: center; height: var(--hh); box-sizing: border-box; padding: 0 12px 0 4px; border-radius: var(--hr); background: var(--surface); border: 1px solid var(--border); color: var(--text); box-shadow: none; text-align: left; flex: 0 0 auto }
+#lockBtn.user:hover { background: var(--surface-2); border-color: var(--border-strong) }
+#lockBtn .av { width: 30px; height: 30px; border-radius: 9px; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px; background: var(--good-soft); color: var(--good); font-weight: 800; font-size: 13.5px }
+#lockBtn .tx { line-height: 1.15 }
+#lockBtn .tx b { display: block; font-size: 13px }
+#lockBtn .tx small { display: flex; align-items: center; font-size: 11px; font-weight: 600 }
+#lockBtn .tx small .i { width: 11px; height: 11px; margin-right: 3px }
+#lockBtn.off .tx small { color: var(--danger) }
+#lockBtn.on .tx small { color: var(--good) }
+#lockBtn.on .av { background: var(--warn-soft); color: var(--warn) }
+/* Keyboard users see where they are (mouse clicks do not show the ring). */
+.top button:focus-visible, .top a:focus-visible, .side a:focus-visible, .side button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px }
+@media (max-width: 1280px) {
+  .tclock small { display: none }
+  .crumb b { max-width: 180px }
+}
+@media (max-width: 1050px) {
+  .tclock, .gsearch .kbd { display: none }
+  .gsearch { min-width: 0 }
+  #lockBtn .tx { display: none }
+  #lockBtn.user { padding-right: 4px }
+  #lockBtn .av { margin-right: 0 }
+}
+@media (max-width: 860px) {
+  .top .addsale { padding: 0 12px }
+  .top .addsale .i { margin-right: 0 }
+  .top .spacer:first-of-type { display: none }
+  .crumb small { display: none }
+  .gsearch { flex: 1 1 auto; min-width: 0 }
+}
+@media (max-width: 640px) {
+  .top .tools, #lockBtn.user { display: none } /* in the phone menu (☰) instead */
+}
+
+/* ---------- drop-downs: one chevron everywhere (instead of each browser's own arrow) ---------- */
+:root { --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237b8597' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") }
+:root[data-theme="dark"] { --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238794a6' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") }
+select:not([multiple]):not([size]) {
+  -webkit-appearance: none; -moz-appearance: none; appearance: none;
+  background-image: var(--chev); background-repeat: no-repeat; background-position: right 12px center; background-size: 15px 15px;
+  padding-right: 36px !important; text-overflow: ellipsis; cursor: pointer
+}
+select:not([multiple]):not([size]):focus { --chev: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230f9f8c' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") }
+select::-ms-expand { display: none }
+select option { background: var(--surface); color: var(--text) }
+/* drop-downs inside tables (e.g. courier status) get the same box as the form fields */
+.table td select { height: 32px; padding-left: 10px; border: 1px solid var(--border-strong); border-radius: 8px; background-color: var(--surface); color: var(--text); font-size: 13px }
+
+/* ---------- dashboard period bar ---------- */
+.filterbar .tabs.period { margin: 0; flex-wrap: nowrap; overflow-x: auto; max-width: 100%; -webkit-overflow-scrolling: touch; scrollbar-width: none }
+.filterbar .tabs.period::-webkit-scrollbar { display: none }
+.filterbar .tabs.period button { white-space: nowrap; padding: 0 14px; font-weight: 600 }
+.filterbar .range { display: inline-flex; align-items: center; white-space: nowrap; font-weight: 600; color: var(--text-2); font-size: 13px }
+.filterbar .range i { font-style: normal; margin: 0 8px; color: var(--muted) }
+.filterbar .grow { flex: 1 1 auto; min-width: 12px }
+@media (max-width: 640px) {
+  .filterbar { flex-wrap: wrap }
+  .filterbar .tabs.period { flex: 1 1 0; min-width: 0 }
+  .filterbar .grow { display: none }
+  .filterbar .range { flex-basis: 100%; margin: 8px 0 0 48px; font-size: 12.5px }
+}

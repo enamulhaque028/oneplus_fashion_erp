@@ -59,12 +59,12 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 |---|---|
 | **Sidebar** (left) | The shop name and logo at the top, then the pages in groups: Purchase, Production, Product & Stock, Sales, Accounts, Admin. Click a group to open or close it; the group of the page you are on opens by itself, and that page is highlighted in green. **Search menu...** finds a page by name. The shop hotline is at the bottom. |
 | **Menu button** (☰, top left) | Shrinks the sidebar to icons only, for more room; click again to bring the names back. On a phone-sized window it slides the menu in and out. |
-| **Page title** (top left) | The group and the page you are on. |
-| **Search bar** (top) | Type a customer's name or at least 3 digits of their mobile (with or without +880). Click a result, or press Enter for the first result, to open the customer's full history. |
-| **Sun / moon** (top) | Light or dark colours. The choice is remembered on this computer. |
-| **Admin: Locked / Unlocked** (top right) | Shows whether editing is allowed. Click it to lock again when you are done. See [section 6](#6-editing-deleting-and-the-admin-password). |
-| **Sale** (green, top right) | Opens a new sale / invoice. |
-| **Backup** (top right) | Downloads a full Excel backup at once. |
+| **Page title** (top left) | "Home › group" and the name of the page you are on. |
+| **Search bar** (top) | Type a customer's name or at least 3 digits of their mobile (with or without +880). Click a result, or press Enter for the first result, to open the customer's full history. **Ctrl+K** jumps to the search bar from anywhere. |
+| **Clock** (top right) | The time, with the date under it. |
+| **Sun / moon, EN \| বাং, download** (top right, one group) | Light or dark colours; screen language; **download** = a full Excel backup at once. The choices are remembered on this computer. |
+| **+ New sale** (green, top right) | Opens a new sale / invoice. |
+| **Admin** (top right, with the letter A) | Shows **Locked** (red) or **Unlocked** (green): whether editing is allowed. Click it to log in, or to lock again when you are done. See [section 6](#6-editing-deleting-and-the-admin-password). |
 | **Form** (white card with a green border) | Where you enter a new record. Fields marked with a red `*` are required. **Save** stores it; **Clear** empties the form. |
 | **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
 | **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
@@ -117,7 +117,7 @@ count as two different styles.
 
 ### Dashboard
 - **Coloured buttons** at the top jump to the most-used pages.
-- **Period** (Today, Last 7 Days, This Month, This Year, All Time) sets the four large panels and the cost chart:
+- **Period** buttons (Today, Last 7 Days, This Month, This Year, All Time; the dates shown on the right) set the four large panels and the cost chart:
   - **Sales**: number of invoices, total, paid, due and the % collected;
   - **Purchase**: number of purchases, total, paid, due and the % paid;
   - **Cash Flow**: money received (invoice cash + collections) and paid out (purchase payments,
@@ -351,7 +351,7 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 - The first time, the ERP asks you to **create** the password (at least 4 characters).
   **Write it down somewhere safe. A forgotten password cannot be recovered.**
 - After you enter it, editing stays unlocked for **15 minutes** (the top button shows
-  "Admin: Unlocked"). Click that button to lock at once.
+  **Admin - Unlocked**). Click it to lock at once.
 - **Edit** opens the record in the form with an orange border. Click **Update** to save or **Cancel Edit**.
   Totals, dues and stock recalculate everywhere.
 - **Delete** asks for confirmation. A record that other records depend on cannot be deleted; for

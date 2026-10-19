@@ -136,7 +136,7 @@ PART 4 - REPORTS AND CONTROLS (5 min)
          Change Mobile to 01722222222 and click Update.
          Expect: Karim Store now shows 01722222222. There is still only one Karim Store.
 
-[ ] 4.6  Click "Admin: Unlocked" at the top so it shows "Admin: Locked". Click Edit on Karim Store again
+[ ] 4.6  Click "Admin - Unlocked" at the top right so it shows "Admin - Locked". Click Edit on Karim Store again
          and type a wrong password.
          Expect: "Wrong password." Click Cancel.
 
