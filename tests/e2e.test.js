@@ -513,10 +513,15 @@ const { start, sleep, ROOT } = require("./lib");
     await ph.evaluate(() => OPF.router.go("sales")); await sleep(60);
     await ph.evaluate(() => document.querySelector('[data-act="sales.addItem"]').click()); await sleep(60);
     check("phone: invoice item rows (also a new one) are labelled cards", await ph.evaluate(() => Array.prototype.map.call(document.querySelectorAll("#items tr.item"), (tr) => tr.querySelector('input[data-k="qty"]').parentNode.getAttribute("data-label"))), ["Qty (PCS)", "Qty (PCS)", "Qty (PCS)", "Qty (PCS)"]);
+    await ph.evaluate(() => document.querySelector('[data-act="shell.menu"]').click()); await sleep(100);
+    const toolsShown = await ph.evaluate(() => getComputedStyle(document.querySelector(".phone-tools")).display != "none" && getComputedStyle(document.querySelector(".phone-tools .theme-switch")).display != "none");
+    await ph.evaluate(() => document.querySelector('.phone-tools [data-theme-set="dark"]').click());
+    check("phone: the menu has the theme switch (and Lock / Backup); dark mode switches on and the menu stays open", [toolsShown, await ph.evaluate(() => [document.documentElement.getAttribute("data-theme"), document.body.classList.contains("nav-open"), !!document.getElementById("lockBtnSide"), !!document.querySelector('.phone-tools [data-act="backup.excel"]')])], [true, ["dark", true, true, true]]);
+    await ph.evaluate(() => document.querySelector('.phone-tools [data-theme-set="light"]').click());
     check("phone: no JavaScript errors", phoneErrors, []);
     await ph.close();
   }
-  check("computer: tables stay tables and the memo still prints from the hidden frame", await page.evaluate(() => [document.querySelectorAll(".table.stack").length, OPF.print.isMobile()]), [0, false]);
+  check("computer: tables stay tables, the memo still prints from the hidden frame, menu tools stay in the header", await page.evaluate(() => [document.querySelectorAll(".table.stack").length, OPF.print.isMobile(), getComputedStyle(document.querySelector(".phone-tools")).display, getComputedStyle(document.querySelector(".top .theme-switch")).display != "none"]), [0, false, "none", true]);
 
   section("Performance (thousands of records)");
   await page.evaluate(() => {

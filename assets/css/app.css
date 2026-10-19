@@ -556,7 +556,7 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 @media (max-width: 640px) {
   .cards { grid-template-columns: repeat(2, minmax(0, 1fr)) }
   .stats, .grid, .sumchips { grid-template-columns: minmax(0, 1fr) }
-  .theme-switch, #lockBtn, .top .backup { display: none }
+  .top .theme-switch, #lockBtn, .top .backup { display: none }
   .donut { display: block }
   .donut .chart-wrap { margin: 0 auto 12px }
 }
@@ -871,4 +871,17 @@ body.nd-open { overflow: hidden }
   .table.stack table.items td.amt:empty { display: flex }
   /* header: the page name is already the big heading below, so the search gets the room */
   .top .crumb { display: none }
+}
+
+/* ---------- phones: theme, Lock and Backup live in the menu (header has no room) ---------- */
+.phone-tools { display: none }
+@media (max-width: 640px) {
+  .phone-tools { display: block; margin: 6px 12px 8px; padding: 10px 12px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); flex: 0 0 auto }
+  .pt-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px }
+  .pt-row > span { display: inline-flex; align-items: center; font-weight: 600; color: var(--text-2) }
+  .pt-row > span .i { width: 18px; height: 18px; margin-right: 8px; color: var(--primary) }
+  .pt-btns { display: flex }
+  .pt-btns button { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: center; height: 38px; padding: 0 8px; font-size: 13px }
+  .pt-btns button + button { margin-left: 8px }
+  .pt-btns .i { width: 16px; height: 16px; margin-right: 6px }
 }

@@ -69,7 +69,8 @@ folder; it is saved inside the browser (see [section 8](#8-backup-restore-and-da
 | **Grey box** (dashed border) | Live calculation. It updates as you type: totals, due, stock available, and so on. Check it before you save. |
 | **Register** (table with a green heading) | Saved records, newest first. Totals are in the bottom row. The yellow **Edit** and red **Delete** buttons are on the right of each row. |
 
-**On a phone** (the online link): the menu opens from the ☰ button at the top left. Wide tables show
+**On a phone** (the online link): the menu opens from the ☰ button at the top left. At the bottom of
+the menu are the **Theme** switch (light / dark), **Admin login / Lock admin** and **Backup**. Wide tables show
 each row as a card with the column names on the left, so nothing is cut off. The search box takes the
 header; the page name is the heading under it.
 

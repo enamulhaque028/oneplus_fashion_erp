@@ -44,6 +44,18 @@
     return `<div class="brand"><div class="mk">${mark}</div><div class="tx"><b>${esc(co.name || "One Plus Fashion")}</b><small>Smart ERP</small></div></div>`;
   }
 
+  // Phones: the header has no room for the theme switch, Lock and Backup, so the menu carries them.
+  function phoneTools() {
+    const admin = OPF.auth && OPF.auth.isAdmin();
+    return '<div class="phone-tools">' +
+      `<div class="pt-row"><span>${OPF.icon(prefs.theme == "dark" ? "moon" : "sun")}Theme</span><div class="theme-switch">` +
+      `<button data-act="shell.theme" data-theme-set="light" title="Light" aria-label="Light theme"${prefs.theme != "dark" ? ' class="on"' : ""}>${OPF.icon("sun")}</button>` +
+      `<button data-act="shell.theme" data-theme-set="dark" title="Dark" aria-label="Dark theme"${prefs.theme == "dark" ? ' class="on"' : ""}>${OPF.icon("moon")}</button></div></div>` +
+      `<div class="pt-btns"><button type="button" id="lockBtnSide" class="${admin ? "warn" : "light"}" data-act="auth.toggle">${OPF.icon("lock")}${admin ? "Lock admin" : "Admin login"}</button>` +
+      `<button type="button" class="light" data-act="backup.excel">${OPF.icon("download")}Backup</button></div>` +
+      "</div>";
+  }
+
   // Redraw the sidebar and the header title for the current page.
   function render(current) {
     const nav = $("nav");
@@ -53,6 +65,7 @@
     nav.innerHTML = brandHtml() +
       `<div class="navsearch">${OPF.icon("search")}<input id="navSearch" placeholder="Search menu..." autocomplete="off" value="${esc(filter)}"></div>` +
       `<div class="menu">${menuHtml(current)}</div>` +
+      phoneTools() +
       (co.hotline ? `<div class="support" title="Hotline"><span class="ph">${OPF.icon("phone")}</span><span class="tx"><small>Hotline</small><b>${esc(co.hotline)}</b></span></div>` : "");
     if (hadFocus) { const s = $("navSearch"); s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
 
@@ -121,7 +134,13 @@
   OPF.shell = { render, init, stackTables };
   OPF.actions.register({
     "nav.group": (el) => { const gi = el.dataset.group; open[gi] = !el.parentNode.classList.contains("open"); el.parentNode.classList.toggle("open", open[gi]); },
-    "shell.theme": (el) => { prefs.theme = el.getAttribute("data-theme-set"); applyPrefs(); savePrefs(); },
+    "shell.theme": (el) => {
+      prefs.theme = el.getAttribute("data-theme-set");
+      applyPrefs();
+      savePrefs();
+      const pt = document.querySelector(".phone-tools"); // menu stays open on phones
+      if (pt) pt.outerHTML = phoneTools();
+    },
     "shell.menu": () => {
       // Narrow screens: slide the sidebar in; wide screens: collapse to icons.
       if (window.matchMedia("(max-width: 860px)").matches) document.body.classList.toggle("nav-open");
