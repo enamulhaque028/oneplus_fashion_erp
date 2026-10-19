@@ -208,6 +208,17 @@
     "Not signed in": "সাইন ইন করা নেই", "Choose a copy": "একটি কপি বাছাই করুন", "Sign in with Google": "গুগল দিয়ে সাইন ইন",
     "Sign in to keep your data safe in Google Drive": "ডেটা গুগল ড্রাইভে নিরাপদ রাখতে সাইন ইন করুন", "Sync now": "এখন সিঙ্ক", "Sign out": "সাইন আউট",
     "Which data should be kept?": "কোন ডেটা রাখবেন?", "Google Drive copy": "গুগল ড্রাইভের কপি", "This computer's copy": "এই কম্পিউটারের কপি",
+    "Welcome": "স্বাগতম", "Sign in with Google to keep your data backed up and use it on any computer.": "ডেটা ব্যাকআপ রাখতে ও যেকোনো কম্পিউটারে ব্যবহার করতে গুগল দিয়ে সাইন ইন করুন।",
+    "Sign in with the shop's Google account": "দোকানের গুগল অ্যাকাউন্ট দিয়ে সাইন ইন করুন", "Your data is found or saved in your Drive": "আপনার ড্রাইভে ডেটা খুঁজে পাওয়া বা সংরক্ষণ করা হবে",
+    "The ERP opens - every save is backed up": "ইআরপি খুলবে - প্রতিটি সংরক্ষণ ব্যাকআপ হবে", "The ERP can only see the files it creates in your Drive - nothing else.": "ইআরপি আপনার ড্রাইভে শুধু নিজের তৈরি ফাইলগুলোই দেখতে পায় - আর কিছু নয়।",
+    "Purchase, production, stock, sales and dues - your whole shop in one place.": "ক্রয়, উৎপাদন, স্টক, বিক্রয় ও বাকি - পুরো দোকান এক জায়গায়।",
+    "Automatic backup": "স্বয়ংক্রিয় ব্যাকআপ", "Every save goes to your own Google Drive": "প্রতিটি সংরক্ষণ আপনার নিজের গুগল ড্রাইভে যায়", "Any computer": "যেকোনো কম্পিউটার",
+    "Sign in anywhere and your data is there": "যেখানেই সাইন ইন করুন, ডেটা সেখানে", "Works offline": "অফলাইনেও চলে", "Keep working; it syncs when you are back online": "কাজ চালিয়ে যান; অনলাইনে এলে সিঙ্ক হবে",
+    "No internet connection": "ইন্টারনেট সংযোগ নেই", "Connect to the internet to sign in with Google the first time.": "প্রথমবার গুগল দিয়ে সাইন ইন করতে ইন্টারনেটে যুক্ত হন।", "Try again": "আবার চেষ্টা",
+    "Continue offline for now (sign in later)": "আপাতত অফলাইনে চালিয়ে যান (পরে সাইন ইন)", "Connecting to Google Drive…": "গুগল ড্রাইভে যুক্ত হচ্ছে…", "All set!": "সব প্রস্তুত!",
+    "Your data is up to date. Every save now backs up to Google Drive automatically.": "আপনার ডেটা হালনাগাদ। এখন থেকে প্রতিটি সংরক্ষণ নিজে থেকে গুগল ড্রাইভে ব্যাকআপ হবে।",
+    "Your data is saved only in your own Google Drive": "আপনার ডেটা শুধু আপনার নিজের গুগল ড্রাইভে সংরক্ষিত হয়", "Privacy": "গোপনীয়তা", "Terms": "শর্তাবলি",
+    "Saving this computer's data to Google Drive…": "এই কম্পিউটারের ডেটা গুগল ড্রাইভে সংরক্ষণ হচ্ছে…", "Restoring your data…": "আপনার ডেটা ফেরত আনা হচ্ছে…",
     "Updated with the latest data from Google Drive.": "গুগল ড্রাইভের সর্বশেষ ডেটা দিয়ে হালনাগাদ হয়েছে।",
 
     /* ---------- messages (alert / confirm) ---------- */

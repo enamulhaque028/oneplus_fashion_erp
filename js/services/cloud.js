@@ -223,31 +223,59 @@
   }
 
   /* ---------- login screen (first sign-in on this computer) ---------- */
-  const BLOBS = '<div class="gb gb1"></div><div class="gb gb2"></div><div class="gb gb3"></div><div class="gb gb4"></div>';
   const G_LOGO = '<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
 
+  /* Sign-in screen: brand panel (left) + sign-in panel (right); on a phone the brand panel is a
+     compact header. Every state (sign in, working, offline, done) fills the same right panel. */
   function gate(inner) {
     let g = $("cloudGate");
+    // Already showing: change only the right panel (the brand panel stays still, no replayed intro).
+    const card = g && g.querySelector(".gate-card");
+    if (card) {
+      card.innerHTML = inner;
+      card.classList.remove("swap");
+      void card.offsetWidth; // restart the short fade-in
+      card.classList.add("swap");
+      return;
+    }
     if (!g) { g = document.createElement("div"); g.id = "cloudGate"; document.body.appendChild(g); }
-    g.innerHTML = BLOBS + `<div class="gate-card">${inner}</div><div class="gate-foot">Your data is saved only in your own Google Drive · <a href="privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="terms.html" target="_blank" rel="noopener">Terms</a></div>`;
+    const co = OPF.store.db.company;
+    const lang = OPF.config.ENABLE_BENGALI === true
+      ? `<div class="lang-switch g-lang" data-no-i18n><button type="button" data-act="shell.lang" data-lang="en"${OPF.i18n.lang == "en" ? ' class="on"' : ""}>EN</button><button type="button" data-act="shell.lang" data-lang="bn"${OPF.i18n.lang == "bn" ? ' class="on"' : ""}>বাং</button></div>` : "";
+    g.innerHTML =
+      '<aside class="g-brand"><i class="g-glow g1"></i><i class="g-glow g2"></i><div class="g-brand-in">' +
+        `<div class="g-id">${logoTile()}<div><b>${esc(co.name || "One Plus Fashion")}</b><small>Smart ERP</small></div></div>` +
+        "<p class=\"g-tag\">Purchase, production, stock, sales and dues - your whole shop in one place.</p>" +
+        '<div class="gate-chips">' +
+          `<span><i>${OPF.icon("cloud")}</i><em><b>Automatic backup</b><small>Every save goes to your own Google Drive</small></em></span>` +
+          `<span><i>${OPF.icon("grid")}</i><em><b>Any computer</b><small>Sign in anywhere and your data is there</small></em></span>` +
+          `<span><i>${OPF.icon("cloudoff")}</i><em><b>Works offline</b><small>Keep working; it syncs when you are back online</small></em></span>` +
+        "</div>" +
+        // A small moving picture: a cash memo flying up to the cloud.
+        `<div class="g-art" aria-hidden="true"><div class="g-memo"><i></i><i></i><i></i><b></b></div><div class="g-dots"><i></i><i></i><i></i></div><div class="g-cloud">${OPF.icon("cloud")}<span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span></div></div>` +
+      "</div></aside>" +
+      `<main class="g-panel"><div class="g-top">${lang}</div><div class="gate-card">${inner}</div>` +
+      '<div class="gate-foot"><span>Your data is saved only in your own Google Drive</span> · <a href="privacy.html" target="_blank" rel="noopener">Privacy</a> · <a href="terms.html" target="_blank" rel="noopener">Terms</a></div></main>';
   }
   const logoTile = () => { const co = OPF.store.db.company; return `<div class="gate-logo">${co.logo ? `<img src="${co.logo}" alt="">` : OPF.print.brandMark(true)}</div>`; };
 
   function gateSignIn(message) {
-    gate(logoTile() + `<h1>${esc(OPF.store.db.company.name || "One Plus Fashion")} ERP</h1><p>Sign in to keep your data safe in Google Drive</p>` +
-      `<button type="button" class="gbtn" data-act="cloud.signin">${G_LOGO}Sign in with Google</button>` +
-      `<div class="gate-msg" id="gateMsg">${esc(message || "")}</div>` +
-      `<div class="gate-chips"><span>${OPF.icon("cloud")}Auto backup</span><span>${OPF.icon("grid")}Any computer</span><span>${OPF.icon("cloudoff")}Works offline</span></div>`);
+    gate('<span class="g-kicker">Welcome</span>' +
+      `<h1>${esc(OPF.store.db.company.name || "One Plus Fashion")} ERP</h1><p>Sign in with Google to keep your data backed up and use it on any computer.</p>` +
+      `<button type="button" class="gbtn" data-act="cloud.signin">${G_LOGO}<span>Sign in with Google</span></button>` +
+      `<div class="gate-msg" id="gateMsg" role="alert">${esc(message || "")}</div>` +
+      '<ol class="g-steps"><li><i>1</i><span>Sign in with the shop\'s Google account</span></li><li><i>2</i><span>Your data is found or saved in your Drive</span></li><li><i>3</i><span>The ERP opens - every save is backed up</span></li></ol>' +
+      `<div class="g-trust">${OPF.icon("shield")}<span>The ERP can only see the files it creates in your Drive - nothing else.</span></div>`);
   }
 
   function gateOffline(message) {
-    gate(logoTile() + `<h1>No internet connection</h1><p>${esc(message || "Connect to the internet to sign in with Google the first time.")}</p>` +
-      '<button type="button" class="gbtn" data-act="cloud.retry">Try again</button>' +
+    gate(`<div class="g-state off">${OPF.icon("cloudoff")}</div><h1>No internet connection</h1><p>${esc(message || "Connect to the internet to sign in with Google the first time.")}</p>` +
+      '<button type="button" class="gbtn" data-act="cloud.retry"><span>Try again</span></button>' +
       '<button type="button" class="gate-link" data-act="cloud.skip">Continue offline for now (sign in later)</button>');
   }
 
   function gateWorking(title, detail) {
-    gate(`<div class="gate-who">${esc(meta.account ? meta.account.email : "")}</div><div class="gate-ring"></div><b class="gate-title">${esc(title)}</b>` +
+    gate((meta.account ? `<div class="gate-who">${OPF.icon("user")}<span>${esc(meta.account.email)}</span></div>` : "") + `<div class="gate-ring"></div><b class="gate-title">${esc(title)}</b>` +
       `<div class="gate-bar"><i></i></div><div class="gate-detail">${esc(detail || "")}</div>`);
   }
 
