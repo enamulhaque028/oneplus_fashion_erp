@@ -133,6 +133,7 @@ PART 4 - REPORTS AND CONTROLS (5 min)
 
 [ ] 4.5  Customers: click Edit next to Karim Store.
          Expect: a "Create Admin Password" window. Type a password twice (write it down safely: ________).
+         Expect: a "Your recovery code" window. Write the code down (________) and click I have written it down.
          Change Mobile to 01722222222 and click Update.
          Expect: Karim Store now shows 01722222222. There is still only one Karim Store.
 

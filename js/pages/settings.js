@@ -23,7 +23,12 @@
       '<div class="actions"><button>Save Branding</button>' + H.button("Remove Logo", "settings.removeLogo", null, "light") + H.button("Preview Cash Memo", "print.preview", null, "light") + "</div></form>" +
       '<div class="box"><h2 style="margin-top:0">Admin Password</h2><p class="muted">' +
       (hasPassword ? "An admin password is set. It is required to edit or delete records, change settings and restore backups." : "No admin password yet. You will be asked to create one the first time you edit or delete a record.") +
-      "</p>" + H.button(hasPassword ? "Change Admin Password" : "Create Admin Password", "auth.changePassword") + "</div>" +
+      "</p>" +
+      (hasPassword ? '<p class="muted">' + (OPF.auth.hasCode()
+        ? `Recovery code made on ${OPF.util.esc(OPF.store.db.auth.rdate)}. Keep the paper safe: it resets a forgotten password.`
+        : "No recovery code yet. Make one now, so a forgotten password can be reset.") + "</p>" : "") +
+      '<div class="actions">' + H.button(hasPassword ? "Change Admin Password" : "Create Admin Password", "auth.changePassword") +
+      (hasPassword ? H.button(OPF.auth.hasCode() ? "New Recovery Code" : "Make Recovery Code", "auth.newCode", null, "light") : "") + "</div></div>" +
       OPF.cloud.settingsHtml() +
       OPF.shell.installBox() +
       '<div class="box"><h2 style="margin-top:0">Data Safety</h2><div class="actions">' +

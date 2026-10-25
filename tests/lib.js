@@ -74,10 +74,18 @@ async function start(outName) {
     }, name, data),
 
     modalOpen: () => page.$eval("#modal", (m) => m.innerHTML != ""),
+    // Types a password and presses OK. A new password shows its recovery code next: that window
+    // is closed here ("I have written it down") and the code returned.
     async password(pw, confirmPw) {
       await page.type("#pw1", pw);
       if (confirmPw != null) await page.type("#pw2", confirmPw);
       await page.click('#modal button:not([type="button"])');
+      return t.recoveryCode();
+    },
+    async recoveryCode() {
+      const code = await page.evaluate(() => { const c = document.getElementById("rcode"); return c && c.textContent; });
+      if (code) await page.click('#modal button:not([type="button"])');
+      return code;
     },
     // Resolves with the next printed document (invoice / receipt). The ERP prints from a hidden
     // frame in the same page; its HTML is saved as a file and opened in a scratch tab, so tests

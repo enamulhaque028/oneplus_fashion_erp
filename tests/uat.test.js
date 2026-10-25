@@ -154,14 +154,15 @@ const { start, sleep } = require("./lib");
   section("Step 14  Admin password and edit");
   await go("customers"); await act("record.edit", { coll: "customers", id: await db((d) => d.customers[0].id) });
   check("Expect: 'Create Admin Password' window", /Create Admin Password/.test(await text("#modal")), true);
-  await password("Shop2026", "Shop2026");
+  const code = await password("Shop2026", "Shop2026");
+  check("Expect: a 'Your recovery code' window with a code to write down", /^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/.test(code || ""), true);
   await typeInto('#mainForm [name="mobile"]', "01722222222"); await save();
   check("Expect: mobile changed, no duplicate customer", await db((d) => [d.customers.length, d.customers[0].mobile]), [1, "01722222222"]);
   await act("auth.toggle");
   await act("record.edit", { coll: "customers", id: await db((d) => d.customers[0].id) });
   await password("wrong");
   check("Expect: 'Wrong password.'", await text("#modalMsg"), "Wrong password.");
-  await page.click('#modal button[type="button"]');
+  await page.click('#modal [data-act="modal.cancel"]');
 
   section("Step 15  Search");
   await page.type("#gsearch", "01722");

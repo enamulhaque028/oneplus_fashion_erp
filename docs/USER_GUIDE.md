@@ -358,7 +358,7 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 
   They start with the details from the shop's printed memo book. **Preview Cash Memo** shows the
   result. Saving needs the admin password.
-- **Admin Password**: create or change it.
+- **Admin Password**: create or change it, and make a new **recovery code** (see section 6).
 - **Data Safety**: backup, restore and clear. See [section 8](#8-backup-restore-and-data-safety).
 
 ## 6. Editing, deleting and the admin password
@@ -366,7 +366,17 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
 - Every register has **Edit** and **Delete**. Both need the **admin password**. So do changing
   settings, restoring a backup, clearing data, changing courier status and saving costing.
 - The first time, the ERP asks you to **create** the password (at least 4 characters).
-  **Write it down somewhere safe. A forgotten password cannot be recovered.**
+  **Write it down somewhere safe.**
+- Right after that it shows a **recovery code** (like `ENL5-9MTW-R29G`), only once. It is a spare
+  key: **write it on paper and keep the paper safe, away from the computer.** Then click
+  **I have written it down**.
+- **Forgot the password?** Click **Forgot password?** in the password window, type the recovery code
+  (small or capital letters, dashes optional) and set a new password. The data is not touched. The used
+  code stops working and a new one is shown: write that one down instead.
+- A password made before recovery codes existed has none: in **Settings / Backup** click **Make
+  Recovery Code**. Lost the paper? **New Recovery Code** makes a new one; the old one stops working.
+- The password and the recovery code travel with the data: restoring a backup brings back the
+  password and code that were in use when the backup was made.
 - After you enter it, editing stays unlocked for **15 minutes** (the top button shows
   **Admin - Unlocked**). Click it to lock at once.
 - **Edit** opens the record in the form with an orange border. Click **Update** to save or **Cancel Edit**.
@@ -516,7 +526,7 @@ invoice number; the ERP refuses a number that already exists.
 | "Not enough stock" warning | Check that the stock location is right and that the transfer was recorded. You can still save if the goods really are there. |
 | A customer's due looks wrong | Open the customer profile and read the Ledger Statement line by line. Then check Ledgers / Due → Reconciliation Check. |
 | Two spellings of the same style or color | Edit the records so they match, and pick from the suggestions when typing. |
-| Forgot the admin password | It cannot be recovered in the ERP. Contact the developer. |
+| Forgot the admin password | Click **Forgot password?** in the password window and enter the recovery code from your paper. No code? Contact the developer. |
 | All data disappeared | The browser data was cleared. Use **Restore from .json** with your latest restore file. |
 | "Browser storage is full" | Download both backups at once. Then remove a large shop logo in Settings. |
 

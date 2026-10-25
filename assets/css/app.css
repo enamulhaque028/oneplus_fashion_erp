@@ -423,6 +423,12 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 .dialog input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15, 159, 140, .16) }
 .dialog .actions { justify-content: center }
 .dialog .actions button:first-child { background: linear-gradient(135deg, #16a34a, #10b981); min-width: 120px }
+/* recovery code: big, spaced, easy to copy onto paper */
+.dialog .rcode { margin: 4px 0 14px; padding: 14px 8px; border: 2px dashed var(--primary-border); border-radius: 14px; background: var(--primary-soft); color: var(--primary-ink);
+  font: 700 22px/1.2 Consolas, "Courier New", monospace; letter-spacing: 2px; -webkit-user-select: all; user-select: all }
+.dialog .rcode-in { text-align: center; text-transform: uppercase; letter-spacing: 1.5px; font-size: 17px; font-family: Consolas, "Courier New", monospace }
+.dialog .forgot { display: block; height: auto; margin: 2px auto 8px; padding: 4px 6px; border: 0; background: none; box-shadow: none; color: var(--primary); font-size: 13px; font-weight: 600; cursor: pointer }
+.dialog .forgot:hover { text-decoration: underline; background: none }
 @keyframes pop { from { transform: scale(.94); opacity: 0 } to { transform: none; opacity: 1 } }
 
 /* ---------- dashboard ---------- */

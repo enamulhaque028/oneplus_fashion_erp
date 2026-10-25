@@ -217,6 +217,8 @@
       OPF.records.edit("customers", cid);
       document.getElementById("pw1").value = "secret1"; document.getElementById("pw2").value = "secret1";
       document.querySelector("#modal form").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      check("a new password shows its recovery code", /^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/.test((document.getElementById("rcode") || {}).textContent), true);
+      document.querySelector("#modal form").dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
       check("admin password created, edit form opened", [!!db().auth.hash, form().classList.contains("editing")], [true, true]);
       fill({ mobile: "01799999999" }); submit();
       check("record edited", [db().customers.length, db().customers[0].mobile], [1, "01799999999"]);

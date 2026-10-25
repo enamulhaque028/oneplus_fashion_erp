@@ -145,8 +145,8 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 168, edge 64, uat 44, regression 62, cloud 40, offline 21 checks, all passing;
-  - self-test 30 / 30 on Chrome 73, 109, current and Firefox 115.
+  - current Chrome and Chromium 109: e2e 181, edge 64, uat 45, regression 62, cloud 40, offline 21 checks, all passing;
+  - self-test 31 / 31 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
   Advance, Charge, Net COD or Settled, and it never changes dues: dues change only through Sales and
@@ -206,5 +206,10 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   Microsoft Excel, the owner's sign-off on business rules).
 - **Out of scope for this offline edition:** multi-user, per-user login and roles, cloud backup,
   barcode scanning, multi-branch. These need a server version.
+- **Admin recovery code (2026-10-25):** creating the password shows a one-time code (12 of
+  `A-Z 2-9` without look-alikes, `XXXX-XXXX-XXXX`) for the owner's paper; **Forgot password?** in the
+  password window takes it, sets a new password and issues a new code. Settings / Backup: Make / New
+  Recovery Code. Stored only as a salted hash in `auth.rsalt` / `rhash` (+ `rdate`), filled in by
+  `fillDefaults` for older data. Tests: `lib.password()` closes the code window and returns the code.
 - **Security limit:** the admin password is a salted SHA-256 hash in the same localStorage. It
   deters casual edits only. Don't describe it as strong security.

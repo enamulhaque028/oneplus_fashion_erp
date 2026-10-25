@@ -247,6 +247,13 @@
     "Sign out of Google Drive backup on this computer?": "এই কম্পিউটারে গুগল ড্রাইভ ব্যাকআপ থেকে সাইন আউট করবেন?",
     "Some changes are not in Google Drive yet. Sign out anyway? They stay on this computer only.": "কিছু পরিবর্তন এখনো গুগল ড্রাইভে যায়নি। তবুও সাইন আউট করবেন? সেগুলো শুধু এই কম্পিউটারে থাকবে।",
     "Password must be at least 4 characters.": "পাসওয়ার্ড কমপক্ষে ৪ অক্ষরের হতে হবে।", "Passwords do not match.": "পাসওয়ার্ড মেলেনি।", "Wrong password.": "ভুল পাসওয়ার্ড।",
+    "Forgot password?": "পাসওয়ার্ড ভুলে গেছেন?", "Your recovery code": "আপনার রিকভারি কোড", "I have written it down": "আমি লিখে রেখেছি",
+    "Write this code on paper and keep it safe, away from this computer. If you forget the admin password, click \"Forgot password?\" and enter this code. It is shown only once.": "কোডটি কাগজে লিখে এই কম্পিউটার থেকে দূরে নিরাপদে রাখুন। অ্যাডমিন পাসওয়ার্ড ভুলে গেলে \"পাসওয়ার্ড ভুলে গেছেন?\" ক্লিক করে এই কোড দিন। কোডটি শুধু একবারই দেখানো হয়।",
+    "No recovery code": "রিকভারি কোড নেই", "No recovery code was made on this computer, so the password cannot be reset here. Contact the developer.": "এই কম্পিউটারে কোনো রিকভারি কোড তৈরি করা হয়নি, তাই এখানে পাসওয়ার্ড রিসেট করা যাবে না। ডেভেলপারের সাথে যোগাযোগ করুন।",
+    "Reset Admin Password": "অ্যাডমিন পাসওয়ার্ড রিসেট", "Enter the recovery code you wrote down when the password was created.": "পাসওয়ার্ড তৈরির সময় যে রিকভারি কোড লিখে রেখেছিলেন সেটি দিন।",
+    "Wrong recovery code.": "ভুল রিকভারি কোড।", "Set New Admin Password": "নতুন অ্যাডমিন পাসওয়ার্ড দিন", "Recovery code accepted. Enter the new admin password.": "রিকভারি কোড সঠিক। নতুন অ্যাডমিন পাসওয়ার্ড দিন।",
+    "No recovery code yet. Make one now, so a forgotten password can be reset.": "এখনও রিকভারি কোড নেই। এখনই একটি তৈরি করুন, যাতে পাসওয়ার্ড ভুলে গেলে রিসেট করা যায়।",
+    "New Recovery Code": "নতুন রিকভারি কোড", "Make Recovery Code": "রিকভারি কোড তৈরি করুন", "Make a new recovery code? The old code will stop working.": "নতুন রিকভারি কোড তৈরি করবেন? পুরোনো কোড আর কাজ করবে না।",
     "Save anyway?": "তবুও সংরক্ষণ করবেন?"
   };
 
@@ -257,6 +264,7 @@
   // Texts with numbers or names in them. The first match wins.
   const P = [
     [/^(.+) · One Plus Fashion ERP$/, (m, a) => t(a) + " · One Plus Fashion ERP"],
+    [/^Recovery code made on (.+)\. Keep the paper safe: it resets a forgotten password\.$/, "রিকভারি কোড তৈরি হয়েছে $1। কাগজটি নিরাপদে রাখুন: এটি দিয়ে ভুলে যাওয়া পাসওয়ার্ড রিসেট করা যায়।"],
     [/^(\d+)% paid$/, "$1% পরিশোধিত"],
     [/^(\d+)% collected$/, "$1% আদায়"],
     [/^(.+) \(Advance\)$/, "$1 (অগ্রিম)"],

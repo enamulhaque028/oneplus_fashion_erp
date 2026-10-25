@@ -169,7 +169,7 @@ const { start, sleep } = require("./lib");
   await page.evaluate(() => { OPF.auth.lock(); });
   await go("courier"); await fill({ customer: c1, cod: 500, status: "Sent" }); await submit();
   await page.evaluate(() => { const s = document.querySelector('select[data-change="courier.status"]'); s.value = "Delivered"; s.dispatchEvent(new Event("change", { bubbles: true })); });
-  await page.click('#modal button[type="button"]');
+  await page.click('#modal [data-act="modal.cancel"]');
   check("cancelling the password keeps courier status unchanged", await db((d) => d.courier[0].status), "Sent");
 
   section("User input is shown as text, never run as code");

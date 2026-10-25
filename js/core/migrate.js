@@ -11,7 +11,7 @@
     return {
       version: C.SCHEMA_VERSION,
       company: Object.assign({}, C.DEFAULT_COMPANY),
-      auth: { salt: "", hash: "" },
+      auth: { salt: "", hash: "", rsalt: "", rhash: "", rdate: "" },
       suppliers: [], materials: [], purchases: [], issues: [], products: [],
       productionOrders: [], production: [], factories: [], transfers: [],
       customers: [], sales: [], returns: [], payments: [], expenses: [], courier: [], notes: [],
