@@ -142,6 +142,7 @@ A notepad for ideas and reminders:
 | [docs/QA_CHECKLIST.md](docs/QA_CHECKLIST.md) | A 30-minute check on the shop laptop before going live |
 | [docs/CLOUD_SETUP.md](docs/CLOUD_SETUP.md) | Google sign-in and Drive backup setup, and the on/off flag |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Developers: structure, layers, how to add a page |
+| [docs/OnePlusFashion_ERP_Presentation_BN.pdf](docs/OnePlusFashion_ERP_Presentation_BN.pdf) | Client presentation in Bengali (14 slides): features, the new memo, desktop app, data safety, how to start |
 | [AGENTS.md](AGENTS.md) | Rules and status for developers and AI coding agents |
 
 **Before going live:** double-click `tests/browser-smoke.html`. It must say **"PASS - this browser runs the ERP correctly"**. It uses temporary data and never touches the ERP data. Then follow [docs/QA_CHECKLIST.md](docs/QA_CHECKLIST.md).
