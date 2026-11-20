@@ -766,6 +766,14 @@ form .form-title:empty { display: none }
 @media (max-width: 640px) { .cd-opts { grid-template-columns: 1fr } }
 
 /* short notice ("Updated from Google Drive") */
+/* old hosted address: the new one (above the sign-in screen too) */
+#movedBar { position: fixed; left: 50%; bottom: 16px; z-index: 96; transform: translateX(-50%); width: 760px; max-width: calc(100% - 24px); display: flex; align-items: center; padding: 12px 14px; border-radius: 14px; background: #1e293b; color: #fff; box-shadow: var(--shadow-3) }
+#movedBar > .i { flex: 0 0 22px; width: 22px; height: 22px; margin-right: 12px; color: #fbbf24 }
+#movedBar .tx { flex: 1 1 auto; min-width: 0; margin-right: 12px; line-height: 1.35 }
+#movedBar .tx b { display: block; font-size: 14px }
+#movedBar .tx small { display: block; color: #cbd5e1; font-size: 12.5px }
+#movedBar .btn { flex: 0 0 auto; white-space: nowrap }
+@media (max-width: 640px) { #movedBar { flex-wrap: wrap; bottom: 10px } #movedBar .btn { margin: 8px 0 0 34px } }
 #cloudToast { position: fixed; left: 50%; bottom: 22px; z-index: 95; transform: translate(-50%, 30px); opacity: 0; pointer-events: none; padding: 11px 18px; border-radius: 12px; background: #1e293b; color: #fff; font-size: 13.5px; box-shadow: var(--shadow-3); transition: opacity .25s ease, transform .25s ease }
 #cloudToast.show { opacity: 1; transform: translate(-50%, 0) }
 

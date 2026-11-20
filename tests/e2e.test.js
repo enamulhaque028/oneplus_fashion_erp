@@ -145,6 +145,12 @@ const { start, sleep, ROOT } = require("./lib");
   check("date-wise due list shows invoice and as-on balance", /INV-00001/.test(due) && /40,000\.00/.test(due), true);
   await page.screenshot({ path: path.join(OUT, "customers.png"), fullPage: true });
 
+  section("Moved site: the old address points to the new one");
+  check("opened from the old address: a notice with the new address and a link to it; anywhere else: nothing", await page.evaluate(() => {
+    const d = document.createElement("div"); d.innerHTML = OPF.shell.movedNotice("enamulhaque028.github.io");
+    return [/new address: onepluserp\.github\.io\/wearhouse/.test(d.textContent), d.querySelector("a").getAttribute("href"), OPF.shell.movedNotice("onepluserp.github.io"), OPF.shell.movedNotice(""), !!document.getElementById("movedBar")];
+  }), [true, "https://onepluserp.github.io/wearhouse/", "", "", false]);
+
   section("Customers & Sales: one page (New Invoice | Customers)");
   const nCust = await db((d) => d.customers.length);
   check("one menu item: Customers & Sales (Customers and Sales / Invoice merged)", await page.evaluate(() => [Array.from(document.querySelectorAll("#nav .menu a.item")).map((a) => a.dataset.page).filter((p) => p == "customers" || p == "sales"), document.querySelector("#nav a.item.on").textContent.trim()]), [["sales"], "Customers & Sales"]);

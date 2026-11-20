@@ -5,8 +5,8 @@
 **A complete, offline ERP for a wholesale garment business**<br>
 Purchase · Production · Stock · Sales & Invoices · Customer Dues · Payments · Courier · Costing · Reports
 
-[![Open the ERP](https://img.shields.io/badge/Open%20the%20ERP-online-0f9f8c?style=for-the-badge)](https://enamulhaque028.github.io/oneplus_fashion_erp/)
-[![Download ZIP](https://img.shields.io/badge/Download-ZIP-2563eb?style=for-the-badge)](https://github.com/enamulhaque028/oneplus_fashion_erp/archive/refs/heads/main.zip)
+[![Open the ERP](https://img.shields.io/badge/Open%20the%20ERP-online-0f9f8c?style=for-the-badge)](https://onepluserp.github.io/wearhouse/)
+[![Download ZIP](https://img.shields.io/badge/Download-ZIP-2563eb?style=for-the-badge)](https://github.com/onepluserp/wearhouse/archive/refs/heads/main.zip)
 
 ![Works offline](https://img.shields.io/badge/works-offline-16a34a)
 ![No install](https://img.shields.io/badge/install-none-16a34a)
@@ -55,7 +55,12 @@ Supplier → Purchase → Raw Stock → Material Issue → Production → Finish
 
 ### Option 1: online (any computer with internet)
 
-Open **https://enamulhaque028.github.io/oneplus_fashion_erp/** in Chrome or Firefox. Nothing to install.
+Open **https://onepluserp.github.io/wearhouse/** in Chrome or Firefox. Nothing to install.
+
+> **New address (20 Nov 2026).** The ERP used to be at `enamulhaque028.github.io/oneplus_fashion_erp`.
+> Each address keeps its own data in the browser, so to bring your data: on the old address check the
+> top bar says **Synced**, then open the new one and sign in with the **same Google account**. (Or
+> download the restore file (.json) on the old one and restore it on the new one.)
 
 It **works offline too**: open it once with internet, and after that it opens without internet (in a
 normal window, not Incognito). **Desktop app:** click **Install desktop app** in **Settings / Backup**
@@ -66,7 +71,7 @@ normal window, not Incognito). **Desktop app:** click **Install desktop app** in
 
 ### Option 2: on the shop computer, offline (recommended for Windows 7)
 
-1. **Download** the ZIP: [**oneplus_fashion_erp-main.zip**](https://github.com/enamulhaque028/oneplus_fashion_erp/archive/refs/heads/main.zip)
+1. **Download** the ZIP: [**wearhouse-main.zip**](https://github.com/onepluserp/wearhouse/archive/refs/heads/main.zip)
    (or on GitHub: green **Code** button → **Download ZIP**).
 2. **Extract** it to a fixed place, for example `D:\OnePlusFashion_ERP\`.
 3. **Double-click `START_ERP.bat`.** It opens the ERP in Chrome, or in Firefox if Chrome isn't installed.
@@ -113,8 +118,8 @@ CLOUD: {
 ```
 
 It works on the online link only. Setup and troubleshooting: [docs/CLOUD_SETUP.md](docs/CLOUD_SETUP.md) ·
-[Privacy Policy](https://enamulhaque028.github.io/oneplus_fashion_erp/privacy.html) ·
-[Terms](https://enamulhaque028.github.io/oneplus_fashion_erp/terms.html)
+[Privacy Policy](https://onepluserp.github.io/wearhouse/privacy.html) ·
+[Terms](https://onepluserp.github.io/wearhouse/terms.html)
 
 ---
 

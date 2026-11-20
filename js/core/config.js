@@ -18,6 +18,10 @@
 
     // Google sign-in + Google Drive sync (see docs/CLOUD_SETUP.md). Leave GOOGLE_CLIENT_ID empty to
     // keep the ERP fully offline: no login screen, no network. Only works on the hosted (https) link.
+    // The hosted ERP moved on 2026-11-20. Opened from the old address, it says so (the old site keeps
+    // working, so the shop can check "Synced" before signing in at the new one).
+    MOVED: { FROM_HOST: "enamulhaque028.github.io", TO: "https://onepluserp.github.io/wearhouse/" },
+
     CLOUD: {
       // Feature flag: true = Google sign-in and Drive backup on the hosted link; false = switched off
       // (no sign-in screen, no sync badge, data stays on the computer). Nothing is deleted either

@@ -194,7 +194,12 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   it becomes **Uninstall** - web pages cannot uninstall apps, so it shows the browser's uninstall steps.
   Chromium with no `beforeinstallprompt` within 4 s of load counts as installed (Mac Chrome has no
   `getInstalledRelatedApps`); Install waits up to 3 s for the offer, then shows "Already installed".
-- **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../oneplus_fashion_erp/#/page`
+- **Moved repo / site (2026-11-20):** main repo `github.com/onepluserp/wearhouse` (git remote `origin`,
+  site `https://onepluserp.github.io/wearhouse/`); the old repo `enamulhaque028/oneplus_fashion_erp` is
+  remote `old`. Push every commit to both while the shop moves. Opened from the old host, the ERP shows
+  `#movedBar` (`C.MOVED`, `shell.movedNotice`): data moves by Google Drive sign-in or a .json backup
+  (browser storage is per address). Google Cloud needs the origin `https://onepluserp.github.io`.
+- **Hosted address:** `OnePlusFashion_ERP.html` rewrites the address bar to `.../wearhouse/#/page`
   on http(s) only (`index.html` forwards back, so reload and bookmarks work). Never rename the file:
   Firefox keeps a double-clicked ERP's saved data per file, so a new name would open empty.
 - **Feature flag `CLOUD.ENABLE_GOOGLE_LOGIN`** (`js/core/config.js`, set to **true** again on 2026-10-19 at the

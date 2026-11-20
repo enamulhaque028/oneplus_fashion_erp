@@ -138,7 +138,8 @@
     "New Customer": "নতুন গ্রাহক", "Saved to Customers and chosen for this invoice.": "গ্রাহক তালিকায় যোগ হবে এবং এই ইনভয়েসে বাছাই হবে।", "Save Customer": "গ্রাহক সংরক্ষণ",
     "View profile": "প্রোফাইল দেখুন", "No mobile / address": "মোবাইল / ঠিকানা নেই", "Over limit": "সীমা ছাড়িয়েছে",
     "Choose the customer (search by name or mobile).": "গ্রাহক বাছুন (নাম বা মোবাইল দিয়ে খুঁজুন)।", "Enter the shop / customer name.": "দোকান / গ্রাহকের নাম লিখুন।",
-    "Add a new customer anyway?": "তবুও নতুন গ্রাহক যোগ করবেন?", "Type 3 or more digits of the mobile number": "মোবাইল নম্বরের অন্তত ৩টি অঙ্ক লিখুন",
+    "Add a new customer anyway?": "তবুও নতুন গ্রাহক যোগ করবেন?", "Open the new address": "নতুন ঠিকানা খুলুন",
+    "Check that the top bar says Synced, then open the new address and sign in with the same Google account: your data comes along.": "উপরের বারে Synced লেখা আছে কিনা দেখুন, তারপর নতুন ঠিকানা খুলে একই Google অ্যাকাউন্টে সাইন ইন করুন: আপনার ডেটা সঙ্গে চলে আসবে।", "Type 3 or more digits of the mobile number": "মোবাইল নম্বরের অন্তত ৩টি অঙ্ক লিখুন",
     "Original Invoice": "মূল ইনভয়েস", "Return Quantity": "ফেরতের পরিমাণ", "Return Amount": "ফেরতের টাকা", "Return to Location": "যেখানে ফেরত",
     "Enter the original invoice number to get the sold rate automatically.": "বিক্রির দর নিজে থেকে পেতে মূল ইনভয়েস নম্বর লিখুন।",
     "Damaged piece": "নষ্ট পিস", "Size problem": "সাইজ সমস্যা", "Colour mismatch": "রং মেলেনি", "Stitching fault": "সেলাইয়ে ত্রুটি", "Returns": "ফেরত",
@@ -272,6 +273,7 @@
   const P = [
     [/^(.+) · One Plus Fashion ERP$/, (m, a) => t(a) + " · One Plus Fashion ERP"],
     [/^Recovery code made on (.+)\. Keep the paper safe: it resets a forgotten password\.$/, "রিকভারি কোড তৈরি হয়েছে $1। কাগজটি নিরাপদে রাখুন: এটি দিয়ে ভুলে যাওয়া পাসওয়ার্ড রিসেট করা যায়।"],
+    [/^One Plus Fashion ERP has a new address: (.+)$/, "One Plus Fashion ERP-এর নতুন ঠিকানা: $1"],
     [/^Add new customer "(.+)"$/, 'নতুন গ্রাহক যোগ করুন "$1"'],
     [/^Due ([\d,.]+)$/, "বাকি $1"],
     [/^(.+) is already a customer\.$/, "$1 আগে থেকেই গ্রাহক।"],

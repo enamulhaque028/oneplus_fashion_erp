@@ -8,7 +8,7 @@ Until this is done the ERP works exactly as before: no login screen, data only o
 **You need:**
 - a Google account to own the setup. It can be yours as the developer; the shop's data still goes
   into **the shop's own** Google Drive, whichever account signs in at the shop.
-- the hosted address of the ERP: `https://enamulhaque028.github.io/oneplus_fashion_erp/`
+- the hosted address of the ERP: `https://onepluserp.github.io/wearhouse/`
 
 ## 1. Create a Google Cloud project
 
@@ -40,10 +40,10 @@ as "non-sensitive", so the app does not need a Google review.
 ## 5. Let any Google account sign in
 
 1. Google Auth Platform → **Branding**. Fill in (no logo: a logo needs Google's review):
-   - App home page: `https://enamulhaque028.github.io/oneplus_fashion_erp/`
-   - Privacy policy: `https://enamulhaque028.github.io/oneplus_fashion_erp/privacy.html`
-   - Terms of service: `https://enamulhaque028.github.io/oneplus_fashion_erp/terms.html`
-   - Authorized domains: `enamulhaque028.github.io`
+   - App home page: `https://onepluserp.github.io/wearhouse/`
+   - Privacy policy: `https://onepluserp.github.io/wearhouse/privacy.html`
+   - Terms of service: `https://onepluserp.github.io/wearhouse/terms.html`
+   - Authorized domains: `onepluserp.github.io`
    → **Save**. (Both pages are in the repository: `privacy.html`, `terms.html`.)
 2. Google Auth Platform → **Audience** → **Publish app** → **Confirm**. The status becomes
    "In production".
@@ -57,9 +57,9 @@ instead. Only listed addresses can then sign in, and Google shows an extra "unve
 2. Application type: **Web application**. Name: `ERP web`.
 3. **Authorized JavaScript origins** → **Add URI**:
    ```
-   https://enamulhaque028.github.io
+   https://onepluserp.github.io
    ```
-   Use just the address, without `/oneplus_fashion_erp/` and without a slash at the end.
+   Use just the address, without `/wearhouse/` and without a slash at the end.
 4. Leave "Authorized redirect URIs" empty → **Create**.
 5. Copy the **Client ID**. It looks like `1234567890-abc123def456.apps.googleusercontent.com`.
    You do **not** need the client secret.
@@ -82,7 +82,7 @@ in step 6.
 
 ## 8. First sign-in at the shop
 
-1. Open `https://enamulhaque028.github.io/oneplus_fashion_erp/`. The teal sign-in screen appears.
+1. Open `https://onepluserp.github.io/wearhouse/`. The teal sign-in screen appears.
 2. Click **Sign in with Google**, choose **the shop's** Google account, and allow access.
 3. The ERP saves its data to the shop's Drive, in the folder **One Plus Fashion ERP**, then opens.
 
@@ -118,7 +118,7 @@ Only the exact value `true` switches it on.
 
 | Message | Fix |
 |---|---|
-| `Error 400: origin_mismatch` | The address in step 6 is wrong. It must be exactly `https://enamulhaque028.github.io`. |
+| `Error 400: origin_mismatch` | The address in step 6 is wrong. It must be exactly `https://onepluserp.github.io`. |
 | `Access blocked: app has not completed verification` / `access_denied` | Do step 5 (publish), or add the account as a test user. |
 | "Google sign-in window could not open" | Allow pop-ups for the site. Click the icon at the right end of the address bar. |
 | Sign-in screen never appears | The Client ID is empty or the page was opened as a file. Use the web link. |

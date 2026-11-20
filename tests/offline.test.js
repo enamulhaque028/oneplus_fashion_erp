@@ -1,5 +1,5 @@
 /* The hosted link opens without internet (sw.js keeps a copy of the ERP's files).
-   Serves the project over http at /oneplus_fashion_erp/ (like GitHub Pages), opens it once online,
+   Serves the project over http at /wearhouse/ (like GitHub Pages), opens it once online,
    then goes offline and reloads. Run: node offline.test.js */
 const http = require("http");
 const fs = require("fs");
@@ -7,7 +7,7 @@ const path = require("path");
 const { start, sleep, ROOT } = require("./lib");
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".png": "image/png", ".webmanifest": "application/manifest+json", ".json": "application/json" };
-const BASE = "/oneplus_fashion_erp/";
+const BASE = "/wearhouse/";
 
 (async () => {
   const T = await start("offline");

@@ -226,7 +226,19 @@
     });
   }
 
+  // Old hosted address: a notice with the new one. Data in the browser stays with each address,
+  // so it travels by Google Drive sign-in (or a .json backup).
+  function movedNotice(host) {
+    const m = C.MOVED;
+    if (!m || host != m.FROM_HOST) return "";
+    const to = m.TO.replace(/^https?:\/\//, "").replace(/\/$/, "");
+    return `<div id="movedBar" role="status">${OPF.icon("alert")}<span class="tx"><b>One Plus Fashion ERP has a new address: ${esc(to)}</b>` +
+      "<small>Check that the top bar says Synced, then open the new address and sign in with the same Google account: your data comes along.</small></span>" +
+      `<a class="btn good" href="${esc(m.TO)}" rel="noopener">Open the new address</a></div>`;
+  }
+
   function init() {
+    document.body.insertAdjacentHTML("beforeend", movedNotice(location.hostname));
     // Feature flag ENABLE_BENGALI off: no language switch in the header.
     if (C.ENABLE_BENGALI !== true) { const ls = document.querySelector(".top .lang-switch"); if (ls) ls.remove(); }
     // Phones: re-check tables whenever a page draws, and when the screen turns.
@@ -247,7 +259,7 @@
     });
   }
 
-  OPF.shell = { render, init, stackTables, installBox };
+  OPF.shell = { render, init, stackTables, installBox, movedNotice };
   OPF.actions.register({
     "nav.group": (el) => { const gi = el.dataset.group; open[gi] = !el.parentNode.classList.contains("open"); el.parentNode.classList.toggle("open", open[gi]); },
     // The whole screen is redrawn in the other language (see js/ui/i18n.js).
