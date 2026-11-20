@@ -152,7 +152,7 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 184, edge 64, uat 45, regression 62, cloud 40, offline 21 checks, all passing;
+  - current Chrome and Chromium 109: e2e 196, edge 64, uat 45, regression 62, cloud 40, offline 21 checks, all passing;
   - self-test 31 / 31 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No
@@ -209,6 +209,11 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   check on the hosted link, including on Windows 7 Chrome 109.
   Sync state lives under localStorage key `opf_erp_cloud` (tab token in sessionStorage
   `opf_erp_cloud_token`), never in the ERP data.
+- **Customers & Sales (2026-11-20):** one menu item (`sales`) with New Invoice | Customers tabs
+  (links `#/sales`, `#/customers`; `pages.customers.render` draws through `router.show("sales", ...)`,
+  the customer profile too, so the sidebar keeps Customers & Sales). The invoice's customer is a
+  search box over the real `<select name="customer">` (kept, invisible, for the value / tests); quick
+  add writes with `store.upsert` + `log` (not `records.save`, which would end an invoice edit).
 - **Not yet done:** the manual `docs/QA_CHECKLIST.md` run on the real Windows 7 laptop (printer,
   Microsoft Excel, the owner's sign-off on business rules).
 - **Out of scope for this offline edition:** multi-user, per-user login and roles, cloud backup,

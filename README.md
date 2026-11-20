@@ -27,7 +27,7 @@ Purchase · Production · Stock · Sales & Invoices · Customer Dues · Payments
 | 🛒 **Purchase** | Suppliers · Fabric / Raw Purchase · Raw Material Stock |
 | 🏭 **Production** | Production Order · Material Issue · Production / Finished · Factory / Worker |
 | 📦 **Product & Stock** | Style / Product · Factory → Shop transfer · Showroom Stock · Costing & Stock Summary |
-| 💰 **Sales** | Customers · Sales / Invoice · Sales Return · Payment / Collection · Courier / Delivery |
+| 💰 **Sales** | Customers & Sales (new invoice with customer search / quick add, customer list) · Sales Return · Payment / Collection · Courier / Delivery |
 | 📊 **Accounts** | Expenses · Ledgers / Due · Reports (P/L view) |
 | 📝 **Rough Notes** | Notes with formatting, links, colours, pins and quick sketches |
 | 🛡️ **Admin** | Users / Activity log · Settings / Backup · admin password |

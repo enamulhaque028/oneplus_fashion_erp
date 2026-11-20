@@ -124,7 +124,7 @@ count as two different styles.
 | Cutting starts | Create a production order; issue fabric to it | Production Order, Material Issue |
 | Goods are finished | Record accepted / rejected pieces | Production / Finished |
 | Goods go to the shop | Record dispatched and received pieces | Factory → Shop |
-| A customer buys | Make the invoice, print it | Sales / Invoice |
+| A customer buys | Make the invoice, print it | Customers & Sales (New Invoice) |
 | Money comes in | Record the collection, print the receipt | Payment / Collection |
 | A parcel is sent | Record it with tracking and a note; update status on delivery. When the courier pays, enter it on Payment / Collection | Courier / Delivery |
 | Any expense | Record it | Expenses |
@@ -209,17 +209,23 @@ Record goods moving from a factory to a showroom.
 ### Showroom Stock
 Closing stock for each showroom: received − sold + returned, per style, color and size.
 
-### Customers
-The wholesale party list, with a summary of dues.
+### Customers & Sales
+Customers and invoices are one page (Sales menu → **Customers & Sales**) with two tabs:
+**New Invoice** | **Customers** (the number shows how many customers there are). Each tab has its own
+address (`#/sales`, `#/customers`), so either can be bookmarked or opened in a new tab.
+
+#### Customers tab
+The wholesale party list, with a summary of dues. **Add Customer** is at the top.
 - **Previous Due**: what the customer owed before starting the ERP. **Credit Limit** is optional;
   customers above it are marked **Over limit**.
 - **Summary cards**: total parties, due parties, total due, cash parties, customer advance, highest due.
-- **Cash Parties** (left): customers who owe nothing. A customer who paid extra shows "(Advance)".
-  **Due Parties** (right): customers who owe money, largest first.
+- **Due Parties**: customers who owe money, largest first. **Cash Parties** (below): customers who
+  owe nothing; a customer who paid extra shows "(Advance)".
+- **New Invoice** on a customer opens the New Invoice tab with that customer already chosen.
 - **Date-wise Due List**: choose From and To and click **Show**. You get:
   - invoices with a due in that period, day by day with subtotals;
   - each party's full due **as on** the To date.
-- Click a customer's name, or **View**, to open their profile.
+- Click a customer's name to open their profile.
 
 ### Customer profile
 Opened from search, customer lists, invoices and payments. It shows:
@@ -228,11 +234,20 @@ Opened from search, customer lists, invoices and payments. It shows:
 - the **Ledger Statement** with a running balance;
 - every invoice (reprint with **Invoice**), payment (reprint with **Receipt**), return and parcel.
 
-Buttons: **Collect Payment**, **Edit Profile**, **Print Statement**.
+Buttons: **New Invoice**, **Collect Payment**, **Edit Profile**, **Print Statement**.
 
-### Sales / Invoice
+#### New Invoice tab
 Make a wholesale invoice with as many items as needed.
-1. Choose the **Customer**. Check the **Stock Location** (which showroom the goods come from).
+1. **Customer:** click the box and type part of the name or the mobile number (any format,
+   e.g. 01711, 711-111). The list shows each match with its due; pick one with the mouse, or with
+   ↑ ↓ and Enter. A card then shows the customer's balance, credit limit (and **Over limit**),
+   number of invoices and a link to the profile.
+   - **New customer?** Choose **+ Add new customer** at the bottom of the list (or press Enter when
+     nothing matches). What you typed fills the name (or the mobile, if it was a number). Fill in the
+     rest and click **Save Customer**: the customer is added to the Customers tab and chosen for this
+     invoice, and nothing else on the invoice is lost. If a customer with that mobile or name already
+     exists, the ERP asks first.
+   Check the **Stock Location** (which showroom the goods come from).
 2. Fill the item rows: Style Code (press Tab and the rate fills in from the product), Color, Size, Qty.
    Use **+ Add Item** for more rows and **x** to remove a row.
 3. Enter the **Discount** and the **Paid Amount** received now. **Paid in Full (Cash)** fills in the full total.

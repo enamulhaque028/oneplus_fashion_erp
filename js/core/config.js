@@ -76,8 +76,7 @@
       ["products", "Style / Product"],
       ["transfer", "Factory → Shop"],
       ["showroom", "Showroom Stock"],
-      ["customers", "Customers"],
-      ["sales", "Sales / Invoice"],
+      ["sales", "Customers & Sales"],
       ["returns", "Sales Return"],
       ["payments", "Payment / Collection"],
       ["expenses", "Expenses"],
@@ -97,7 +96,7 @@
       ["Purchase", "bag", "orange", ["suppliers", "purchase", "materials"]],
       ["Production", "factory", "violet", ["productionOrder", "issue", "production", "factories"]],
       ["Product & Stock", "box", "blue", ["products", "transfer", "showroom", "costing"]],
-      ["Sales", "cart", "green", ["customers", "sales", "returns", "payments", "courier"]],
+      ["Sales", "cart", "green", ["sales", "returns", "payments", "courier"]],
       ["Accounts", "bars", "rose", ["expenses", "ledger", "reports"]],
       ["Rough Notes", "note", "orange", ["notes"]],
       ["Admin", "shield", "slate", ["users", "settings"]]

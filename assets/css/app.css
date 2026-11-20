@@ -394,6 +394,51 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 .tabs button { height: 32px; margin: 0 2px; background: transparent; color: var(--text-2); border: 0; border-radius: 9px }
 .tabs button:hover { background: var(--surface); box-shadow: none; color: var(--text) }
 .tabs button.on { background: var(--surface); color: var(--primary-ink); box-shadow: var(--shadow-1) }
+/* Customers & Sales: New Invoice | Customers (links: each tab has its own address) */
+.tabs.modes { margin: 0 0 14px }
+.tabs.modes a { display: inline-flex; align-items: center; height: 38px; padding: 0 18px; margin: 0 2px; border-radius: 9px; color: var(--text-2); font-weight: 600; text-decoration: none }
+.tabs.modes a .i { width: 17px; height: 17px; margin-right: 8px }
+.tabs.modes a small { margin-left: 8px; padding: 1px 8px; border-radius: 999px; background: var(--surface-3); color: var(--text-2); font-size: 11.5px; font-weight: 700 }
+.tabs.modes a:hover { background: var(--surface); color: var(--text) }
+.tabs.modes a.on { background: var(--surface); color: var(--primary-ink); box-shadow: var(--shadow-1) }
+.tabs.modes a.on small { background: var(--primary-soft); color: var(--primary-ink) }
+form .form-title { margin: 0 0 12px }
+form .form-title:empty { display: none }
+
+/* customer search on the invoice: the real select stays underneath, invisible */
+.cpick { position: relative }
+.cpick select { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; opacity: 0; pointer-events: none }
+.cpick input { position: relative; z-index: 1 }
+.cpick-list { position: absolute; left: 0; width: 400px; min-width: 100%; top: calc(100% + 4px); z-index: 30; background: var(--surface); color: var(--text); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-3); max-height: 320px; overflow: auto }
+.cpick-list[hidden] { display: none }
+.cpick-list a { display: flex; align-items: center; padding: 9px 12px; color: inherit; text-decoration: none; border-bottom: 1px solid var(--border) }
+.cpick-list a:last-child { border-bottom: 0 }
+.cpick-list a b { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600 }
+.cpick-list a span { margin: 0 10px; color: var(--muted); font-size: 12.5px; white-space: nowrap }
+.cpick-list a em { font-style: normal; font-size: 12.5px; font-weight: 700; white-space: nowrap }
+.cpick-list a.on, .cpick-list a:hover { background: var(--primary-soft) }
+.cpick-list a.add { color: var(--primary-ink); font-weight: 700 }
+.cpick-list .hint { padding: 10px 12px; color: var(--muted); font-size: 13px }
+.cpick-list a.add .i { width: 16px; height: 16px; margin-right: 8px }
+
+/* the chosen customer: balance, credit limit, invoices */
+.ccard { display: flex; flex-wrap: wrap; align-items: center; margin: 4px 0 6px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 14px; background: var(--surface-2) }
+.ccard .av { flex: 0 0 38px; width: 38px; height: 38px; margin-right: 12px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--primary-soft); color: var(--primary-ink); font-weight: 800; font-size: 16px }
+.ccard .who { margin-right: 22px; min-width: 0 }
+.ccard .who b { display: block; font-size: 15px }
+.ccard .who small, .ccard .fig small { display: block; color: var(--muted); font-size: 12px }
+.ccard .fig { margin: 4px 22px 4px 0 }
+.ccard .fig b { font-size: 15px }
+.ccard .fig .pill { margin-left: 6px; vertical-align: middle }
+.ccard .grow { flex: 1 1 auto }
+
+/* add a customer inside the invoice */
+.cnew { margin: 6px 0 4px; padding: 14px 16px 6px; border: 1px dashed var(--primary); border-radius: 14px; background: var(--primary-soft) }
+.cnew[hidden] { display: none }
+.cnew-head { margin-bottom: 10px }
+.cnew-head b { display: inline-flex; align-items: center; margin-right: 10px; color: var(--primary-ink) }
+.cnew-head b .i { width: 16px; height: 16px; margin-right: 6px }
+@media (max-width: 640px) { .cpick-list { width: auto; right: 0 } .ccard .who { flex: 1 1 100%; margin: 0 0 6px } .ccard .av { display: none } .tabs.modes a { padding: 0 12px } }
 .inline { display: flex; flex-wrap: wrap; align-items: flex-end }
 .inline > * { margin: 0 10px 10px 0 }
 .inline .field { min-width: 170px }

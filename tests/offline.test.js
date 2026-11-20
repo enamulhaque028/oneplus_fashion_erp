@@ -75,7 +75,7 @@ const BASE = "/oneplus_fashion_erp/";
   await pg.reload(); await sleep(900);
   check("reload without internet: the dashboard opens", await pg.$eval("#app h1", (h) => h.textContent), "Dashboard");
   await pg.goto(site + "#/customers"); await sleep(700);
-  check("typing the address without internet: pages open and the saved data is there", [await pg.$eval("#app h1", (h) => h.textContent), /Offline Test Shop/.test(await pg.$eval("#app", (a) => a.textContent))], ["Customer / Wholesale Party", true]);
+  check("typing the address without internet: pages open and the saved data is there", [await pg.$eval("#app h1", (h) => h.textContent), /Offline Test Shop/.test(await pg.$eval("#app", (a) => a.textContent))], ["Customers & Sales", true]);
   await pg.goto(site + "OnePlusFashion_ERP.html#/notes"); await sleep(700);
   check("the old address works offline too", await pg.$eval("#app h1", (h) => h.textContent), "Rough Notes");
   check("styles are loaded offline", await pg.evaluate(() => getComputedStyle(document.querySelector(".top")).position), "fixed");

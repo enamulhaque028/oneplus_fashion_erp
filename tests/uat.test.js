@@ -64,7 +64,9 @@ const { start, sleep } = require("./lib");
 
   section("Step 9  Sale with two items");
   await go("sales");
-  await type({ customer: "Karim Store" });
+  // Like a person: type part of the name in the Customer box and press Enter.
+  await page.click("#custFind"); await page.keyboard.type("karim"); await sleep(150); await page.keyboard.press("Enter"); await sleep(100);
+  check("Expect: a card with Karim Store and Balance 50,000.00", await page.$eval("#custInfo", (e) => /Karim Store/.test(e.innerText) && /Balance\s+50,000\.00/.test(e.innerText)), true);
   const row = (i, k) => `#items tr.item:nth-child(${i}) [data-k="${k}"]`;
   for (const [i, q] of [[1, 20], [2, 15]]) {
     await typeInto(row(i, "style"), "OPF-101"); await page.keyboard.press("Tab");

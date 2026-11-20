@@ -14,7 +14,7 @@
   function customer(id, fromHistory) {
     const c = S.byId("customers", id);
     if (!c) { OPF.router.go("customers", false, fromHistory); return; }
-    OPF.router.show("customers", () => renderCustomer(id), false, { route: OPF.router.routes.customer(id), title: c.name, fromHistory });
+    OPF.router.show("sales", () => renderCustomer(id), false, { route: OPF.router.routes.customer(id), title: c.name, fromHistory });
   }
 
   function renderCustomer(id) {
@@ -29,7 +29,7 @@
 
     H.mount(
       `<h1>${esc(c.name)}</h1><div class="actions no-print" style="margin-top:-6px;margin-bottom:12px">` +
-      H.button("Collect Payment", "payments.collect", { type: "Customer", id }) + H.button("Edit Profile", "record.edit", { coll: "customers", id }, "light") +
+      H.button("New Invoice", "sales.forCustomer", { id }, "good") + H.button("Collect Payment", "payments.collect", { type: "Customer", id }) + H.button("Edit Profile", "record.edit", { coll: "customers", id }, "light") +
       H.button("Print Statement", "print.page", null, "light") + H.pageLink("Back to Customers", "customers", "btn light") + "</div>" +
       H.cards([
         H.card("Previous Due (opening)", money(c.previousDue)), H.card("Total Sales", money(sum(sales, K.saleTotal))), H.card("Returns", money(sum(returns, (r) => r.amount))),

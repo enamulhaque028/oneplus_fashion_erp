@@ -72,7 +72,7 @@ const { start, sleep } = require("./lib");
   await go("customers");
   const cards = await page.$$eval(".cards .card", (c) => c.map((x) => x.innerText.replace(/\n/g, " ")));
   check("advance customer counted as cash party; advance card", [cards[1], cards[3], cards[4]], ["Due Parties 0", "Cash Parties (no due) 1", "Customer Advance 1,000.00"]);
-  check("advance shown as '(Advance)'", /1,000\.00 \(Advance\)/.test(await text(".cols2")), true);
+  check("advance shown as '(Advance)'", /1,000\.00 \(Advance\)/.test(await text("#app")), true);
 
   section("Supplier and factory payments");
   await go("payments"); await act("payments.collect", { type: "Supplier", id: sid }); await fill({ amount: 5000 });
@@ -184,7 +184,7 @@ const { start, sleep } = require("./lib");
   check("every menu page appears exactly once in the grouped sidebar", await page.evaluate(() => {
     const ids = Array.from(document.querySelectorAll('#nav .menu a.item')).map((b) => b.dataset.page).sort();
     return [ids.length, ids.join() == OPF.config.MENU.map((m) => m[0]).sort().join()];
-  }), [23, true]);
+  }), [22, true]);
   check("the current page's group is open and the page highlighted", await page.evaluate(() => [document.querySelector("#nav .grp.open .on").dataset.page, document.getElementById("pageTitle").textContent]), ["courier", "HomeSalesCourier / Delivery"]);
   await act("nav.group", { group: "1" });
   check("clicking a group opens it", await page.$eval('#nav [data-group="1"]', (b) => b.parentNode.classList.contains("open")), true);
@@ -233,14 +233,15 @@ const { start, sleep } = require("./lib");
   const hereIs = () => page.evaluate(() => [location.hash, document.querySelector("#app h1").textContent, document.title]);
   await navClick("suppliers");
   check("clicking a sidebar link opens the page and changes the address and tab title", await hereIs(), ["#/suppliers", "Supplier / Fabric Party", "Suppliers · One Plus Fashion ERP"]);
-  await navClick("customers");
+  await navClick("sales");
+  await page.click('.tabs.modes a[href="#/customers"]'); await sleep(150); // the Customers tab of Customers & Sales
   const cust = await db((d) => d.customers.find((c) => c.name == "Mirpur Traders"));
   await page.click(`a[href="#/customer/${cust.id}"]`); await sleep(150);
   check("customer name links open the profile with its own address", await hereIs(), [`#/customer/${cust.id}`, "Mirpur Traders", "Mirpur Traders · One Plus Fashion ERP"]);
   await page.goBack(); await sleep(150);
   check("Back returns to the previous page", (await hereIs())[0], "#/customers");
   await page.goBack(); await sleep(150);
-  check("Back again returns to the page before", (await hereIs()).slice(0, 2), ["#/suppliers", "Supplier / Fabric Party"]);
+  check("Back again returns to the page before (the New Invoice tab)", (await hereIs()).slice(0, 2), ["#/sales", "Customers & Sales"]);
   await page.goForward(); await sleep(150);
   check("Forward works too", (await hereIs())[0], "#/customers");
   await page.evaluate(() => OPF.pages.payments.collect("Customer", OPF.store.db.customers[0].id)); await sleep(100);
@@ -249,7 +250,7 @@ const { start, sleep } = require("./lib");
 
   const tab = await T.browser.newPage();
   await tab.goto(T.APP + `#/customer/${cust.id}`); await sleep(400);
-  check("a customer link opened in a new tab shows that customer (same saved data)", await tab.evaluate(() => [document.querySelector("#app h1").textContent, document.querySelector("#nav a.item.on").dataset.page]), ["Mirpur Traders", "customers"]);
+  check("a customer link opened in a new tab shows that customer (same saved data)", await tab.evaluate(() => [document.querySelector("#app h1").textContent, document.querySelector("#nav a.item.on").dataset.page]), ["Mirpur Traders", "sales"]);
   const sup = await db((d) => d.suppliers[0]);
   await tab.goto(T.APP + `#/statement/Supplier/${sup.id}`); await sleep(400);
   check("supplier statement links work in a new tab", await tab.evaluate(() => document.querySelector("#app h1").textContent.indexOf("Supplier statement") > 0), true);

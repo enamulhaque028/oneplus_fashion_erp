@@ -73,10 +73,11 @@ PART 3 - SALES, PAYMENT, COURIER (8 min)
 [ ] 3.1  Style / Product: Style Code = OPF-101, Product Name = Men Polo, Cost / Piece = 220,
          Wholesale Price = 300. Save.
 
-[ ] 3.2  Customers: Name = Karim Store, Mobile = 01711111111, Address = Bongo Bazar,
+[ ] 3.2  Customers & Sales → Customers tab: Name = Karim Store, Mobile = 01711111111, Address = Bongo Bazar,
          District = Dhaka, Previous Due = 50000. Save.
 
-[ ] 3.3  Sales / Invoice: Customer = Karim Store.
+[ ] 3.3  Customers & Sales → New Invoice tab: in Customer type "karim" (or 01711) and pick Karim Store.
+         Expect: a card with Karim Store and Balance 50,000.00.
          Item row 1: Style Code = OPF-101 (press Tab), Color = Black, Size = M, Qty = 20.
          Expect: Rate fills in as 300 by itself.
          Item row 2: Style Code = OPF-101 (press Tab), Color = Black, Size = M, Qty = 15.
@@ -120,8 +121,8 @@ PART 4 - REPORTS AND CONTROLS (5 min)
          Expect: Total Cost / PC 205.00, Selling Price / PC 246.00, Total Profit 4,100.00.
          Expect in Stock Summary: Godown 0, Showroom 1,170, Total 1,170, Finished Stock Value 257,400.00.
 
-[ ] 4.2  Customers.
-         Expect: Due Parties 1, Total Due Amount 40,000.00. Karim Store is listed under "Due Parties" (right side).
+[ ] 4.2  Customers & Sales → Customers tab.
+         Expect: Due Parties 1, Total Due Amount 40,000.00. Karim Store is listed under "Due Parties" (first list).
 
 [ ] 4.3  Dashboard.
          Expect: Today Sales 10,000.00 | Today Collection 20,000.00 | Customer Due 40,000.00 |
@@ -131,7 +132,7 @@ PART 4 - REPORTS AND CONTROLS (5 min)
          Expect: three green "Reconciled" labels, and under "Items to review":
                  "1 transfer(s) have short delivery totalling 5 PCS."
 
-[ ] 4.5  Customers: click Edit next to Karim Store.
+[ ] 4.5  Customers tab: click Edit next to Karim Store.
          Expect: a "Create Admin Password" window. Type a password twice (write it down safely: ________).
          Expect: a "Your recovery code" window. Write the code down (________) and click I have written it down.
          Change Mobile to 01722222222 and click Update.

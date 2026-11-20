@@ -1,4 +1,5 @@
-/* Customer / wholesale party master: summary, cash vs due parties, date-wise due list. */
+/* Customers & Sales page, Customers tab (#/customers): customer / wholesale party master, summary,
+   cash vs due parties, date-wise due list. Drawn inside the Customers & Sales menu item. */
 (function (OPF) {
   "use strict";
 
@@ -8,13 +9,20 @@
   const openLink = (c) => H.customerLink(esc(c.name), c.id);
 
   function render() {
+    OPF.router.show("sales", draw, true, { route: OPF.router.routes.page("customers"), title: "Customers", fromHistory: true });
+  }
+
+  function draw() {
+    const editing = F.isEditing("customers");
     F.page({
-      title: "Customer / Wholesale Party", coll: "customers", submit: "customers.save",
+      title: editing ? "Customer" : "Customers &amp; Sales", coll: "customers", submit: "customers.save",
       fields: [
         H.field("name", "Shop / Customer Name", { required: true }), H.field("mobile", "Mobile"), H.field("address", "Address"), H.field("district", "District"),
         H.field("credit", "Credit Limit", { type: "number", value: 0 }), H.field("previousDue", "Previous Due", { type: "number", value: 0 })
       ]
     });
+    if (!editing) H.$("app").querySelector("h1").insertAdjacentHTML("afterend", OPF.pages.sales.modeBar("customers"));
+    H.$("mainForm").insertAdjacentHTML("afterbegin", `<h2 class="form-title">${editing ? "" : "Add Customer"}</h2>`);
 
     const bm = L.balances("Customer"), due = [], cash = [];
     S.db.customers.forEach((c) => (bm[c.id].bal > 0.004 ? due : cash).push(c));
@@ -27,7 +35,7 @@
       const bal = bm[c.id].bal, overLimit = num(c.credit) && bal > num(c.credit);
       return H.tr([
         H.td(openLink(c)), H.td(esc(c.mobile)), H.td(esc(c.district)), H.tdn(dueText(bal), bal > 0 ? "red" : "green"),
-        H.td(overLimit ? H.pill("Over limit", "due") : ""), R.rowActions("customers", c.id, H.customerLink("View", c.id, "btn sm light"))
+        H.td(overLimit ? H.pill("Over limit", "due") : ""), R.rowActions("customers", c.id, H.button("New Invoice", "sales.forCustomer", { id: c.id }, "sm"))
       ]);
     };
 
@@ -37,8 +45,9 @@
         H.card("Cash Parties (no due)", cash.length, "ok"), H.card("Customer Advance", money(advance)),
         H.card("Highest Due", due.length ? `${esc(due[0].name)}<div class="muted">${money(bm[due[0].id].bal)}</div>` : "-")
       ]) +
-      '<div class="cols2"><div><h2 class="green">Cash Parties (no due)</h2>' + H.table(["Customer", "Mobile", "District", "#Balance", "", ""], cash.map(row), { tight: true }) + "</div>" +
-      '<div><h2 class="red">Due Parties</h2>' + H.table(["Customer", "Mobile", "District", "#Due", "", ""], due.map(row), { tight: true, foot: H.tr([H.td("Total"), H.tdEmpty(2), H.tdn(money(totalDue)), H.tdEmpty(2)]) }) + "</div></div>" +
+      // Due parties first (what needs following up), cash parties below; the name opens the profile.
+      '<h2 class="red">Due Parties</h2>' + H.table(["Customer", "Mobile", "District", "#Due", "", ""], due.map(row), { foot: H.tr([H.td("Total"), H.tdEmpty(2), H.tdn(money(totalDue)), H.tdEmpty(2)]) }) +
+      '<h2 class="green">Cash Parties (no due)</h2>' + H.table(["Customer", "Mobile", "District", "#Balance", "", ""], cash.map(row)) +
       '<div class="box"><h2>Date-wise Due List</h2><div class="inline no-print">' +
       `<div class="field"><label>From</label><input type="date" id="dueFrom" value="${monthStart()}"></div><div class="field"><label>To</label><input type="date" id="dueTo" value="${today()}"></div>` +
       H.button("Show", "customers.dueReport") + H.button("Print", "print.page", null, "light") + '</div><div id="dueOut"></div></div>'
@@ -77,7 +86,7 @@
   function save(form) {
     const d = F.numify(F.data(form), ["credit", "previousDue"]);
     R.save("customers", d, "Customer", d.name);
-    render();
+    draw();
   }
 
   OPF.pages.customers = { render };
