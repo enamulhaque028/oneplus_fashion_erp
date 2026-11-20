@@ -238,7 +238,13 @@
   }
 
   function init() {
-    document.body.insertAdjacentHTML("beforeend", movedNotice(location.hostname));
+    // Only once the new site answers (its icon loads), so the button never leads to "not found".
+    const moved = movedNotice(location.hostname);
+    if (moved) {
+      const probe = new Image();
+      probe.onload = () => document.body.insertAdjacentHTML("beforeend", moved);
+      probe.src = C.MOVED.TO + "assets/img/favicon-32.png?" + Date.now();
+    }
     // Feature flag ENABLE_BENGALI off: no language switch in the header.
     if (C.ENABLE_BENGALI !== true) { const ls = document.querySelector(".top .lang-switch"); if (ls) ls.remove(); }
     // Phones: re-check tables whenever a page draws, and when the screen turns.
