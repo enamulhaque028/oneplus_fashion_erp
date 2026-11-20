@@ -94,6 +94,12 @@
         if (d.company[k] === C.OLD_COMPANY_DEFAULTS[k]) d.company[k] = C.DEFAULT_COMPANY[k];
       });
     },
+    // v7: the new memo book (2026-11). Bank accounts arrive via fillDefaults; the phone numbers
+    // swap order only while still the shipped default. Value-based, so it runs once only.
+    function memoBook2026(d) {
+      if ((d.version || 0) >= 7) return;
+      if (d.company.phone === C.OLD_PHONES) d.company.phone = C.DEFAULT_COMPANY.phone;
+    },
     function courierNetCod(d) {
       d.courier.forEach((c) => {
         if (c.netCod == null) {

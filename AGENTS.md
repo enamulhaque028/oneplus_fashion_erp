@@ -136,16 +136,23 @@ Tests write screenshots, PDFs and downloads to `tests/out/<suite>/`, which git i
   on `main`. The two commits are the original v3 upload and the user's reformat of the v3 HTML.
 - **Cash memo:** matches the shop's printed "Cash Memo" book (photo supplied by the client on
   2026-09-29): layout in `js/services/print.js`, styles in `assets/css/print.css`, shop details in
-  Settings (`company.*`, schema v5). The logo is drawn as inline SVG unless an image is uploaded.
+  Settings (`company.*`, schema v5). The logo is drawn as inline SVG unless an image is uploaded
+  (`brandMark` in print.js; the shop's new logo, supplied 2026-11-20, redrawn in its 1280 px coordinates;
+  `assets/img/favicon.svg` and the PNG icons draw the same shapes - change them together).
   The shop-name lettering uses a heavy system font stretched with SVG `textLength`: the memo's
-  typeface isn't available offline. Keep the layout matching that book. Printing uses a hidden
+  typeface isn't available offline. Keep the layout matching that book. **New book (2026-11-20, schema v7):** green pill, drawn
+  "ONE PLUS" lettering (`wordmark` in print.js, only while the name starts with One Plus), hotline
+  (bKash) + WhatsApp numbers top right as +880, 19 numbered lines (14 on phones), Condition / Inword,
+  bank-accounts box (`company.banks`, one per line `Bank | A/C Name | A/C Number | Branch`) and Authorised
+  Signature; no quote (memoNote / quoteSource are no longer used). The memo is 274 mm of the 281 mm A4 area. Colours are sampled from the book
+  image (tokens at the top of print.css): match them exactly when changing the memo. Printing uses a hidden
   iframe in the same page (`#printFrame`) - never `window.open` (no new tab, no pop-up blocker).
 - **UI redesign (2026-10-18):** bseba-style Material 3 look - grouped icon sidebar, new header
   (title, search, theme switch, clock, lock, Sale, Backup; no vendor logo), pastel cards, dashboard with period panels,
   cost-breakdown and 30-day trend charts, teal tables, light / dark themes. Presentation only:
   IDs, form names, actions and business logic unchanged.
 - **Test results:**
-  - current Chrome and Chromium 109: e2e 181, edge 64, uat 45, regression 62, cloud 40, offline 21 checks, all passing;
+  - current Chrome and Chromium 109: e2e 184, edge 64, uat 45, regression 62, cloud 40, offline 21 checks, all passing;
   - self-test 31 / 31 on Chrome 73, 109, current and Firefox 115.
 - **Courier and Rough Notes (business decision 2026-10-18, schema v6):** Courier / Delivery is a
   record only (date, invoice, customer, address, courier, tracking, COD as a note, status, note). No

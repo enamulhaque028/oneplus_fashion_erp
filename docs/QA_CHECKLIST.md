@@ -150,12 +150,13 @@ PART 5 - PRINTED PAPER (3 min)
 ------------------------------
 
 [ ] 5.1  Cash memo paper: everything fits on one A4 page. Nothing is cut off at the right edge.
-[ ] 5.2  Cash memo paper: the dark blue labels (Sl. No., Name, Date ...), the red shop name and the
-         coloured columns are printed (not blank). If they are blank: in the print dialog open
+[ ] 5.2  Cash memo paper: the light blue page, the blue labels (Sl. No., Name, Date ...), the green
+         Cash Memo label, red ONE / black PLUS and the coloured columns are printed (not blank). If they are blank: in the print dialog open
          "More settings" and tick "Background graphics".
-[ ] 5.3  Cash memo paper shows: Cash Memo, HOTLINE 01878638475, Sl. No. INV-00001, Karim Store,
-         Less: Discount - 500.00, Total 10,000.00, Advance 0.00, Due 10,000.00, a DUE stamp,
-         Previous Due: 50,000.00, Total Due Now: 60,000.00, "Ten Thousand Taka Only", the Qur'an quote.
+[ ] 5.3  Cash memo paper shows: Cash Memo, +880 1878638475 at the top right, Sl. No. INV-00001,
+         Karim Store, numbered lines 01, 02 ..., Less: Discount - 500.00, Total 10,000.00, Advance 0.00,
+         Due 10,000.00, a DUE stamp, Previous Due: 50,000.00, Total Due Now: 60,000.00,
+         "Inword: Ten Thousand Taka Only", the three bank accounts and Authorised Signature.
          Lay it next to a page of the printed memo book: the layout should look the same.
 [ ] 5.4  Receipt paper shows: Money Receipt, MR-00001, bKash - TRX12345, Remaining Due 40,000.00,
          "Twenty Thousand Taka Only".

@@ -3,7 +3,7 @@
   "use strict";
 
   const C = OPF.config, H = OPF.html, F = OPF.forms;
-  const BRANDING = ["name", "motto", "tagline", "address", "phone", "email", "hotline", "memoNote", "quoteSource"];
+  const BRANDING = ["name", "motto", "tagline", "address", "phone", "email", "hotline", "banks"];
   let pendingLogo = null; // null = unchanged, "" = remove, data URL = new logo
 
   const logoPreview = (src) => (src ? `<img src="${src}" style="max-height:80px;border:1px solid #dbe2ea;border-radius:4px;padding:4px;background:#fff">` : '<span class="muted">No shop logo uploaded.</span>');
@@ -14,11 +14,12 @@
     H.mount(
       "<h1>Settings / Backup</h1>" +
       '<form class="box" id="coForm" data-submit="settings.save"><h2 style="margin-top:0">Shop Branding (printed on the cash memo &amp; receipts)</h2><div class="grid">' +
-      H.field("name", "Shop / Company Name", { value: co.name, required: true }) + H.field("motto", "Motto (dark bar under the name)", { value: co.motto }) +
+      H.field("name", "Shop / Company Name", { value: co.name, required: true }) + H.field("motto", "Motto (under the name)", { value: co.motto }) +
       H.field("tagline", "Business Description", { value: co.tagline }) + H.field("address", "Address", { value: co.address }) +
-      H.field("phone", "Phone Numbers", { value: co.phone }) + H.field("email", "E-mail", { value: co.email }) + H.field("hotline", "Hotline (top right)", { value: co.hotline }) +
-      H.field("memoNote", "Footer Quote", { value: co.memoNote }) + H.field("quoteSource", "Quote Source", { value: co.quoteSource }) +
+      H.field("hotline", "Hotline / bKash (top right, first)", { value: co.hotline }) + H.field("phone", "WhatsApp Numbers (top right)", { value: co.phone }) + H.field("email", "E-mail", { value: co.email }) +
       H.cell(`Shop Logo (PNG / JPG, under ${C.LOGO_WARN_KB} KB)`, '<input type="file" accept="image/*" data-change="settings.pickLogo">') +
+      '<div class="field wide"><label>Bank Accounts (footer box; one per line: Bank | A/C Name | A/C Number | Branch)</label>' +
+      `<textarea name="banks" rows="3">${OPF.util.esc(co.banks || "")}</textarea></div>` +
       `</div><div id="logoPrev" style="margin-top:10px">${logoPreview(co.logo)}</div>` +
       '<div class="actions"><button>Save Branding</button>' + H.button("Remove Logo", "settings.removeLogo", null, "light") + H.button("Preview Cash Memo", "print.preview", null, "light") + "</div></form>" +
       '<div class="box"><h2 style="margin-top:0">Admin Password</h2><p class="muted">' +

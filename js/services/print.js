@@ -8,9 +8,9 @@
   const C = OPF.config, K = OPF.calc, L = OPF.ledger;
   const { esc, lc, num, r2, money, fmtQty, dueText, amountWords, today } = OPF.util;
 
-  // Item area height on an A4 memo; rows use about 8.2 mm each, the rest is blank lined space.
-  // Phones print with bigger page margins (iOS adds its own), so their blank item area is shorter.
-  const BODY_MM = 132, ROW_MM = 8.2, PHONE_SHORTER_MM = 24;
+  // The memo book has 19 numbered item lines; items fill them from the top and the rest stay blank.
+  // Phones print with bigger page margins (iOS adds its own), so they get fewer lines.
+  const LINES = 19, PHONE_LINES = 14;
 
   // Phones and tablets: iPhone / iPad browsers (all WebKit) print the whole page instead of a
   // hidden frame, so there the document is printed from the page itself (printInPage).
@@ -99,52 +99,127 @@
 
 
   /* ---- brand mark: the One Plus "op" logo, drawn so no image file is needed ----
-     boxed = dark tile for the header; otherwise the pale watermark version. */
-  // Each drawing gets its own gradient id: the sidebar logo and a memo printed inside the page
-  // (phones) share one document, and a duplicate id would borrow the hidden sidebar's gradient.
-  let markNo = 0;
+     Shapes measured from the logo the shop supplied (1280 px artwork, kept in its coordinates):
+     two white chevron bands, three orange wing bars each side and the red "op".
+     boxed = black square tile (sidebar, sign-in); "memo" = the memo book's wider rounded tile;
+     otherwise the pale watermark version.
+     assets/img/favicon.svg draws the same shapes: change both together. */
+  const WING_BARS = [[560, 598], [620, 658], [680, 718]];
   function brandMark(boxed) {
-    const gid = "mboxg" + ++markNo;
-    const wings = [[14, 74, 58, 56, 18], [20, 88, 56, 54, 24], [26, 102, 54, 52, 30]]
-      .map(([x1, y, x2, x3, x4]) => `<polygon class="wing" points="${x1},${y} ${x2},${y} ${x3},${y + 8} ${x4},${y + 8}"/><polygon class="wing" points="${200 - x1},${y} ${200 - x2},${y} ${200 - x3},${y + 8} ${200 - x4},${y + 8}"/>`).join("");
-    return `<svg class="mark" viewBox="0 0 200 ${boxed ? 196 : 214}" xmlns="http://www.w3.org/2000/svg">` +
-      (boxed ? `<defs><linearGradient id="${gid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f3f37"/><stop offset="1" stop-color="#0d1411"/></linearGradient></defs><rect class="box" width="200" height="196" rx="18" style="fill:url(#${gid})"/>` : "") +
-      '<polyline class="chev" points="42,70 100,34 158,70"/><polyline class="chev" points="42,118 100,154 158,118"/>' + wings +
-      '<circle class="opline" cx="82" cy="94" r="14"/><circle class="opline" cx="120" cy="94" r="14"/><rect class="op" x="100.5" y="90" width="11" height="36"/>' +
-      `<text class="word" x="100" y="${boxed ? 184 : 204}" text-anchor="middle">ONE PLUS</text></svg>`;
+    // The wings' outer ends follow one slanted line; the right wing mirrors the left (x -> 1280 - x).
+    const edge = (y) => +(186 + (y - 560) * 0.6).toFixed(1);
+    const wings = WING_BARS.map(([t, b]) => {
+      const l = `${edge(t)},${t} 396,${t} 396,${b} ${edge(b)},${b}`, rt = `${1280 - edge(t)},${t} 884,${t} 884,${b} ${1280 - edge(b)},${b}`;
+      return `<polygon class="wing" points="${l}"/><polygon class="wing" points="${rt}"/>`;
+    }).join("");
+    const box = boxed == "memo" ? [120, 264, 1040, 752, 56] : boxed ? [136, 136, 1008, 1008, 0] : null;
+    return `<svg class="mark" viewBox="${box ? box.slice(0, 4).join(" ") : "176 325 928 630"}" xmlns="http://www.w3.org/2000/svg">` +
+      (box ? `<rect class="box" x="${box[0]}" y="${box[1]}" width="${box[2]}" height="${box[3]}" rx="${box[4]}"/>` : "") +
+      '<polygon class="band" points="640,335 930,502 882,521 640,388 398,521 350,502"/>' +
+      '<polygon class="band" points="640,944 930,777 882,758 640,891 398,758 350,777"/>' + wings +
+      '<circle class="opline" cx="541" cy="605.5" r="78"/><circle class="opline" cx="730" cy="605.5" r="78"/><rect class="op" x="627" y="605" width="42" height="207"/></svg>';
   }
 
-  const logo = () => { const src = OPF.store.db.company.logo; return src ? `<img src="${src}" alt="">` : brandMark(true); };
-  const watermark = () => { const src = OPF.store.db.company.logo; return `<div class="mark-wm">${src ? `<img src="${src}" alt="">` : brandMark(false)}</div>`; };
+  /* ---- "ONE PLUS" lettering of the memo book (red ONE, black PLUS), drawn as thick rounded
+     strokes: its typeface is not on the shop's computer. Letters are 100 units high. */
+  const LETTER = 22, CORNER = 16;
+  // A stroke through the points with rounded corners (outer radius about one stroke width).
+  function rounded(pts, closed) {
+    const n = pts.length, at = (i) => pts[(i + n) % n];
+    let d = "";
+    const corner = (i) => {
+      const [px, py] = at(i - 1), [cx, cy] = at(i), [nx, ny] = at(i + 1);
+      const l1 = Math.hypot(cx - px, cy - py), l2 = Math.hypot(nx - cx, ny - cy);
+      const ux = (cx - px) / l1, uy = (cy - py) / l1, vx = (nx - cx) / l2, vy = (ny - cy) / l2;
+      return `L${cx - ux * CORNER},${cy - uy * CORNER}A${CORNER},${CORNER} 0 0 ${ux * vy - uy * vx > 0 ? 1 : 0} ${cx + vx * CORNER},${cy + vy * CORNER}`;
+    };
+    if (closed) {
+      const [ax, ay] = pts[0], [bx, by] = pts[1];
+      d = `M${(ax + bx) / 2},${(ay + by) / 2}`;
+      for (let i = 1; i <= n; i++) d += corner(i);
+      return d + "Z";
+    }
+    d = `M${pts[0][0]},${pts[0][1]}`;
+    for (let i = 1; i < n - 1; i++) d += corner(i);
+    return d + `L${pts[n - 1][0]},${pts[n - 1][1]}`;
+  }
+  const LETTERS = {
+    O: [150, [[[11, 11], [139, 11], [139, 89], [11, 89]], true]],
+    N: [120, [[[11, 100], [11, 11], [109, 11], [109, 100]]]],
+    E: [92, [[[92, 11], [11, 11], [11, 89], [92, 89]]], [[[11, 50], [84, 50]]]],
+    P: [124, [[[11, 100], [11, 11], [113, 11], [113, 56], [11, 56]]]],
+    L: [96, [[[11, 0], [11, 89], [96, 89]]]],
+    U: [120, [[[11, 0], [11, 89], [109, 89], [109, 0]]]],
+    S: [112, [[[112, 11], [11, 11], [11, 50], [101, 50], [101, 89], [0, 89]]]]
+  };
+  function lettering(word, x0) {
+    let x = x0, d = "";
+    word.split("").forEach((ch) => {
+      const [w, ...strokes] = LETTERS[ch];
+      strokes.forEach(([pts, closed]) => { d += rounded(pts.map(([px, py]) => [px + x, py]), closed); });
+      x += w + 16;
+    });
+    return d;
+  }
+  // The memo prints this lettering for One Plus; any other shop name is printed as text.
+  const isOnePlus = () => /^\s*one\s*plus\b/i.test(OPF.store.db.company.name || "");
+  function wordmark(cls) {
+    const one = lettering("ONE", 0), plus = lettering("PLUS", 440);
+    const paths = (w) => `<path class="w1" d="${one}" stroke-width="${w}"/><path class="w2" d="${plus}" stroke-width="${w}"/>`;
+    return `<svg class="${cls}" viewBox="0 0 940 100" xmlns="http://www.w3.org/2000/svg">${paths(LETTER)}</svg>`;
+  }
 
-  // Logo | "Cash Memo" pill, shop name, motto, description, address, phone / e-mail | hotline
+  const logo = () => { const src = OPF.store.db.company.logo; return src ? `<img src="${src}" alt="">` : brandMark("memo"); };
+  const watermark = () => {
+    const src = OPF.store.db.company.logo;
+    return `<div class="mark-wm">${src ? `<img src="${src}" alt="">` : brandMark(false)}${isOnePlus() ? wordmark("wm-word") : ""}</div>`;
+  };
+
+  // Phone numbers as the memo book prints them: 01621-346375 -> +880 1621346375.
+  const intl = (n) => { const d = String(n).replace(/\D/g, ""); return /^01\d{9}$/.test(d) ? "+880 " + d.slice(1) : String(n).trim(); };
+  const WA = '<svg class="wa" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#04a556"/><path fill="none" stroke="#fff" stroke-width="1.6" d="M7.6 16.6A6.6 6.6 0 1 1 9.7 18.3L6 19.4z"/><path fill="#fff" d="M9.3 8.3c.3-.2.7-.2.9.1l.8 1.5c.1.3 0 .6-.2.8l-.5.5c.4.9 1.2 1.7 2.1 2.1l.5-.5c.2-.2.5-.3.8-.2l1.5.8c.3.2.3.6.1.9-.5.7-1.2 1.1-2 .9-2.2-.5-3.9-2.2-4.4-4.4-.2-.8.1-1.3.4-1.5z"/></svg>';
+  // bKash: the payment number (the hotline) carries its pink bird.
+  const BKASH = '<svg class="bk" viewBox="0 0 24 24"><path fill="#ec3699" d="M2 6l10 4-3 9z"/><path fill="#c41f79" d="M12 10l10-6-6 14z"/><path fill="#f47cb8" d="M12 10l-3 9 7-1z"/></svg>';
+  function phones() {
+    const co = OPF.store.db.company;
+    const list = [co.hotline].concat(String(co.phone || "").split(/[,;\/]/)).map((n) => String(n || "").trim()).filter(Boolean);
+    return list.length ? `<div class="mphones">${list.map((n, i) => `<div>${i == 0 && co.hotline ? BKASH : ""}${WA}<span>${esc(intl(n))}</span></div>`).join("")}</div>` : "";
+  }
+
+  // Logo | "Cash Memo" pill, shop name, motto, description, address, e-mail | phone numbers
   function header(docTitle) {
     const co = OPF.store.db.company;
-    const contact = [co.phone ? "Phone: " + co.phone : "", co.email ? "E-mail: " + co.email : ""].filter(Boolean).join(", ");
-    return `<div class="mhead"><div class="mlogo">${logo()}</div><div class="mshop">` +
-      `<div class="mtop"><span class="pill">${esc(docTitle)}</span>` +
-      (co.hotline ? `<div class="mhot"><span class="badge">HOTLINE</span><div class="num"><span class="wa"></span>${esc(co.hotline)}</div></div>` : "") + "</div>" +
-      // textLength stretches the name to the full width whatever font the computer has.
-      `<svg class="mname" viewBox="0 0 1000 96" preserveAspectRatio="none"><text x="4" y="84" font-size="100" textLength="992" lengthAdjust="spacingAndGlyphs">${esc(String(co.name || "").toUpperCase())}</text></svg>` +
-      (co.motto ? `<div class="mmotto"><span>${esc(co.motto)}</span></div>` : "") +
-      (co.tagline ? `<svg class="mdesc" viewBox="0 0 1000 52" preserveAspectRatio="none"><text x="2" y="40" font-size="40" textLength="${Math.min(990, co.tagline.length * 20)}" lengthAdjust="spacingAndGlyphs">${esc(co.tagline)}</text></svg>` : "") +
+    const descLen = Math.min(980, String(co.tagline || "").length * 15.2);
+    return `<div class="mhead"><div class="mlogo">${logo()}</div>${phones()}<div class="mshop">` +
+      `<div class="mtop"><span class="pill">${esc(docTitle)}</span></div>` +
+      (isOnePlus() ? wordmark("mname mword")
+        // textLength stretches the name to the full width whatever font the computer has.
+        : `<svg class="mname" viewBox="0 0 1000 96" preserveAspectRatio="none"><text x="4" y="84" font-size="100" textLength="992" lengthAdjust="spacingAndGlyphs">${esc(String(co.name || "").toUpperCase())}</text></svg>`) +
+      (co.motto ? `<svg class="mmotto" viewBox="0 0 820 34"><text x="2" y="27" font-size="31" textLength="816" lengthAdjust="spacing">${esc(String(co.motto).toUpperCase())}</text></svg>` : "") +
+      (co.tagline ? `<svg class="mdesc" viewBox="0 0 1000 46" preserveAspectRatio="none"><text x="${(1000 - descLen) / 2}" y="36" font-size="38" textLength="${descLen}" lengthAdjust="spacingAndGlyphs">${esc(co.tagline)}</text></svg>` : "") +
       (co.address ? `<div class="maddr">${esc(co.address)}</div>` : "") +
-      (contact ? `<div class="mphone">${esc(contact)}</div>` : "") +
+      (co.email ? `<div class="mmail">E-mail: ${esc(co.email)}</div>` : "") +
       "</div></div>";
   }
 
   // rows: [[leftLabel, leftValue, rightLabel, rightValue, leftPlain?]]; values are HTML (escaped by caller)
   function infoRows(rows) {
-    return '<table class="minfo"><colgroup><col style="width:1%"><col><col class="gap"><col style="width:1%"><col style="width:62mm"></colgroup>' +
+    return '<table class="minfo"><colgroup><col style="width:1%"><col><col class="gap"><col style="width:1%"><col style="width:59mm"></colgroup>' +
       rows.map(([l, lv, r, rv, plain]) => `<tr><td class="lab">${l}</td><td class="val${plain ? " plain" : ""}">${lv}</td><td class="gap"></td><td class="lab">${r}</td><td class="val">${rv}</td></tr>`).join("") +
       "</table>";
   }
 
+  // Bank accounts from Settings, one per line: Bank | A/C Name | A/C Number | Branch
+  function banks() {
+    const lines = String(OPF.store.db.company.banks || "").split(/\r?\n/).map((l) => l.split("|").map((x) => x.trim())).filter((b) => b[0]);
+    if (!lines.length) return "<div></div>";
+    return '<div class="mbanks">' + lines.map(([bank, name, no, branch]) =>
+      `<div class="bank">Bank Name: <b class="bn">${esc(bank)}</b>${name ? `, A/C Name: <b class="an">${esc(name)}</b>` : ""}<br>` +
+      `${no ? `A/C Number: <b class="no">${esc(no)}</b>` : ""}${branch ? `${no ? ", " : ""}Branch: <b>${esc(branch)}</b>` : ""}</div>`).join("") + "</div>";
+  }
+
   function footer(leftLabel) {
-    const co = OPF.store.db.company;
-    return `<div class="msign"><div class="cust">${leftLabel}</div>` +
-      (co.memoNote ? `<div class="quote">${esc(co.memoNote)}${co.quoteSource ? `<span class="src">${esc(co.quoteSource)}</span>` : ""}</div>` : "<div></div>") +
-      `<div class="from">From: <span>${esc(String(co.name || "").toUpperCase())}</span></div></div>`;
+    return `<div class="msign"><div class="cust">${leftLabel}</div>${banks()}<div class="auth">Authorised Signature</div></div>`;
   }
 
   const address = (p) => esc([p.address, p.district].filter(Boolean).join(", "));
@@ -156,13 +231,15 @@
     const parcel = courierFor(s);
     const cells = (sl, desc, qty, rate, amt, cls) => `<tr${cls ? ` class="${cls}"` : ""}><td class="c-sl">${sl}</td><td class="c-desc">${desc}</td><td class="c-qty">${qty}</td><td class="c-rate">${rate}</td><td class="c-amt">${amt}</td></tr>`;
 
+    const sl = (n) => (n < 10 ? "0" : "") + n;
     const rows = s.items.map((i, n) => {
       const p = OPF.store.productByStyle(i.style);
       const detail = [p && p.name, [i.color, i.size].filter(Boolean).join(" / ")].filter(Boolean).join(" · ");
-      return cells(n + 1, `<b>${esc(i.style)}</b>${detail ? ` <small>${esc(detail)}</small>` : ""}`, fmtQty(i.qty), money(i.rate), money(K.itemAmount(i)));
+      return cells(sl(n + 1), `<b>${esc(i.style)}</b>${detail ? ` <small>${esc(detail)}</small>` : ""}`, fmtQty(i.qty), money(i.rate), money(K.itemAmount(i)));
     });
     if (num(s.discount)) rows.push(cells("", "Less: Discount", "", "", "- " + money(s.discount), "less"));
-    const fillMm = Math.max(6, BODY_MM - (isMobile() ? PHONE_SHORTER_MM : 0) - rows.length * ROW_MM);
+    // The rest of the book's numbered lines stay blank.
+    for (let n = s.items.length + 1; rows.length < (isMobile() ? PHONE_LINES : LINES); n++) rows.push(cells(sl(n), "", "", "", "", "blank"));
 
     return `<div class="memo">${header("Cash Memo")}` +
       infoRows([
@@ -170,15 +247,15 @@
         ["Name", esc(c.name || ""), "Mobile", esc(c.mobile || "")],
         ["Address", address(c), "Courier", parcel ? esc([parcel.courier, parcel.tracking].filter(Boolean).join(" - ")) : ""]
       ]) +
-      `<div class="mwrap"><table class="mitems"><thead><tr><th class="c-sl">SL</th><th>Product Description</th><th class="c-qty">Quantity</th><th class="c-rate">Rate</th><th class="c-amt">Amount</th></tr></thead>` +
-      `<tbody>${rows.join("")}${cells("", "", "", "", "", "fill").replace('<td class="c-sl">', `<td class="c-sl" style="height:${fillMm}mm">`)}</tbody></table>${watermark()}</div>` +
+      `<div class="mwrap"><table class="mitems"><thead><tr><th class="c-sl">SL</th><th>Description</th><th class="c-qty">Quantity</th><th class="c-rate">Rate</th><th class="c-amt">Amount</th></tr></thead>` +
+      `<tbody>${rows.join("")}</tbody></table>${watermark()}</div>` +
       '<table class="mfoot"><tr>' +
-      `<td class="cond" rowspan="3"><b class="h">Condition:</b> ${esc(s.remarks || "")}<br>` +
+      `<td class="cond" rowspan="2"><span class="h">Condition:</span> ${esc(s.remarks || "")}<br>` +
       `<span class="stamp ${due > 0 ? "due" : "paid"}">${due > 0 ? "DUE" : "PAID"}</span>Payment: ${esc(s.method || "-")} &nbsp;|&nbsp; Total Qty: ${fmtQty(K.salePcs(s))} PCS<br>` +
-      `Previous Due: ${dueText(previousDue)} &nbsp;|&nbsp; Total Due Now: <b>${dueText(totalDue)}</b><br>In words: ${amountWords(total)}</td>` +
+      `Previous Due: ${dueText(previousDue)} &nbsp;|&nbsp; Total Due Now: <b>${dueText(totalDue)}</b></td>` +
       `<td class="tl">Total</td><td class="tv">${money(total)}</td></tr>` +
       `<tr><td class="tl">Advance</td><td class="tv">${money(paid)}</td></tr>` +
-      `<tr><td class="tl">Due</td><td class="tv">${dueText(due)}</td></tr></table>` +
+      `<tr><td class="cond words"><span class="h">Inword:</span> ${amountWords(total)}</td><td class="tl">Due</td><td class="tv">${dueText(due)}</td></tr></table>` +
       footer("Customer") + "</div>";
   }
 
@@ -206,7 +283,7 @@
       `<table class="rtable"><thead><tr><th>Description</th><th class="r">Amount</th></tr></thead><tbody>` +
       snapshotRows(snap, p.type).map((r) => `<tr${r[2] ? ' class="g"' : ""}><td>${r[0]}</td><td class="r">${r[1]}</td></tr>`).join("") +
       "</tbody></table>" +
-      `<table class="mfoot"><tr><td class="cond"><b class="h">In words:</b> ${amountWords(p.amount)}${p.remarks ? `<br>Remarks: ${esc(p.remarks)}` : ""}</td><td class="tl">Amount</td><td class="tv">${money(p.amount)}</td></tr></table>` +
+      `<table class="mfoot"><tr><td class="cond words"><span class="h">Inword:</span> ${amountWords(p.amount)}${p.remarks ? `<br>Remarks: ${esc(p.remarks)}` : ""}</td><td class="tl">Amount</td><td class="tv">${money(p.amount)}</td></tr></table>` +
       footer(customer ? "Customer" : "Receiver") + "</div>";
   }
 

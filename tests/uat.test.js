@@ -80,9 +80,9 @@ const { start, sleep } = require("./lib");
   const it = await inv.evaluate(() => document.body.textContent.replace(/\s+/g, " "));
   check("Expect on memo: Cash Memo, Sl. No. INV-00001, Karim Store, Courier empty, DUE stamp", /Cash Memo/.test(it) && /Sl\. No\.\s*INV-00001/.test(it) && /Karim Store/.test(it) && /DUE/.test(it), true);
   check("Expect on memo: Less: Discount - 500.00, Total 10,000.00, Advance 0.00, Due 10,000.00", /Less: Discount\s*- 500\.00/.test(it) && /Total\s*10,000\.00/.test(it) && /Advance\s*0\.00/.test(it) && /Due\s*10,000\.00/.test(it), true);
-  check("Expect on memo: HOTLINE 01878638475 and the Qur'an quote", /HOTLINE/.test(it) && /01878638475/.test(it) && /Allah has Made Business Lawful, Usury is Forbidden\./.test(it) && /Al Qur'an/.test(it), true);
+  check("Expect on memo: +880 1878638475 at the top right and the bank accounts at the bottom", /\+880 1878638475/.test(it) && /BRAC BANK/.test(it) && /2068401860001/.test(it) && /Authorised Signature/.test(it), true);
   check("Expect on memo: Previous Due: 50,000.00, Total Due Now: 60,000.00", /Previous Due: 50,000\.00/.test(it) && /Total Due Now: 60,000\.00/.test(it), true);
-  check("Expect on invoice: In words: Ten Thousand Taka Only", /In words: Ten Thousand Taka Only/.test(it), true);
+  check("Expect on invoice: Inword: Ten Thousand Taka Only", /Inword: Ten Thousand Taka Only/.test(it), true);
   await inv.setViewport({ width: 733, height: 1062 }); // A4 printable area (194 x 281 mm, 8 mm margins) in CSS px
   await inv.emulateMediaType("print"); // measure the printed layout, not the on-screen preview frame
   check("Expect (5.1): invoice fits on one A4 page", await inv.evaluate(() => document.documentElement.scrollHeight <= 1062 && document.documentElement.scrollWidth <= 733), true);

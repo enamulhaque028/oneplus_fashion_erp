@@ -530,10 +530,11 @@ button[data-act="record.delete"]:hover { background: var(--danger-soft) !importa
 }
 
 /* ---------- brand mark (shared with the print layout's inline SVG) ---------- */
-.mark .chev { fill: none; stroke: #fff; stroke-width: 9 }
-.mark .op, .mark .wing { fill: #f08a24 }
-.mark .opline { fill: none; stroke: #f08a24; stroke-width: 11 }
-.mark .word { fill: #fff; font: 900 25px "Arial Black", Arial, sans-serif }
+.mark .box { fill: #000 }
+.mark .band { fill: #fff }
+.mark .wing { fill: #ff9d04 }
+.mark .op { fill: #fb242e }
+.mark .opline { fill: none; stroke: #fb242e; stroke-width: 41 }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1280px) {

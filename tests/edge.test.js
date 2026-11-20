@@ -102,7 +102,7 @@ const { start, sleep } = require("./lib");
   for (let i = 3; i < 40; i++) await act("sales.addItem");
   await setItems(Array.from({ length: 40 }, (_, i) => ({ style: "S1", color: "Blue", size: "L", qty: 1, rate: 10 + i })));
   const lp = printed(); await act("sales.savePrint"); const longInv = await lp;
-  check("all 40 lines printed", await longInv.$$eval(".mitems tbody tr", (r) => r.length), 41);
+  check("all 40 lines printed (no blank lines after a full book page)", await longInv.$$eval(".mitems tbody tr", (r) => r.length), 40);
   const pdf = await longInv.pdf({ format: "A4", printBackground: true });
   // A4 printable height is 297 - 16 mm margins = 281 mm, about 1062 CSS px; the saved PDF is kept for inspection.
   const pages = Math.ceil((await longInv.evaluate(() => document.documentElement.scrollHeight)) / 1062);

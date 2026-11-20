@@ -5,7 +5,7 @@
   OPF.config = Object.freeze({
     // Unchanged since v3 so data saved by older versions keeps loading.
     STORAGE_KEY: "opf_erp_smart_v3",
-    SCHEMA_VERSION: 6,
+    SCHEMA_VERSION: 7,
     MAIN_SHOP: "Owner Permanent Shop",
     ADMIN_MINUTES: 15,
     LOG_LIMIT: 3000,
@@ -47,19 +47,20 @@
       motto: "QUALITY OUR VISION",
       tagline: "Manufacturer and Wholesaler of Readymade Garments.",
       address: "Shop # 99 (1st Floor), Ashraf Setu Shopping Complex, Tongi, Gazipur.",
-      phone: "01619-741055, 01621-346375",
+      phone: "01621-346375, 01619-741055",
       email: "oneplusfashion2021@gmail.com",
       hotline: "01878638475",
-      memoNote: "Allah has Made Business Lawful, Usury is Forbidden.",
-      quoteSource: "-Al Qur'an",
+      // Bank accounts in the memo's footer box, one per line: Bank | A/C Name | A/C Number | Branch
+      banks: "BRAC BANK | ONE PLUS FASHION | 2068401860001 | Tongi Bazar\nDutch-Bangla Bank | Md Al Amin Hossain | 179 157 000 5300 | Tongi Bazar\nIslami Bank | Md Al Amin Hossain | 20502160204797106 | Tongi Bazar",
       logo: ""
     },
+    // The 2026-11 memo book lists the phone numbers the other way round.
+    OLD_PHONES: "01619-741055, 01621-346375",
     // Defaults shipped by v3/v4; replaced by the memo-book values only while still untouched.
     OLD_COMPANY_DEFAULTS: {
       phone: "01814109285",
       address: "",
-      tagline: "Wholesale Garment Manufacturing & Distribution",
-      memoNote: "Thank you for your business."
+      tagline: "Wholesale Garment Manufacturing & Distribution"
     },
 
     // Sidebar order: [page id, label]. Page ids match files in js/pages/.

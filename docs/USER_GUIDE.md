@@ -396,19 +396,27 @@ The roles in the proposal, and the last 200 actions: what was created, edited or
   (the file name is suggested, e.g. "Cash Memo INV-00012"). Closing the dialog leaves you on the same page.
 - **On a phone or tablet** (iPhone, iPad, Android) the same memo or receipt prints. Tap the button, then
   in the print sheet choose the printer, or share / save it as a PDF.
-- **Cash memo layout** (the same design as the shop's printed Cash Memo book):
-  - the logo on the left, "Cash Memo" and the shop name, motto, business description, address,
-    phone and e-mail in the middle, and the **HOTLINE** number on the right;
+- **Cash memo layout** (the same design as the shop's printed Cash Memo book, November 2026 edition):
+  - the logo on the left; the green "Cash Memo" label, **ONE PLUS** (red ONE, black PLUS), the
+    motto, business description, address and e-mail in the middle; at the top right the hotline
+    (bKash) and the WhatsApp numbers, printed as +880 numbers;
   - **Sl. No.** (the invoice number), Date, Name, Mobile, Address and **Courier** (the courier and
     tracking number, once the parcel is recorded on the Courier page);
-  - the item table: SL, Product Description, Quantity, Rate, Amount, with the faded One Plus logo
-    behind it. A discount shows as a "Less: Discount" line;
-  - **Condition** on the left: remarks, a **PAID** or **DUE** stamp, payment method, previous due,
-    total due now and the amount in words. **Total**, **Advance** (paid) and **Due** are on the right;
-  - the Customer signature line, the Qur'an quote and "From: ONE PLUS FASHION".
+  - the item table: SL, Description, Quantity, Rate, Amount on **19 numbered lines** (01, 02 ...),
+    with the faded One Plus logo and "ONE PLUS" behind it. Items fill the lines from the top; a
+    discount uses one line ("Less: Discount"). More than 19 lines continue on a second page.
+    On a phone the memo has 14 lines, because phones print with bigger margins;
+  - **Condition** on the left: remarks, a **PAID** or **DUE** stamp, payment method, previous due and
+    total due now; **Inword**: the amount in words. **Total**, **Advance** (paid) and **Due** are on the right;
+  - the Customer signature line, the **bank accounts** box and **Authorised Signature**.
+- **Shop details on the memo** come from **Settings / Backup**: name, motto, description, address,
+  e-mail, **Hotline / bKash** (first number, with the bKash mark), **WhatsApp Numbers** (separated
+  by commas) and **Bank Accounts** (one per line: `Bank | A/C Name | A/C Number | Branch`). The big
+  "ONE PLUS" lettering is drawn while the shop name starts with "One Plus"; any other name is printed
+  as plain text.
 - **Logo:** without an uploaded logo, the ERP draws the One Plus logo itself. Upload the shop's
   logo file in Settings to use it on the memo and receipt instead.
-- **Money receipt / payment voucher:** the same header and colours, the receipt number, the
+- **Money receipt / payment voucher:** the same header, footer and colours, the receipt number, the
   party, the payment breakdown and the amount in words.
 - **Dark bars printing blank?** In the print dialog open **More settings** and tick **Background graphics**.
 - Any page (a statement, the due list, reports) can be printed with its **Print** button.

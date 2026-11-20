@@ -8,97 +8,118 @@ html { background: #fff }
 body { margin: 0; font: 10.5pt "Times New Roman", Times, serif; color: #1c2150 }
 
 :root {
-  --navy: #2d3480;
-  --line: #2a86b8;
-  --red: #e2372b;
-  --green: #1f6b3a;
-  --paper: #f1f6f8;
+  /* sampled from the memo book (2026-11 edition) */
+  --navy: #2c3089;
+  --ink: #1e1c1e;
+  --line: #45474b;
+  --dots: #d2d2d2;
+  --red: #ef1b22;
+  --green: #00a450;
+  --paper: linear-gradient(to bottom, #d4eefb 0%, #fafefe 50%, #d5effc 100%);
+  /* cells: a light top / left, a white band in the middle, a different light bottom / right */
+  --cell-v: linear-gradient(to bottom, #c7ecfd 0%, #fcfeff 50%, #dad6ed 100%);
+  --head-v: linear-gradient(to bottom, #eae2c9 0%, #fefcfb 50%, #d8d4eb 100%);
+  --amt-h: linear-gradient(to right, #d6d2ea 0%, #fbfbfb 50%, #e6dcc4 100%);
   --gloss: linear-gradient(to bottom, #f5f7fa 0%, #dde2ea 45%, #eef1f5 100%);
 }
 
 .memo { width: 100%; max-width: 194mm; margin: 0 auto; background: var(--paper); padding: 3mm 3mm 2mm; position: relative }
 
-/* ---------- header: logo | shop | hotline ---------- */
-.mhead { display: flex; align-items: flex-start }
-.mlogo { flex: 0 0 34mm; margin: 7mm 3mm 0 0 }
-.mlogo svg, .mlogo img { width: 34mm; height: auto; display: block }
-.mlogo img { max-height: 34mm; object-fit: contain }
-.mshop { flex: 1; text-align: left; min-width: 0 }
-.mtop { display: flex; justify-content: center; align-items: flex-start; position: relative; min-height: 13mm }
-.pill { display: inline-block; background: var(--navy); color: #fff; font: bold 17pt "Times New Roman", serif; padding: 1mm 6mm 1.4mm; border-radius: 6mm; border: .5mm solid #1c2160 }
-.mhot { position: absolute; right: 0; top: 0; text-align: center }
-.mhot .badge { display: inline-block; background: var(--red); color: #fff; font: bold 9.5pt "Times New Roman", serif; letter-spacing: .3mm; padding: .2mm 2.5mm; border-radius: 1.2mm }
-.mhot .num { border: .35mm dashed #7c8aa0; border-radius: 1mm; padding: .3mm 1.5mm; margin-top: .4mm; font: bold 12pt Arial, sans-serif; color: var(--navy); white-space: nowrap }
-.mhot .wa { display: inline-block; width: 2.6mm; height: 2.6mm; border-radius: 50%; background: #25a244; margin-right: 1mm; vertical-align: middle }
-.mname { display: block; width: 100%; height: 14mm; margin-top: -1mm }
+/* ---------- header: logo | shop | phone numbers ---------- */
+.mhead { position: relative }
+.mlogo { position: absolute; left: 1mm; top: 7.5mm; width: 30mm }
+.mlogo svg, .mlogo img { width: 30mm; height: auto; display: block }
+.mlogo img { max-height: 24mm; object-fit: contain }
+.mshop { text-align: center; min-width: 0 }
+.mtop { min-height: 10mm }
+.pill { display: inline-block; background: #00a652; color: #fcfcfc; font: bold 19pt "Times New Roman", serif; padding: .4mm 5mm .9mm; border-radius: 6mm; border: .3mm solid #00a652 }
+.mphones { position: absolute; right: 0; top: 0; text-align: right; font: bold 11.5pt Arial, sans-serif; color: var(--navy); line-height: 1 }
+.mphones div { display: flex; align-items: center; justify-content: flex-end; height: 5.9mm; white-space: nowrap }
+.mphones .wa { width: 3.8mm; height: 3.8mm; margin-right: 1.2mm; flex: 0 0 auto }
+.mphones .bk { width: 4.4mm; height: 4.4mm; margin-right: 1mm; flex: 0 0 auto }
+.mname { display: block; width: 106mm; height: 11.5mm; margin: 1.5mm auto 0 }
 .mname text { font-family: "Nasalization", "Ethnocentric", "Arial Black", "Arial Bold", Arial, sans-serif; font-weight: 900; fill: var(--red) }
-.mmotto { text-align: center; margin: .6mm 0 1mm }
-.mmotto span { display: inline-block; background: var(--navy); color: #fff; font: bold 10pt "Times New Roman", serif; letter-spacing: 3.4mm; padding: .2mm 2mm .2mm 5mm; border: .35mm solid #9aa6d8 }
-.mdesc { display: block; width: 100%; height: 7.5mm }
-.mdesc text { font-family: "Segoe Script", "Lucida Handwriting", Georgia, serif; font-style: italic; font-weight: bold; fill: var(--navy) }
-.maddr { font: bold 12pt "Times New Roman", serif; color: var(--navy); margin-top: .8mm }
-.mphone { font: bold 11pt "Times New Roman", serif; color: var(--green); margin-top: .6mm }
+.mword path { fill: none; stroke-linejoin: miter }
+.mword .w1 { stroke: var(--red) }
+.mword .w2 { stroke: #1e1b1c }
+.mmotto { display: block; width: 82mm; height: 3.6mm; margin: 2.6mm auto 0 }
+.mmotto text { font-family: "Times New Roman", Times, serif; font-weight: bold; fill: var(--navy) }
+.mdesc { display: block; width: 100%; height: 6.6mm; margin-top: 1.6mm }
+.mdesc text { font-family: "Berlin Sans FB Demi", "Cooper Black", "Segoe UI", Arial, sans-serif; font-style: italic; font-weight: bold; fill: #882888 }
+.maddr { font: bold 13pt "Times New Roman", serif; color: var(--navy); margin-top: .6mm }
+.mmail { font: bold 12pt "Times New Roman", serif; color: var(--green); margin-top: .4mm }
 
 /* ---------- party rows ---------- */
-.minfo { width: 100%; border-collapse: separate; border-spacing: 0 1.2mm; margin-top: 3mm }
+.minfo { width: 100%; border-collapse: separate; border-spacing: 0 1.2mm; margin-top: 2mm }
 .minfo td { height: 8.6mm; padding: 0 2mm; vertical-align: middle }
-.lab { background: linear-gradient(to bottom, #3b4592, #262c6c); color: #fff; font: bold 12.5pt "Times New Roman", serif; white-space: nowrap; width: 1%; border: .35mm solid var(--line) }
-.val { background: var(--gloss); border: .35mm solid var(--line); border-left: 0; font: bold 12pt "Times New Roman", serif; color: #111 }
+.lab { background: #0071bd; color: #fff; font: bold 14.5pt "Times New Roman", Times, serif; letter-spacing: -.15mm; white-space: nowrap; width: 1%; border: .3mm solid #1f262a; padding: 0 2.2mm }
+.val { background: var(--cell-v); border: .3mm solid #686b6e; border-left: 0; font: bold 12pt "Times New Roman", serif; color: #111 }
 .val.plain { background: transparent; border: 0; font: bold 16pt "Times New Roman", serif; color: #1c1c1c }
 .minfo .gap { width: 1.5mm; padding: 0; background: none; border: 0 }
 
-/* ---------- items ---------- */
+/* ---------- items: the book's numbered lines ---------- */
 .mwrap { position: relative; margin-top: .6mm }
-.mitems { width: 100%; border-collapse: collapse; border: .45mm solid var(--line); table-layout: fixed }
-.mitems th { background: var(--gloss); color: var(--navy); font: bold 12.5pt "Times New Roman", serif; padding: 1.2mm 1mm; border: .35mm solid var(--line) }
-.mitems td { padding: 1.3mm 2mm; border-left: .35mm solid var(--line); border-right: .35mm solid var(--line); font-size: 11pt; vertical-align: top }
-.mitems .c-sl { width: 10mm; text-align: center; background: linear-gradient(to right, #e7ebf1, #d7dde6) }
-.mitems .c-desc { background: rgba(250, 252, 253, .7) }
-.mitems .c-qty { width: 25mm; text-align: center; background: linear-gradient(to right, #f5d0de, #f7f9fb 50%, #c7e6f2) }
-.mitems .c-rate { width: 23mm; text-align: right; background: #f7f9fb }
-.mitems .c-amt { width: 36mm; text-align: right; background: linear-gradient(to right, #d2ccef, #e9ecd8) }
+.mitems { width: 100%; border-collapse: collapse; border: .3mm solid var(--line); table-layout: fixed }
+.mitems th { background: var(--head-v); color: var(--ink); font: bold 13.5pt "Times New Roman", serif; padding: 1.2mm 1mm; border: .3mm solid var(--line) }
+.mitems td { height: 6.25mm; padding: .4mm 2mm; border-left: .3mm solid var(--line); border-right: .3mm solid var(--line); border-bottom: .25mm dashed var(--dots); font-size: 11pt; vertical-align: middle }
+.mitems tr:last-child td { border-bottom: 0 }
+.mitems .c-sl { width: 10mm; text-align: center; font-size: 12pt; color: var(--ink); background: linear-gradient(to right, #dddaeb 0%, #ffffff 50%, #ebe2cf 100%) }
+.mitems .c-desc { background: #fff }
+.mitems .c-qty { width: 19mm; text-align: center; background: linear-gradient(to right, #fedbeb 0%, #ffffff 45%, #c4e7fb 100%) }
+.mitems .c-rate { width: 21.5mm; text-align: right; background: #fff }
+.mitems .c-amt { width: 34mm; text-align: right; background: var(--amt-h) }
+.mitems thead .c-sl, .mitems thead .c-qty, .mitems thead .c-rate, .mitems thead .c-amt { background: var(--head-v); text-align: center }
 .mitems td small { color: #4a5078; font-size: 9pt }
 .mitems tr.less td { font-style: italic }
-.mitems tr.fill td { padding: 0 }
-.mark-wm { position: absolute; left: 12mm; top: 26mm; width: 92mm; opacity: .5; pointer-events: none; z-index: 2; mix-blend-mode: multiply }
-.mark-wm img { width: 100%; opacity: .35 }
+/* watermark: the logo and the outlined "ONE PLUS", faded, behind the description column */
+.mark-wm { position: absolute; left: 25mm; top: 36mm; width: 73mm; pointer-events: none; z-index: 2; mix-blend-mode: multiply; text-align: center }
+.mark-wm > svg, .mark-wm img { width: 100%; display: block }
+.mark-wm img { opacity: .35 }
+.mark-wm .wm-word { width: 69mm; margin: 3.5mm auto 0; display: block }
+.wm-word path { fill: none; stroke: #eaebf3 }
 
 /* ---------- condition + totals ---------- */
-.mfoot { width: 100%; border-collapse: collapse; border: .45mm solid var(--line); border-top: 0 }
-.mfoot .cond { background: linear-gradient(to right, #dcd9ef, #e4e7cf); vertical-align: top; padding: 1.5mm 2.5mm; font-size: 10pt; line-height: 1.45; border-right: .45mm solid var(--line) }
-.mfoot .cond b.h { font: bold 12.5pt "Times New Roman", serif; color: #1c2150 }
-.mfoot .tl { width: 23mm; text-align: right; padding: 1mm 2mm; font: bold 13pt "Times New Roman", serif; color: var(--navy); background: #f7f9fb; border-bottom: .35mm solid var(--line); border-right: .35mm solid var(--line) }
-.mfoot .tv { width: 36mm; text-align: right; padding: 1mm 2mm; font: bold 12pt "Times New Roman", serif; background: linear-gradient(to right, #d9dcec, #e3e7cf); border-bottom: .35mm solid var(--line) }
+.mfoot { width: 100%; border-collapse: collapse; border: .3mm solid var(--line); border-top: 0 }
+.mfoot .cond { background: linear-gradient(to bottom, #d7effb 0%, #fdfcfe 60%, #f4f3f9 100%); vertical-align: top; padding: 1.5mm 2.5mm; font-size: 10pt; line-height: 1.45; color: var(--ink); border-right: .3mm solid var(--line) }
+.mfoot .cond.words { background: linear-gradient(to bottom, #f1eff8, #e2e2f2); vertical-align: middle; border-top: .3mm solid var(--line) }
+.mfoot .cond .h { font: 14pt "Times New Roman", serif; color: var(--ink); margin-right: 1mm }
+.mfoot .tl { width: 21.5mm; text-align: right; padding: 1mm 2mm; font: bold 13pt "Times New Roman", serif; color: var(--ink); background: #fff; border-bottom: .3mm solid var(--line); border-right: .3mm solid var(--line) }
+.mfoot .tv { width: 34mm; text-align: right; padding: 1mm 2mm; font: bold 12pt "Times New Roman", serif; color: var(--ink); background: var(--amt-h); border-bottom: .3mm solid var(--line) }
 .stamp { display: inline-block; border: .5mm solid; border-radius: 1mm; padding: 0 2mm; font: bold 10pt Arial, sans-serif; letter-spacing: .4mm; margin-right: 2mm }
 .stamp.paid { color: #1d6b3f }
 .stamp.due { color: #b0271e }
 
-/* ---------- signatures + quote ---------- */
-.msign { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 13mm }
-.msign .cust, .msign .from { font: 12.5pt "Times New Roman", serif; color: #1c2150; padding-top: 1mm; border-top: .3mm solid #4a5078; white-space: nowrap }
-.msign .cust { min-width: 28mm; flex: 0 0 auto }
-.msign .from { text-align: right; flex: 0 1 auto }
-.msign .from span { font: 900 10pt "Arial Black", Arial, sans-serif; color: var(--red); letter-spacing: .3mm }
-.quote { margin: 0 3mm; white-space: nowrap; flex: 0 1 auto; overflow: hidden; border: .45mm solid var(--line); border-radius: 5mm; padding: 1mm 5mm; font: italic bold 9.5pt Arial, sans-serif; color: var(--navy); text-align: center; line-height: 1.3; background: #fff }
-.quote .src { display: block; text-align: right }
+/* ---------- signatures + bank accounts ---------- */
+.msign { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 2.5mm }
+.msign .cust, .msign .auth { font: 13pt "Times New Roman", serif; color: #1a2028; padding: 1mm 2mm 0; border-top: .3mm solid #50646c; white-space: nowrap; margin-bottom: 1.5mm; flex: 0 0 auto }
+.msign .cust { min-width: 24mm; text-align: center }
+.mbanks { margin: 0 3mm; flex: 0 1 auto; border: .35mm solid #363636; border-radius: 3mm; padding: .6mm 3mm; background: #fcfcfc; font: 9pt Arial, sans-serif; color: #202020; line-height: 1.35; white-space: nowrap }
+.mbanks .bank + .bank { border-top: .25mm solid #8d8d8d; padding-top: .5mm; margin-top: .5mm }
+.mbanks b { font-weight: bold }
+.mbanks .bn { color: #0058a0 }
+.mbanks .an { color: #302c88 }
+.mbanks .no { color: #00a450 }
 
 /* ---------- logo mark (inline SVG) ---------- */
-.mark .chev { fill: none; stroke: #fff; stroke-width: 9; stroke-linejoin: miter }
-.mark .op, .mark .wing { fill: #f08a24 }
-.mark .opline { fill: none; stroke: #f08a24; stroke-width: 11 }
-.mark .word { fill: #fff; font: 900 25px "Arial Black", Arial, sans-serif; letter-spacing: 1px }
-.mark-wm .chev { stroke: #9cc8e0 }
-.mark-wm .op, .mark-wm .wing { fill: #f4c7a1 }
-.mark-wm .opline { stroke: #f4c7a1 }
-.mark-wm .word { fill: #c8c2e4; font-size: 34px }
+.mark .box { fill: #000 }
+.mark .band { fill: #fff }
+.mark .wing { fill: #ff9d04 }
+.mark .op { fill: #fb242e }
+.mark .opline { fill: none; stroke: #fb242e; stroke-width: 41 }
+/* watermark: pale versions of the same colours (white would not show on paper) */
+.mark-wm .band { fill: #e5f4fa }
+.mark-wm .wing { fill: #fbf2e4 }
+.mark-wm .op { fill: #f9e7e8 }
+.mark-wm .opline { stroke: #f9e7e8 }
+.mlogo .mark .box { fill: #231e20 }
 
 /* ---------- money receipt body ---------- */
-.rtable { width: 100%; border-collapse: collapse; border: .45mm solid var(--line); margin-top: .6mm }
-.rtable th { background: var(--gloss); color: var(--navy); font: bold 12.5pt "Times New Roman", serif; padding: 1.2mm 2mm; border: .35mm solid var(--line); text-align: left }
+.rtable { width: 100%; border-collapse: collapse; border: .3mm solid var(--line); margin-top: .6mm }
+.rtable th { background: var(--head-v); color: var(--ink); font: bold 12.5pt "Times New Roman", serif; padding: 1.2mm 2mm; border: .3mm solid var(--line); text-align: left }
 .rtable th.r, .rtable td.r { text-align: right }
-.rtable td { padding: 1.6mm 2.5mm; border-bottom: .3mm solid #b9d3e3; font-size: 11.5pt; background: rgba(250, 252, 253, .7) }
-.rtable td.r { width: 45mm; background: linear-gradient(to right, #d2ccef, #e9ecd8) }
-.rtable tr.g td { font-weight: bold; font-size: 12.5pt; border-top: .45mm solid var(--line) }
+.rtable td { padding: 1.6mm 2.5mm; border-bottom: .25mm dashed var(--dots); font-size: 11.5pt; color: var(--ink); background: #fff }
+.rtable td.r { width: 45mm; background: var(--amt-h) }
+.rtable tr.g td { font-weight: bold; font-size: 12.5pt; border-top: .3mm solid var(--line)}
 
 @media screen {
   body { background: #d9dee5; padding: 6mm 0 }

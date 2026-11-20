@@ -32,11 +32,15 @@ const { start, sleep, ROOT } = require("./lib");
   check("production order numbered", mig.po, "PO-0001");
   check("courier net COD", mig.net, 1500);
   check("balance 1000 + 2900 - 1000 - 300 - 500", mig.bal, 2100);
-  check("schema version", mig.v, 6);
+  check("schema version", mig.v, 7);
   check("upgraded data gets an empty Rough Notes list", await page.evaluate(() => OPF.store.db.notes), []);
   check("a plain note from before rich text keeps its line breaks", await page.evaluate(() => OPF.migrate.normalize({ notes: [{ id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2" }] }).notes[0]), { id: "n1", date: "2026-10-18", subject: "", text: "a < b\nline 2", html: "a &lt; b<br>line 2", sketch: null, color: "", pinned: false });
-  check("old default branding replaced by the memo-book details", await db((d) => [d.company.phone, d.company.address, d.company.tagline, d.company.hotline, d.company.motto, d.company.memoNote]),
-    ["01619-741055, 01621-346375", "Shop # 99 (1st Floor), Ashraf Setu Shopping Complex, Tongi, Gazipur.", "Manufacturer and Wholesaler of Readymade Garments.", "01878638475", "QUALITY OUR VISION", "Allah has Made Business Lawful, Usury is Forbidden."]);
+  check("old default branding replaced by the memo-book details (phones in the 2026-11 book's order, bank accounts added)", await db((d) => [d.company.phone, d.company.address, d.company.tagline, d.company.hotline, d.company.motto, d.company.banks.split("\n").length]),
+    ["01621-346375, 01619-741055", "Shop # 99 (1st Floor), Ashraf Setu Shopping Complex, Tongi, Gazipur.", "Manufacturer and Wholesaler of Readymade Garments.", "01878638475", "QUALITY OUR VISION", 3]);
+  check("v7 upgrade: the shipped phone order is swapped once; the shop's own numbers and later saves stay", await page.evaluate(() => [
+    OPF.migrate.normalize({ version: 6, company: { phone: "01619-741055, 01621-346375" } }).company.phone,
+    OPF.migrate.normalize({ version: 6, company: { phone: "01711111111" } }).company.phone,
+    OPF.migrate.normalize({ version: 7, company: { phone: "01619-741055, 01621-346375" } }).company.phone]), ["01621-346375, 01619-741055", "01711111111", "01619-741055, 01621-346375"]);
   await page.evaluate(() => { OPF.store.db.company.address = ""; OPF.store.db.company.phone = "01999999999"; OPF.store.save(); });
   await page.reload();
   check("branding upgrade runs once: a cleared address and own phone stay as saved", await db((d) => [d.company.address, d.company.phone]), ["", "01999999999"]);
@@ -116,17 +120,17 @@ const { start, sleep, ROOT } = require("./lib");
   const bd = await text("#calc");
   check("breakdown 50,000 + 10,000 = 60,000 - 20,000 = 40,000", [/Previous Due\s+50,000\.00/, /Today's Purchase\s+10,000\.00/, /Total Due\s+60,000\.00/, /Paid Today \(this receipt\)\s+20,000\.00/, /Remaining Due\s+40,000\.00/].map((r) => r.test(bd)), [true, true, true, true, true]);
   // Printing must stay in this tab: count tabs and watch the print call.
-  await page.evaluate(() => { window.__printCalls = []; const real = OPF.print.output; OPF.print.output = (w) => { window.__printCalls.push([w.document.title, !!w.document.querySelector(".memo"), w.getComputedStyle(w.document.querySelector(".pill")).backgroundColor]); real(w); }; });
+  await page.evaluate(() => { window.__printCalls = []; const real = OPF.print.output; OPF.print.output = (w) => { window.__printCalls.push([w.document.title, !!w.document.querySelector(".memo"), w.getComputedStyle(w.document.querySelector(".pill")).borderTopColor]); real(w); }; });
   const tabsBefore = (await browser.pages()).length;
   await submit(); await sleep(800);
   check("printing opens no new tab or window", (await browser.pages()).length, tabsBefore);
-  check("the print dialog is called for the receipt, after its stylesheet loaded", await page.evaluate(() => window.__printCalls), [["Money Receipt MR-00001", true, "rgb(45, 52, 128)"]]);
+  check("the print dialog is called for the receipt, after its stylesheet loaded", await page.evaluate(() => window.__printCalls), [["Money Receipt MR-00001", true, "rgb(0, 166, 82)"]]);
   await go("payments");
   const firstPayment = await db((d) => d.payments[0].id);
   const rp = printed(); await act("print.receipt", { id: firstPayment }); const receipt = await rp;
   const rt = await receipt.evaluate(() => document.body.innerText);
   check("receipt opens automatically with the same figures", /Money Receipt/.test(rt) && /Remaining Due\s+40,000\.00/.test(rt) && /Twenty Thousand Taka Only/.test(rt), true);
-  check("print stylesheet loads in the print window", await receipt.evaluate(() => getComputedStyle(document.querySelector(".pill")).backgroundColor), "rgb(45, 52, 128)");
+  check("print stylesheet loads in the print window (green Cash Memo pill)", await receipt.evaluate(() => getComputedStyle(document.querySelector(".pill")).borderTopColor), "rgb(0, 166, 82)");
   await receipt.screenshot({ path: path.join(OUT, "receipt.png"), fullPage: true }); await receipt.close();
   check("snapshot stored on payment", await db((d) => d.payments[0].snap), { prev: 50000, bill: 10000, total: 60000, less: 0, paid: 20000, remaining: 40000 });
   await fill({ type: "Supplier" });
@@ -143,6 +147,15 @@ const { start, sleep, ROOT } = require("./lib");
   const ip = printed(); await page.evaluate(() => OPF.print.invoice(OPF.store.db.sales[0].id)); const inv = await ip;
   const it = await inv.evaluate(() => document.body.innerText);
   check("cash memo: DUE stamp, Total / Advance / Due, previous 50,000, total due 60,000, words", /Cash Memo/.test(it) && /DUE/.test(it) && /Total\s+10,000\.00/.test(it) && /Advance\s+0\.00/.test(it) && /Due\s+10,000\.00/.test(it) && /Previous Due: 50,000\.00/.test(it) && /Total Due Now: 60,000\.00/.test(it) && /Ten Thousand Taka Only/.test(it), true);
+  check("memo book layout: 19 lines numbered from 01 (the discount line takes one, unnumbered), drawn ONE PLUS lettering, Description column", await inv.evaluate(() => {
+    const sl = Array.from(document.querySelectorAll(".mitems tbody .c-sl")).map((c) => c.textContent).filter(Boolean);
+    return [document.querySelectorAll(".mitems tbody tr").length, sl[0], sl[sl.length - 1], !!document.querySelector(".mhead svg.mword"), document.querySelectorAll(".mark-wm .wm-word").length, document.querySelectorAll(".mitems th")[1].textContent];
+  }), [19, "01", "18", true, 1, "Description"]);
+  check("memo header: hotline (bKash) and WhatsApp numbers as +880, e-mail; footer: bank accounts, Inword, Authorised Signature", await inv.evaluate(() => [
+    Array.from(document.querySelectorAll(".mphones span")).map((s) => s.textContent), document.querySelectorAll(".mphones .bk").length, document.querySelector(".mmail").textContent,
+    Array.from(document.querySelectorAll(".mbanks .bank")).map((b) => b.querySelector(".no").textContent), /Inword: Ten Thousand Taka Only/.test(document.querySelector(".cond.words").textContent),
+    document.querySelector(".msign .auth").textContent, !!document.querySelector(".quote")]),
+    [["+880 1878638475", "+880 1621346375", "+880 1619741055"], 1, "E-mail: oneplusfashion2021@gmail.com", ["2068401860001", "179 157 000 5300", "20502160204797106"], true, "Authorised Signature", false]);
   await inv.screenshot({ path: path.join(OUT, "invoice.png"), fullPage: true }); await inv.close();
 
   section("Courier / Delivery is a record only (never changes dues)");

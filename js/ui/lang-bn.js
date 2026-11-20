@@ -164,8 +164,9 @@
     "Roles from proposal: Admin, Manager, Accountant, Salesman, Factory Manager. Editing and deleting any record needs the Admin password (set it in Settings / Backup). Every change is recorded below.":
       "ভূমিকা: অ্যাডমিন, ম্যানেজার, হিসাবরক্ষক, বিক্রয়কর্মী, কারখানা ম্যানেজার। যেকোনো রেকর্ড সম্পাদনা বা মুছতে অ্যাডমিন পাসওয়ার্ড লাগে (সেটিংস / ব্যাকআপে সেট করুন)। প্রতিটি পরিবর্তন নিচে লেখা থাকে।",
     "Shop Branding (printed on the cash memo & receipts)": "দোকানের পরিচিতি (ক্যাশ মেমো ও রসিদে ছাপা হয়)", "Shop / Company Name": "দোকান / প্রতিষ্ঠানের নাম",
-    "Motto (dark bar under the name)": "মূলমন্ত্র (নামের নিচের গাঢ় পট্টি)", "Business Description": "ব্যবসার বিবরণ", "Phone Numbers": "ফোন নম্বর",
-    "Hotline (top right)": "হটলাইন (উপরে ডানে)", "Footer Quote": "নিচের উক্তি", "Quote Source": "উক্তির উৎস", "Save Branding": "পরিচিতি সংরক্ষণ",
+    "Motto (under the name)": "মূলমন্ত্র (নামের নিচে)", "Business Description": "ব্যবসার বিবরণ", "Phone Numbers": "ফোন নম্বর",
+    "Hotline / bKash (top right, first)": "হটলাইন / বিকাশ (উপরে ডানে, প্রথমে)", "WhatsApp Numbers (top right)": "হোয়াটসঅ্যাপ নম্বর (উপরে ডানে)",
+    "Bank Accounts (footer box; one per line: Bank | A/C Name | A/C Number | Branch)": "ব্যাংক হিসাব (নিচের বক্সে; প্রতি লাইনে একটি: ব্যাংক | হিসাবের নাম | হিসাব নম্বর | শাখা)", "Save Branding": "পরিচিতি সংরক্ষণ",
     "Remove Logo": "লোগো সরান", "No shop logo uploaded.": "দোকানের লোগো আপলোড করা হয়নি।", "Admin Password": "অ্যাডমিন পাসওয়ার্ড",
     "Data Safety": "ডেটার নিরাপত্তা", "Download Full Backup (Excel .xlsx)": "পূর্ণ ব্যাকআপ ডাউনলোড (এক্সেল .xlsx)",
     "Download Restore File (.json)": "রিস্টোর ফাইল ডাউনলোড (.json)", "Restore from .json": ".json থেকে রিস্টোর", "Clear All Data": "সব ডেটা মুছুন",
